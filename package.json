@@ -6,6 +6,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "type": "module",
   "scripts": {
     "clean": "rm dist/bundle.js",
     "build-dev": "webpack --mode development",
@@ -19,12 +20,14 @@
     "pg": "^8.11.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "sequelize": "^6.32.0"
+    "sequelize": "^6.32.0",
+    "ts-node": "^10.9.1"
   },
   "devDependencies": {
     "@babel/core": "^7.22.5",
     "@babel/preset-env": "^7.22.5",
     "@babel/preset-react": "^7.22.5",
+    "@types/dotenv": "^8.2.0",
     "@types/react": "^18.2.9",
     "@types/react-dom": "^18.2.4",
     "babel-jest": "^29.5.0",
