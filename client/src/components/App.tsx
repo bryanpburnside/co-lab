@@ -1,4 +1,7 @@
-import * as React from 'react';
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Layout from './Layout';
+import LoginButton from './LoginButton';
 
 // interface Props {
 //   name:
@@ -7,11 +10,13 @@ import * as React from 'react';
 
 const App = () => {
   return (
-    <>
-      <h1>
-        Hello World
-      </h1>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={< Layout />}>
+          <Route path='/login' element={<LoginButton />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
