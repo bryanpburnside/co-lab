@@ -1,9 +1,11 @@
-const webpack = require('webpack');
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+import webpack from 'webpack';
+import path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 const config = {
-  entry: './src/index.tsx',
+  entry: './client/src/index.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js'
@@ -44,4 +46,4 @@ const config = {
   }
 };
 
-module.exports = config;
+export default config;

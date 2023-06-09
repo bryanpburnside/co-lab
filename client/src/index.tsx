@@ -6,4 +6,4 @@ import './styles.css';
 
 const app = document.getElementById('app') as HTMLElement;
 const root = createRoot(app);
-root.render(<App name="app" />);
+root.render(<App />);

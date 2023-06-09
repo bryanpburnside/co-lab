@@ -1,21 +1,23 @@
 {
   "compilerOptions": {
-      "outDir": "./dist/",
-      "sourceMap": true,
-      "strict": true,
-      "noImplicitReturns": true,
-      "noImplicitAny": true,
-      "module": "es6",
-      "moduleResolution": "node",
-      "target": "es5",
-      "allowJs": true,
-      "jsx": "react",
-      "esModuleInterop": true
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "strict": true,
+    "noImplicitReturns": true,
+    "noImplicitAny": true,
+    "module": "es6",
+    "moduleResolution": "node",
+    "target": "es6",
+    "allowJs": true,
+    "jsx": "react",
+    "esModuleInterop": true
   },
   "include": [
-      "client/src/**/*"
+    "client/src/**/*",
+    "server/**/*.ts"
   ],
   "exclude": [
-    "dist", "node_modules"
+    "dist",
+    "node_modules"
   ]
 }
