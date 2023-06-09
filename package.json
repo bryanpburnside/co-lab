@@ -48,6 +48,7 @@
     "jest": "^29.5.0",
     "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
+    "react-router-dom": "^6.12.1",
     "style-loader": "^3.3.3",
     "ts-loader": "^9.4.3",
     "ts-node": "^10.9.1",
