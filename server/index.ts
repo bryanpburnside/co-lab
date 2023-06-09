@@ -11,8 +11,7 @@ const app = express();
 app.use(express.json());
 
 // ROUTES
-app.use('/login', Login)
-
+app.use('/login', Login);
 
 sequelize.authenticate()
   .then(() => console.info('Connected to the database'))
