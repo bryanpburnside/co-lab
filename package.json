@@ -34,6 +34,7 @@
     "@types/node": "^20.2.5",
     "@types/react": "^18.2.9",
     "@types/react-dom": "^18.2.4",
+    "@types/react-router-dom": "^5.3.3",
     "babel-jest": "^29.5.0",
     "babel-loader": "^9.1.2",
     "babel-preset-airbnb": "^5.0.0",
