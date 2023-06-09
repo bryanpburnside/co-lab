@@ -1,17 +1,28 @@
 import express from 'express';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-dotenv.config();
+dotenv.config({ path: path.resolve(dirname(fileURLToPath(import.meta.url)), '../.env') });
 const { PORT } = process.env;
 import { sequelize, initialize } from './database/index.js';
 import Login from './routes/login.js';
 
 const app = express();
+const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 
 // MIDDLEWARE
 app.use(express.json());
 
 // ROUTES
 app.use('/login', Login);
+app.get('*', (req, res) => {
+  res.sendFile(path.join(currentDirectory, '../dist/index.html'), (err) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err);
+    }
+  });
+});
 
 sequelize.authenticate()
   .then(() => console.info('Connected to the database'))
