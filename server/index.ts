@@ -1,10 +1,18 @@
-import Express from 'express';
+import express from 'express';
 import dotenv from 'dotenv';
 dotenv.config();
 const { PORT } = process.env;
 import { sequelize, initialize } from './database/index.js';
+import Login from './routes/login.js';
 
-const app = Express();
+const app = express();
+
+// MIDDLEWARE
+app.use(express.json());
+
+// ROUTES
+app.use('/login', Login)
+
 
 sequelize.authenticate()
   .then(() => console.info('Connected to the database'))
