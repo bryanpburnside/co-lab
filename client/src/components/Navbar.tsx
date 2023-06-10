@@ -16,6 +16,9 @@ const Navbar = () => {
           <li>
             <Link to='/profile'>Profile</Link>
           </li>
+          <li>
+            <Link to='/logout'>Log out</Link>
+          </li>
         </ul>
       </nav>
     </>
