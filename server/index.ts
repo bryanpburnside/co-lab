@@ -9,14 +9,25 @@ import Login from './routes/login.js';
 
 const app = express();
 const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
+const staticFilesPath = path.join(currentDirectory, '../dist');
 
 // MIDDLEWARE
 app.use(express.json());
-app.use(express.static(path.join(currentDirectory, '../dist')));
+
 
 // ROUTES
-app.use('/login', Login);
+// app.use('/login', Login);
 
+app.use(express.static(staticFilesPath));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(staticFilesPath, 'index.html'), (err) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send(err);
+    }
+  });
+});
 // app.get('*', (req, res) => {
 //   res.sendFile(path.join(currentDirectory, '../dist/index.html'), (err) => {
 //     if (err) {
