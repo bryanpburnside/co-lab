@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './Layout';
 import Home from './Home';
 import LoginButton from './LoginButton';
+import Profile from './Profile';
 
 // interface Props {
 //   name:
@@ -17,6 +18,7 @@ const App = () => {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<LoginButton />} />
+        <Route path='/profile' element={<Profile />} />
       </Routes>
     </Router>
   );
