@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Layout from './Layout';
+import Navbar from './Navbar';
 import Home from './Home';
 import LoginButton from './LoginButton';
 import Profile from './Profile';
@@ -14,7 +14,7 @@ const App = () => {
   return (
 
     <Router>
-      <Layout />
+      <Navbar />
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<LoginButton />} />
