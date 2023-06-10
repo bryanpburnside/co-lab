@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './Layout';
 import Home from './Home';
 import LoginButton from './LoginButton';
@@ -11,14 +11,14 @@ import LoginButton from './LoginButton';
 
 const App = () => {
   return (
-    <BrowserRouter>
+
+    <Router>
+      <Layout />
       <Routes>
-        <Route path='/' element={< Layout />}>
-          <Route index element={<Home />} />
-          <Route path='/login' element={<LoginButton />} />
-        </Route>
+        <Route path='/' element={<Home />} />
+        <Route path='/login' element={<LoginButton />} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }
 
