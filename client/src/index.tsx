@@ -5,7 +5,8 @@ import { Auth0Provider } from '@auth0/auth0-react';
 import App from './components/App';
 import './styles.css';
 
-const { DOMAIN, CLIENT_ID } = process.env;
+const DOMAIN = 'dev-apep6d72b660pege.us.auth0.com';
+const CLIENT_ID = 'VI4iPrBXS8e06tsvypOpe9wyEy1Ju131';
 
 const app = document.getElementById('app') as HTMLElement;
 const root = createRoot(app);
