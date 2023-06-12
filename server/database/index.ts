@@ -154,8 +154,6 @@ const initialize = async () => {
     console.log('Tables successfully created!');
   } catch (error) {
     console.error('Error creating tables :(', error);
-  } finally {
-    sequelize.close();
   }
 };
 
