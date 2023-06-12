@@ -1,6 +1,7 @@
 import React from "react";
 import { Outlet, Link } from "react-router-dom";
 import LoginButton from "./LoginButton";
+import StoryBook from './Stories';
 
 const Navbar = () => {
   return (
@@ -18,6 +19,9 @@ const Navbar = () => {
           </li>
           <li>
             <Link to='/logout'>Log out</Link>
+          </li>
+          <li>
+            <Link to='/stories'>Story Book</Link>
           </li>
         </ul>
       </nav>

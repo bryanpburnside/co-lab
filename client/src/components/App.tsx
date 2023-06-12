@@ -5,6 +5,7 @@ import Home from './Home';
 import LoginButton from './LoginButton';
 import LogoutButton from './LogoutButton';
 import Profile from './Profile';
+import StoryBook from './Stories';
 
 // interface Props {
 //   name:
@@ -21,6 +22,7 @@ const App = () => {
         <Route path='/login' element={<LoginButton />} />
         <Route path='/profile' element={<Profile />} />
         <Route path='/logout' element={<LogoutButton />} />
+        <Route path='/stories' element={<StoryBook />} />
       </Routes>
     </Router>
   );

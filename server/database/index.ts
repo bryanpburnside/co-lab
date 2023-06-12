@@ -1,11 +1,12 @@
 import { Sequelize, DataTypes } from 'sequelize';
+const { DB_USER, DB_PW } = process.env;
 
-const sequelize = new Sequelize('colab', 'root', '', {
+const sequelize = new Sequelize('colab', DB_USER as string, DB_PW as string, {
   host: 'localhost',
   dialect: 'postgres',
   define: {
     freezeTableName: true
-  }
+  },
 });
 
 const User = sequelize.define('users', {
