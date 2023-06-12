@@ -14,7 +14,6 @@ const staticFilesPath = path.join(currentDirectory, '../dist');
 // MIDDLEWARE
 app.use(express.json());
 
-
 // ROUTES
 // app.use('/login', Login);
 
@@ -28,14 +27,6 @@ app.get('*', (req, res) => {
     }
   });
 });
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(currentDirectory, '../dist/index.html'), (err) => {
-//     if (err) {
-//       console.log(err);
-//       res.status(500).send(err);
-//     }
-//   });
-// });
 
 sequelize.authenticate()
   .then(() => console.info('Connected to the database'))
