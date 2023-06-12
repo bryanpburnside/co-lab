@@ -4,6 +4,7 @@ import eye from '../assets/images/eye.png';
 import ear from '../assets/images/ear.png';
 import hand from '../assets/images/hand.png';
 import mouth from '../assets/images/mouth.png';
+import { v4 as generateRoomId } from 'uuid';
 
 const Home = () => {
   return (
@@ -14,7 +15,7 @@ const Home = () => {
       <Link to='/music' className='image-link'>
         <img src={ear} alt="ear" />
       </Link>
-      <Link to='/sculpture' className='image-link'>
+      <Link to={`/sculpture/${generateRoomId()}`} className='image-link'>
         <img src={hand} alt="hand" />
       </Link>
       <Link to='/story' className='image-link'>
