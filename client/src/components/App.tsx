@@ -7,11 +7,6 @@ import LogoutButton from './LogoutButton';
 import Profile from './Profile';
 import Sculpture from './Sculpture'
 
-// interface Props {
-//   name:
-//   string
-// }
-
 const App = () => {
   return (
 
