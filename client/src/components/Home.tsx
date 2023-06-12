@@ -1,11 +1,27 @@
 import React from 'react';
+import { Link } from "react-router-dom";
+import eye from '../assets/images/eye.png';
+import ear from '../assets/images/ear.png';
+import hand from '../assets/images/hand.png';
+import mouth from '../assets/images/mouth.png';
 
 const Home = () => {
   return (
-    <>
-      <h1>Co-Lab</h1>
-    </>
-  )
+    <div className="container">
+      <Link to='/visualart' className='image-link'>
+        <img src={eye} alt="eye" />
+      </Link>
+      <Link to='/music' className='image-link'>
+        <img src={ear} alt="ear" />
+      </Link>
+      <Link to='/sculpture' className='image-link'>
+        <img src={hand} alt="hand" />
+      </Link>
+      <Link to='/story' className='image-link'>
+        <img src={mouth} alt="mouth" />
+      </Link>
+    </div>
+  );
 }
 
 export default Home;
