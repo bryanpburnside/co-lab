@@ -16,7 +16,7 @@ const App = () => {
       if (user) {
         const { sub: id, name, email } = user;
         console.log(id, name, email);
-        await axios.post('/user', {
+        await axios.post('/users', {
           id,
           name,
           email
