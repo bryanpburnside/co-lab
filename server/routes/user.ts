@@ -1,8 +1,12 @@
 import { Router } from 'express';
-const Login = Router();
+const User = Router();
 
 // Login.get('/', (req, res) => {
 //   console.log('login');
 // })
 
-export default Login;
+User.post('/', (req, res) => {
+
+})
+
+export default User;

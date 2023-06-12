@@ -9,16 +9,19 @@ import LogoutButton from './LogoutButton';
 import Profile from './Profile';
 
 const App = () => {
-  const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, user } = useAuth0();
 
   const saveUser = async () => {
     try {
-      const token = await getAccessTokenSilently();
-      console.log('User ID:', user.sub);
-      console.log('Email:', user.email);
-      console.log('Name:', user.name);
-      console.log('Access Token:', token);
-      console.log('user saved!');
+      if (user) {
+        const { sub: id, name, email } = user;
+        console.log(id, name, email);
+        await axios.post('/user', {
+          id,
+          name,
+          email
+        });
+      }
     } catch (err) {
       console.error('Failed to SAVE user to db at client:', err);
     }
