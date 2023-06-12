@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import HTMLFlipBook from 'react-pageflip';
-import Page from './Page';
 
 
 //React.FC = react functional component
@@ -9,15 +8,15 @@ const StoryBook: React.FC = () => {
   const [pages, setPages] = useState<string[]>(['Page 1', 'Page 2', 'Page 3', 'Page 4']);
 
   //create the properties for the flipBook
-  const storyBookProps = {
-    className: 'storybook',
-    style: { backgroundColor: 'grey' },
-    startPage: 1,
-    orientation: 'vertical',
-    uncutPages: true,
-    loopForever: true,
-    
-  };
+  // const storyBookProps = {
+  //   className: 'storybook',
+  //   style: { backgroundColor: 'grey' },
+  //   startPage: 1,
+  //   orientation: 'vertical',
+  //   uncutPages: true,
+  //   loopForever: true,
+  //   showCover: true
+  // };
 
   //functionality to add new page
   const addNewPage = () => {
@@ -37,7 +36,29 @@ const StoryBook: React.FC = () => {
   return (
     <div>
       <button onClick={addNewPage}>Add New Page</button>
-      <HTMLFlipBook {...storyBookProps} width={300} height={500}>
+      <HTMLFlipBook
+        size={"fixed"}
+        minWidth={0}
+        maxWidth={500}
+        minHeight={0}
+        maxHeight={500}
+        drawShadow={true}
+        flippingTime={500}
+        usePortrait={false}
+        startZIndex={0}
+        autoSize={false}
+        maxShadowOpacity={0}
+        mobileScrollSupport={false}
+        clickEventForward={false}
+        swipeDistance={0}
+        showPageCorners={true}
+        disableFlipByClick={false}
+        width={300} height={500}
+        className={'book'}
+        startPage={1}
+        showCover={false}
+        useMouseEvents={true}
+        style={{ backgroundColor: 'maroon' }}>
         {pages.map((pg, index) => (
           <div key={ index }>
             <textarea value={pg} onChange={ handlePageChange } />
