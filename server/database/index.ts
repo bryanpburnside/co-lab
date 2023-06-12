@@ -24,7 +24,7 @@ const User = sequelize.define('users', {
   friends: {
     type: DataTypes.ARRAY(DataTypes.INTEGER),
   },
-  photo: {
+  picture: {
     type: DataTypes.STRING,
   },
 });
@@ -150,7 +150,7 @@ Message.belongsTo(User, { foreignKey: 'recipientId' });
 
 const initialize = async () => {
   try {
-    await sequelize.sync({ force: true });
+    await sequelize.sync({ alter: true });
     console.log('Tables successfully created!');
   } catch (error) {
     console.error('Error creating tables :(', error);

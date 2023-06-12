@@ -14,12 +14,13 @@ const App = () => {
   const saveUser = async () => {
     try {
       if (user) {
-        const { sub: id, name, email } = user;
+        const { sub: id, name, email, picture } = user;
         console.log(id, name, email);
         await axios.post('/users', {
           id,
           name,
-          email
+          email,
+          picture
         });
       }
     } catch (err) {

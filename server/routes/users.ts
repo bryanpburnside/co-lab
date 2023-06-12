@@ -3,9 +3,9 @@ const Users = Router();
 import { User } from '../database/index.js';
 
 Users.post('/', async (req, res) => {
-  const { id, name, email } = req.body;
+  const { id, name, email, picture } = req.body;
   try {
-    const newUser = await User.create({ id, name, email });
+    const newUser = await User.create({ id, name, email, picture });
     if (newUser) {
       res.sendStatus(201);
     }
