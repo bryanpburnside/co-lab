@@ -11,11 +11,14 @@ const sequelize = new Sequelize('colab', 'root', '', {
 
 const User = sequelize.define('users', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     primaryKey: true,
     allowNull: false,
   },
   name: {
+    type: DataTypes.STRING,
+  },
+  email: {
     type: DataTypes.STRING,
   },
   friends: {
