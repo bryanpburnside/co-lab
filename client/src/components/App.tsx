@@ -1,7 +1,5 @@
-import React, { useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useAuth0 } from '@auth0/auth0-react';
 import Navbar from './Navbar';
 import Home from './Home';
 import LoginButton from './LoginButton';
@@ -10,40 +8,6 @@ import Profile from './Profile';
 import VisualArt from './VisualArt';
 
 const App = () => {
-  const { user, isAuthenticated, isLoading } = useAuth0();
-
-  const saveUser = async () => {
-    try {
-      if (user) {
-        const { sub: id, name, email, picture } = user;
-        // console.log(id, name, email);
-        await axios.post('/users', {
-          id,
-          name,
-          email,
-          picture
-        });
-      }
-    } catch (err) {
-      console.error('Failed to SAVE user to db at client:', err);
-    }
-  }
-
-  const getUserInfo = async () => {
-    try {
-      if (user) {
-        console.log(user);
-        await saveUser();
-      }
-    } catch (err) {
-      console.error('Failed to GET active user info at client:', err);
-    }
-  };
-
-  useEffect(() => {
-    getUserInfo();
-  }, [isAuthenticated, user])
-
   return (
     <Router>
       <Navbar />
