@@ -44,6 +44,7 @@ const Artwork = sequelize.define('artwork', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
     allowNull: false,
   },
   type: {
@@ -55,6 +56,7 @@ const VisualArt = sequelize.define('visualart', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
     allowNull: false,
   },
   title: {
