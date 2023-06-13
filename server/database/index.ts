@@ -91,6 +91,12 @@ const Story = sequelize.define('stories', {
   title: {
     type: DataTypes.STRING,
   },
+  coverImage: {
+    type: DataTypes.STRING,
+  },
+  numberOfPages: {
+    type: DataTypes.INTEGER,
+  },
   content: {
     type: DataTypes.TEXT,
   }
