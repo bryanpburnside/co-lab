@@ -1,10 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import HTMLFlipBook from 'react-pageflip';
+import NewStoryForm from "./NewStoryForm";
 
 interface Page {
   pageNumber: number;
   content: string;
   story: string;
+}
+
+interface Story {
+  title: string;
+  collaborators: string[];
+  coverImage: File | null;
+  pages: Page[];
 }
 
 //create page editor component
@@ -25,14 +33,6 @@ const PageEditor: React.FC<{ page: Page, onSave: (content: string) => void, onCa
     onCancel();
   };
 
-  //for enter press
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-      handleSave();
-    }
-  };
-
   return (
     <div>
       <textarea
@@ -45,6 +45,7 @@ const PageEditor: React.FC<{ page: Page, onSave: (content: string) => void, onCa
   );
 };
 
+
 //React.FC = react functional component
 const StoryBook: React.FC = () => {
   const [pages, setPages] = useState<Page[]>([
@@ -54,7 +55,9 @@ const StoryBook: React.FC = () => {
     { pageNumber: 4, content: 'so tired', story: 'The Black Sheep' }
   ]);
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
-
+  const [showNewStoryForm, setShowNewStoryForm] = useState(false);
+  const [coverImageURL, setCoverImageURL] = useState<string | null>(null);
+  const [story, setStory] = useState<Story | null>(null);
 
   //functionality to add new page
   const addNewPage = () => {
@@ -87,6 +90,19 @@ const StoryBook: React.FC = () => {
     setSelectedPage(null);
   };
 
+  const handleCreateStory = (newStory: Story) => {
+    setStory(newStory);
+    setCoverImageURL(newStory.coverImage ? URL.createObjectURL(newStory.coverImage) : null);
+    setShowNewStoryForm(false);
+  };
+
+  const handleCancelCreateStory = () => {
+    setShowNewStoryForm(false);
+  };
+
+  const handleShowNewStoryForm = () => {
+    setShowNewStoryForm(true);
+  };
 
   return (
     <div
@@ -123,63 +139,71 @@ const StoryBook: React.FC = () => {
         In Progress Stories
       </div>
       <button onClick={ addNewPage }>Add New Page</button>
-      <button onClick={ addNewPage }>Create New Story</button>
-      <HTMLFlipBook
-        size={"stretch"}
-        minWidth={300}
-        maxWidth={500}
-        minHeight={300}
-        maxHeight={500}
-        drawShadow={true}
-        flippingTime={500}
-        usePortrait={false}
-        startZIndex={0}
-        autoSize={true}
-        maxShadowOpacity={0}
-        mobileScrollSupport={false}
-        clickEventForward={false}
-        swipeDistance={0}
-        showPageCorners={true}
-        disableFlipByClick={false}
-        width={500} height={500}
-        className={'book'}
-        startPage={1}
-        showCover={false}
-        useMouseEvents={true}
-        style={{
-          backgroundColor: '#f7f3eb',
-          border: '1px solid #ddd',
-          boxShadow: '0 2px 5px rgba(0, 0, 0, 0.3)',
-          overflow: 'hidden',
-          borderRadius: '5px',
-        }}>
-        {pages.map((page, index) => (
-          <div
-            key={ index }
-            onClick={() => handlePageClick(page)}
-            style={{ position: 'relative', height: '100%' }}
-          >
+      <button onClick={ handleShowNewStoryForm }>Create New Story</button>
+      {showNewStoryForm ? (
+      <NewStoryForm onCreateStory={ handleCreateStory } onCancel={ handleCancelCreateStory } />
+    ) : (
+      <>
+        <HTMLFlipBook
+          size={'stretch'}
+          minWidth={300}
+          maxWidth={500}
+          minHeight={300}
+          maxHeight={500}
+          drawShadow={true}
+          flippingTime={500}
+          usePortrait={false}
+          startZIndex={0}
+          autoSize={true}
+          maxShadowOpacity={0}
+          mobileScrollSupport={false}
+          clickEventForward={false}
+          swipeDistance={0}
+          showPageCorners={true}
+          disableFlipByClick={false}
+          width={500}
+          height={500}
+          className={'book'}
+          startPage={1}
+          showCover={true}
+          useMouseEvents={true}
+          style={{
+            backgroundColor: '#f7f3eb',
+            border: '1px solid #ddd',
+            boxShadow: '0 2px 5px rgba(0, 0, 0, 0.3)',
+            overflow: 'hidden',
+            borderRadius: '5px'
+          }}
+        >
+          {pages.map((page, index) => (
             <div
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                fontSize: '24px',
-                fontWeight: 'bold',
-              }}
+              key={index}
+              onClick={() => handlePageClick(page)}
+              style={{ position: 'relative', height: '100%' }}
             >
-              { page.content }
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  fontSize: '24px',
+                  fontWeight: 'bold'
+                }}
+              >
+                { page.content }
+              </div>
             </div>
-          </div>
-        ))}
-      </HTMLFlipBook>
-      { selectedPage && (
-        <PageEditor
-          page={ selectedPage }
-          onSave={ handleSavePage }
-          onCancel={ handleCancelEdit } />
-      )}
+          ))}
+        </HTMLFlipBook>
+        {selectedPage && (
+          <PageEditor
+            page={ selectedPage }
+            onSave={ handleSavePage }
+            onCancel={ handleCancelEdit } />
+        )}
+      </>
+    )}
       <div
       style={{
         backgroundColor: 'green',
