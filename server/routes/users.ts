@@ -6,16 +6,12 @@ Users.post('/', async (req, res) => {
   const { id, name, email, picture } = req.body;
   try {
     const existingUser = await User.findByPk(id);
-    if (existingUser) {
-      console.log('User already exists');
-      return;
-    }
-    const newUser = await User.create({ id, name, email, picture });
-    if (newUser) {
+    if (!existingUser) {
+      await User.create({ id, name, email, picture });
       res.sendStatus(201);
     }
   } catch (err) {
-    console.error('Failed to POST user to db at server:', err);
+    console.error('Failed to CREATE user in db:', err);
     res.sendStatus(500);
   }
 })
