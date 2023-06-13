@@ -6,6 +6,7 @@ dotenv.config({ path: path.resolve(dirname(fileURLToPath(import.meta.url)), '../
 const { PORT } = process.env;
 import { sequelize, initialize } from './database/index.js';
 import Users from './routes/users.js';
+import VisualArtwork from './routes/visualartwork.js';
 
 const app = express();
 const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
@@ -16,6 +17,7 @@ app.use(express.json());
 
 // ROUTES
 app.use('/users', Users);
+app.use('/visualart', VisualArtwork);
 
 app.use(express.static(staticFilesPath));
 
