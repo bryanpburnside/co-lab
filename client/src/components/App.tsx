@@ -7,15 +7,16 @@ import Home from './Home';
 import LoginButton from './LoginButton';
 import LogoutButton from './LogoutButton';
 import Profile from './Profile';
+import VisualArt from './VisualArt';
 
 const App = () => {
-  const { isAuthenticated, user } = useAuth0();
+  const { user, isAuthenticated, isLoading } = useAuth0();
 
   const saveUser = async () => {
     try {
       if (user) {
         const { sub: id, name, email, picture } = user;
-        console.log(id, name, email);
+        // console.log(id, name, email);
         await axios.post('/users', {
           id,
           name,
@@ -30,8 +31,10 @@ const App = () => {
 
   const getUserInfo = async () => {
     try {
-      console.log(user);
-      await saveUser();
+      if (user) {
+        console.log(user);
+        await saveUser();
+      }
     } catch (err) {
       console.error('Failed to GET active user info at client:', err);
     }
@@ -49,6 +52,7 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/logout" element={<LogoutButton />} />
         <Route path="/login/*" element={<LoginButton />} />
+        <Route path="/visualart" element={<VisualArt />} />
       </Routes>
     </Router>
   );
