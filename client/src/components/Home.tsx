@@ -67,7 +67,7 @@ const Home = () => {
       style={{ cursor: 'pointer' }}
       >
         <img src={eye} alt="eye" />
-      </Link>
+      </div>
       <Link to='/music' className='image-link'>
         <img src={ear} alt="ear" />
       </Link>
