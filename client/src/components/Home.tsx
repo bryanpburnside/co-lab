@@ -1,12 +1,33 @@
-import React from 'react';
-import { Link } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
+import React, { useState } from 'react';
+import { Link, useNavigate } from "react-router-dom";
+import axios from 'axios';
 import eye from '../assets/images/eye.png';
 import ear from '../assets/images/ear.png';
 import hand from '../assets/images/hand.png';
 import mouth from '../assets/images/mouth.png';
-import { v4 as generateRoomId } from 'uuid';
+import { io } from "socket.io-client";
 
 const Home = () => {
+  const { user, isAuthenticated, isLoading } = useAuth0();
+  const navigate = useNavigate();
+  const [roomId, setRoomId] = useState('');
+  const socket = io('http://localhost:8000');
+
+  const generateRoomId = async (endpoint) => {
+    try {
+      if (user) {
+        const response = await axios.post('/api/rooms', { userId: user.sub });
+        const { userId, roomId } = response.data;
+        setRoomId(roomId);
+        socket.emit('createRoom', userId, roomId);
+        navigate(`/${endpoint}/${roomId}`);
+      }
+    } catch (err) {
+      console.error('Failed to generate room ID', err);
+    }
+  };
+
   return (
     <div className="container">
       <Link to='/visualart' className='image-link'>
@@ -15,9 +36,13 @@ const Home = () => {
       <Link to='/music' className='image-link'>
         <img src={ear} alt="ear" />
       </Link>
-      <Link to={`/sculpture/${generateRoomId()}`} className='image-link'>
+      <div
+        className='image-link'
+        onClick={() => generateRoomId('sculpture')}
+        style={{ cursor: 'pointer' }}
+      >
         <img src={hand} alt="hand" />
-      </Link>
+      </div>
       <Link to='/story' className='image-link'>
         <img src={mouth} alt="mouth" />
       </Link>
