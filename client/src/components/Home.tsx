@@ -62,12 +62,12 @@ const Home = () => {
   return (
     <div className="container">
       <div
-      className='image-link'
-      onClick={() => generateRoomId('visualart')}
-      style={{ cursor: 'pointer' }}
+        className='image-link'
+        onClick={() => generateRoomId('visualart')}
+        style={{ cursor: 'pointer' }}
       >
         <img src={eye} alt="eye" />
-      </Link>
+      </div>
       <Link to='/music' className='image-link'>
         <img src={ear} alt="ear" />
       </Link>
