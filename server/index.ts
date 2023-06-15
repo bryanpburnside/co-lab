@@ -10,6 +10,8 @@ import { Server, Socket } from 'socket.io';
 import cors from 'cors';
 dotenv.config({ path: path.resolve(dirname(fileURLToPath(import.meta.url)), '../.env') });
 const { PORT } = process.env;
+import Users from './routes/users.js';
+import VisualArtwork from './routes/visualartwork.js';
 
 const app = express();
 const Rooms: Router = express.Router();
@@ -31,6 +33,9 @@ app.use(express.json());
 
 // ROUTES
 app.use('/api/rooms', Rooms);
+app.use('/users', Users);
+app.use('/visualart', VisualArtwork);
+
 app.use(express.static(staticFilesPath));
 
 app.get('*', (req, res) => {

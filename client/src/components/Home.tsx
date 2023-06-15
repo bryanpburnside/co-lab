@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import eye from '../assets/images/eye.png';
@@ -28,9 +28,44 @@ const Home = () => {
     }
   };
 
+  const saveUser = async () => {
+    try {
+      if (user) {
+        const { sub: id, name, email, picture } = user;
+        await axios.post('/users', {
+          id,
+          name,
+          email,
+          picture
+        });
+      }
+    } catch (err) {
+      console.error('Failed to SAVE user to db at client:', err);
+    }
+  }
+
+  const getUserInfo = async () => {
+    try {
+      if (user) {
+        console.log(user);
+        await saveUser();
+      }
+    } catch (err) {
+      console.error('Failed to GET active user info at client:', err);
+    }
+  };
+
+  useEffect(() => {
+    getUserInfo();
+  }, [user])
+
   return (
     <div className="container">
-      <Link to='/visualart' className='image-link'>
+      <Link to='/visualart'
+      className='image-link'
+      onClick={() => generateRoomId('visualart')}
+      style={{ cursor: 'pointer' }}
+      >
         <img src={eye} alt="eye" />
       </Link>
       <Link to='/music' className='image-link'>
