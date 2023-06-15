@@ -10,9 +10,9 @@ interface Page {
 
 interface Story {
   title: string;
-  collaborators: string[];
+  // collaborators: string[];
   coverImage: File | null;
-  pages: Page[];
+  numberOfPages: number | null;
 }
 
 //create page editor component
@@ -48,21 +48,17 @@ const PageEditor: React.FC<{ page: Page, onSave: (content: string) => void, onCa
 
 //React.FC = react functional component
 const StoryBook: React.FC = () => {
-  const [pages, setPages] = useState<Page[]>([
-    { pageNumber: 1, content: 'hey there', story: 'The Black Sheep' },
-    { pageNumber: 2, content: 'I am', story: 'The Black Sheep' },
-    { pageNumber: 3, content: 'just', story: 'The Black Sheep' },
-    { pageNumber: 4, content: 'so tired', story: 'The Black Sheep' }
-  ]);
+  const [pages, setPages] = useState<Page[]>([]);
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
   const [showNewStoryForm, setShowNewStoryForm] = useState(false);
   const [coverImageURL, setCoverImageURL] = useState<string | null>(null);
   const [story, setStory] = useState<Story | null>(null);
+  const [numberOfPages, setNumberOfPages] = useState<number | null>(null);
 
   //functionality to add new page
   const addNewPage = () => {
     const nextPageNumber = pages.length + 1;
-    const newPage: Page = { pageNumber: nextPageNumber, content: '', story: 'The Black Sheep' };
+    const newPage: Page = { pageNumber: nextPageNumber, content: '', story: '' };
     setPages([...pages, newPage]);
   };
 

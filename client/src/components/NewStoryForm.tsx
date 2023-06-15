@@ -8,9 +8,8 @@ interface Page {
 
 interface Story {
   title: string;
-  collaborators: string[];
   coverImage: File | null;
-  pages: Page[];
+  numberOfPages: number | null;
 }
 
 interface NewStoryFormProps {
@@ -20,35 +19,50 @@ interface NewStoryFormProps {
 
 const NewStoryForm: React.FC<{ onCreateStory: (story: Story) => void, onCancel: () => void }> = ({ onCreateStory, onCancel }) => {
   const [title, setTitle] = useState('');
-  const [collaborators, setCollaborators] = useState('');
+  // const [collaborators, setCollaborators] = useState('');
   const [coverImage, setCoverImage] = useState<File | null>(null);
+  const [numberOfPages, setNumberOfPages] = useState<number | null>(null);
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
   };
 
-  const handleCollaboratorsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCollaborators(event.target.value);
-  };
+  // const handleCollaboratorsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setCollaborators(event.target.value);
+  // };
 
   const handleCoverImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       setCoverImage(event.target.files[0]);
     }
   };
-  
 
-  const handleSubmit = (event: React.FormEvent) => {
+
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     const story: Story = {
       title,
-      collaborators: collaborators.split(',').map((collaborator) => collaborator.trim()),
       coverImage,
-      pages: []
+      numberOfPages
     };
 
-    onCreateStory(story);
+    try {
+      const response = await fetch('/api/stories', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(story),
+      });
+      if (response) {
+        console.log('Story created successfully-client')
+      } else {
+        console.error('Story not created-client');
+      }
+    } catch (error) {
+      console.error('Unable to save story to database-client', error);
+    }
   };
 
   const handleCancel = () => {
@@ -61,10 +75,10 @@ const NewStoryForm: React.FC<{ onCreateStory: (story: Story) => void, onCancel: 
         <label htmlFor="title">Title:</label>
         <input type="text" id="title" value={ title } onChange={ handleTitleChange } />
       </div>
-      <div>
+      {/* <div>
         <label htmlFor="collaborators">Collaborators:</label>
         <input type="text" id="collaborators" value={ collaborators } onChange={ handleCollaboratorsChange } />
-      </div>
+      </div> */}
       <div>
         <label htmlFor="coverImage">Cover Image:</label>
         <input type="file" id="coverImage" accept="image/*" onChange={ handleCoverImageChange } />

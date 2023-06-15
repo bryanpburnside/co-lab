@@ -87,6 +87,7 @@ const Story = sequelize.define('stories', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     allowNull: false,
+    autoIncrement: true
   },
   title: {
     type: DataTypes.STRING,
@@ -96,9 +97,20 @@ const Story = sequelize.define('stories', {
   },
   numberOfPages: {
     type: DataTypes.INTEGER,
+  }
+});
+
+const Pages = sequelize.define('pages', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+  },
+  page_number: {
+    type: DataTypes.INTEGER
   },
   content: {
-    type: DataTypes.TEXT,
+    type: DataTypes.TEXT
   }
 });
 
@@ -150,6 +162,7 @@ UserCollaboration.belongsTo(Collaboration, { foreignKey: 'collaborationId' });
 UserCollaboration.belongsTo(User, { foreignKey: 'userId' });
 Message.belongsTo(User, { foreignKey: 'userId' });
 Message.belongsTo(User, { foreignKey: 'recipientId' });
+Pages.belongsTo(Story, { foreignKey: 'storyId'})
 
 const initialize = async () => {
   try {
@@ -157,8 +170,6 @@ const initialize = async () => {
     console.log('Tables successfully created!');
   } catch (error) {
     console.error('Error creating tables :(', error);
-  } finally {
-    sequelize.close();
   }
 };
 
@@ -174,4 +185,5 @@ export {
   Sculpture,
   Collaboration,
   UserCollaboration,
+  Pages,
 };
