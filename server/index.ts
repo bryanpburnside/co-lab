@@ -3,7 +3,6 @@ import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { sequelize, initialize } from './database/index.js';
-// import Rooms from './routes/rooms.js';
 import { v4 as generateRoomId } from 'uuid';
 
 import http from 'http';
