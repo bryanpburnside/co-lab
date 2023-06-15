@@ -5,7 +5,8 @@ const sequelize = new Sequelize('colab', 'root', '', {
   dialect: 'postgres',
   define: {
     freezeTableName: true
-  }
+  },
+  logging: false
 });
 
 const User = sequelize.define('users', {
