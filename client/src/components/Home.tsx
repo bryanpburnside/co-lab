@@ -61,7 +61,7 @@ const Home = () => {
 
   return (
     <div className="container">
-      <Link to='/visualart'
+      <div
       className='image-link'
       onClick={() => generateRoomId('visualart')}
       style={{ cursor: 'pointer' }}
