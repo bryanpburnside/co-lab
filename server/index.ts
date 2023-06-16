@@ -4,14 +4,20 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { sequelize, initialize } from './database/index.js';
 import { v4 as generateRoomId } from 'uuid';
-
 import http from 'http';
 import { Server, Socket } from 'socket.io';
 import cors from 'cors';
+import cloudinaryV2 from 'cloudinary/v2';
 dotenv.config({ path: path.resolve(dirname(fileURLToPath(import.meta.url)), '../.env') });
-const { PORT } = process.env;
+const { PORT, CLOUD_NAME, CLOUD_API_KEY, CLOUD_SECRET } = process.env;
 import Users from './routes/users.js';
 import VisualArtwork from './routes/visualartwork.js';
+
+cloudinaryV2.config({
+  cloud_name: CLOUD_NAME,
+  api_key: CLOUD_API_KEY,
+  api_secret: CLOUD_SECRET
+});
 
 const app = express();
 const Rooms: Router = express.Router();
