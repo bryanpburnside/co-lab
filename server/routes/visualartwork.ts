@@ -1,15 +1,15 @@
 import { Router } from 'express';
 const VisualArtwork = Router();
 import { VisualArt, Artwork } from '../database/index.js';
+import { v2 as cloudinary } from 'cloudinary';
 
 VisualArtwork.post('/', async (req, res) => {
   const { art, user } = req.body;
   try {
-    // console.log(user, art);
+    const cloudURL = (await uploadDataUrlToCloudinary(art)).secure_url;
     const artwork = await Artwork.create({ type: 'visual art' });
     const { id: artworkId } = artwork.dataValues;
-    // console.log(artwork.dataValues.id);
-    const newArt = await VisualArt.create({ artworkId, content: art });
+    const newArt = await VisualArt.create({ artworkId, content: cloudURL });
     console.log('new art', newArt);
     res.sendStatus(201);
   } catch (err) {
@@ -17,5 +17,15 @@ VisualArtwork.post('/', async (req, res) => {
     res.sendStatus(500);
   }
 })
+
+const uploadDataUrlToCloudinary = async (dataUrl: string) => {
+  try {
+    const result = await cloudinary.uploader.upload(dataUrl);
+    return result;
+  } catch (err) {
+    console.error('Failed to upload visual art to Cloudinary:', err);
+    throw err;
+  }
+};
 
 export default VisualArtwork;
