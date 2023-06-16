@@ -100,10 +100,40 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    const context = canvas.getContext('2d');
+    if (!context) return;
+
+    const { width, height } = canvas;
+    const { backgroundColor } = getComputedStyle(canvas);
+
+    context.fillStyle = backgroundColor;
+    context.fillRect(0, 0, width, height);
+
+    const paths = paper.project.activeLayer.children;
+    paths.forEach((path) => {
+      context.strokeStyle = path.strokeColor.toCSS(true);
+      context.lineWidth = path.strokeWidth;
+      context.lineCap = 'round';
+      context.lineJoin = 'round';
+
+      path.segments.forEach((segment, index) => {
+        if (index === 0) {
+          context.beginPath();
+          context.moveTo(segment.point.x, segment.point.y);
+        } else {
+          context.lineTo(segment.point.x, segment.point.y);
+        }
+      });
+
+      context.stroke();
+    });
+
     const art = canvas.toDataURL();
 
     await saveArt(art);
   };
+
+
 
   return (
     <>
