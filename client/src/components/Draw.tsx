@@ -2,8 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import paper, { Color } from 'paper';
+interface DrawProps {
+  backgroundColor: string,
+  handleBackgroundColorChange: (color: string) => void;
+}
 
-const Draw: React.FC = () => {
+const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChange }) => {
   const { user } = useAuth0();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const pathRef = useRef<paper.Path | null>(null);
@@ -92,18 +96,29 @@ const Draw: React.FC = () => {
 
   return (
     <>
-      <input type="color" value={selectedColor} onChange={handlePenColorChange} />
-      <input
-        type="number"
-        value={penWidth.toString()}
-        onChange={handlePenWidthChange}
-        min={1}
-        max={100}
-      />
+      <div>
+        <label for="bg-color">Canvas color</label>
+        <input type="color" id="bg-color" value={backgroundColor} onChange={handleBackgroundColorChange} />
+      </div>
+      <div>
+        <label for="pen-color">Pen color</label>
+        <input type="color" id="pen-color" value={selectedColor} onChange={handlePenColorChange} />
+      </div>
+      <div>
+        <label for="pen-width">Pen width</label>
+        <input
+          type="number"
+          id="pen-width"
+          value={penWidth.toString()}
+          onChange={handlePenWidthChange}
+          min={1}
+          max={100}
+        />
+      </div>
       <canvas
         id="canvas"
         ref={canvasRef}
-        style={{ width: '100vw', height: '100vh' }}
+        style={{ width: '100vw', height: '100vh', backgroundColor }}
       />
       <button type="submit" onClick={handleSaveClick}>Save</button>
     </>
