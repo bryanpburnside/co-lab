@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import paper, { Color } from 'paper';
@@ -8,10 +8,12 @@ const Draw: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const pathRef = useRef<paper.Path | null>(null);
   const penColorRef = useRef<Color>(new Color('white'));
+  const [selectedColor, setSelectedColor] = useState<string>(penColorRef.current.toCSS(true));
 
   const handlePenColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     penColorRef.current = new Color(value);
+    setSelectedColor(value);
 
     if (pathRef.current) {
       pathRef.current.strokeColor = penColorRef.current;
@@ -79,12 +81,12 @@ const Draw: React.FC = () => {
 
   return (
     <>
+      <input type="color" value={selectedColor} onChange={handlePenColorChange} />
       <canvas
         id="canvas"
         ref={canvasRef}
         style={{ width: '100vw', height: '100vh' }}
       />
-      <input type="color" value={penColorRef.current.toCSS(true)} onChange={handlePenColorChange} />
       <button type="submit" onClick={handleSaveClick}>Save</button>
     </>
   );
