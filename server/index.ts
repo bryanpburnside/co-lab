@@ -35,7 +35,7 @@ const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 const staticFilesPath = path.join(currentDirectory, '../dist');
 
 // MIDDLEWARE
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 // ROUTES
 app.use('/api/rooms', Rooms);
