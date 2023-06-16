@@ -55,7 +55,7 @@ const VisualArt: React.FC = () => {
 
   return (
     <div>
-      <label for="mode">Select a Mode</label>
+      <label htmlFor="mode">Select a Mode</label>
       <div id="mode">
         <button onClick={() => setMode(DrawMode)}>Drawing</button>
         <button onClick={() => setMode(PatternMode)}>Pattern</button>
