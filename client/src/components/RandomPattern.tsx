@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import paper, { Point, Path, Color, Gradient, GradientStop } from 'paper';
 
 const RandomPattern: React.FC = () => {
-  const [backgroundColor, setBackgroundColor] = useState('#ffffff');
+  const [backgroundColor, setBackgroundColor] = useState('#3d3983');
 
   const handleBackgroundColorChange = (e) => {
     const { value } = e.target;
@@ -41,7 +41,7 @@ const RandomPattern: React.FC = () => {
       const canvasHeight = paper.view.size.height;
 
       for (let i = 0; i < values.paths; i++) {
-        const radius = (values.minRadius + Math.random() * radiusDelta) * 3;
+        const radius = (values.minRadius + Math.random() * radiusDelta) * 2;
         const points = values.minPoints + Math.floor(Math.random() * pointsDelta);
         const position = new Point(
           Math.random() * canvasWidth,
@@ -49,7 +49,6 @@ const RandomPattern: React.FC = () => {
         );
         const path = generateRandomShape(position, radius, points);
 
-        // Randomize the fill color
         const gradient = new Gradient({
           stops: [
             new GradientStop(generateRandomColor(), 0),
