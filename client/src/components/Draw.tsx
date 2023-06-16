@@ -1,9 +1,17 @@
+
+
+
 import React, { useEffect, useRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import paper, { Color } from 'paper';
+import ActiveComponent from './VisualArt';
 
-const Draw = () => {
+// interface DrawProps {
+//   mode: ActiveComponent;
+// }
+
+const Draw: React.FC = () => {
   const { user } = useAuth0();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -19,6 +27,9 @@ const Draw = () => {
     tool.onMouseDown = (event: paper.ToolEvent) => {
       path = new paper.Path();
       path.strokeColor = new (Color as typeof Color)('black');
+      path.strokeWidth = 3;
+      path.strokeCap = 'smooth';
+      path.strokeJoin = 'round';
       path.add(event.point);
     };
 
@@ -41,6 +52,7 @@ const Draw = () => {
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
+      tool.remove();
     };
   }, []);
 
