@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Pages, Story } from '../database/index.js';
+import { Pages } from '../database/index.js';
 
 const pagesRouter = Router();
 
@@ -13,11 +13,26 @@ pagesRouter.post('/', async (req, res) => {
       content,
       storyId,
     });
-    await page.save();
     res.status(201).json(page);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Failed to create the page-router' });
+  }
+});
+
+pagesRouter.get('/', async (req, res) => {
+  try {
+    const storyId = req.query.storyId;
+    const pages = await Pages.findAll({
+      where: {
+        storyId: storyId
+      }
+    });
+
+    res.json(pages);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch pages-router' });
   }
 });
 

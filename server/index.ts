@@ -32,6 +32,16 @@ app.get('*', (req, res) => {
   });
 });
 
+app.get('/api/stories', async (req, res) => {
+  try {
+    const stories = await Story.findAll();
+    res.status(200).json(stories);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error: Could not get stories-server');
+  }
+});
+
 app.post('/api/stories', async (req, res) => {
   try {
     const newStoryData = req.body;
@@ -42,6 +52,17 @@ app.post('/api/stories', async (req, res) => {
     res.status(500).send('Error: Could not create story-server');
   }
 });
+
+// app.get('/api/pages', async (req, res) => {
+//   try {
+//     const storyId = req.query.storyId;
+//     const pages = await Pages.find({ storyId });
+//     res.json(pages);
+//   } catch (error) {
+//     console.error("Failed to fetch pages", error);
+//     res.status(500).json({ error: 'Failed to fetch pages' });
+//   }
+// });
 
 app.post('/api/pages', async (req, res) => {
   try {

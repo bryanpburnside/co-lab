@@ -7,7 +7,6 @@ CreateStoryRouter.post('/', async (req, res) => {
   try {
     const { title, numberOfPages, coverImage } = req.body;
     // console.log(title);
-    
     //create the story and retrieve the storyId
     const createdStory: any = await Story.create({
       title,
@@ -15,12 +14,21 @@ CreateStoryRouter.post('/', async (req, res) => {
       numberOfPages,
     });
 
-    //save the new story to the database
-    await createdStory.save();
     res.status(201).json(createdStory);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Failed to create the story-Router' });
+  }
+});
+
+CreateStoryRouter.get('/', async (req, res) => {
+  try {
+    //fetch all stories from the database
+    const stories = await Story.findAll();
+    res.status(200).json(stories);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to fetch stories-router' });
   }
 });
 

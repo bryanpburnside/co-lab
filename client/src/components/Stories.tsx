@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
-import HTMLFlipBook from 'react-pageflip';
+import React, { useState, useEffect } from "react";
 import NewStoryForm from "./NewStoryForm";
+import FlipBook from "./FlipBook";
 
 interface Page {
   id?: number;
@@ -12,110 +12,62 @@ interface Page {
 interface Story {
   id?: number;
   title: string;
-  // collaborators: string[];
   coverImage: File | null;
   numberOfPages: number | null;
 }
 
-//create page editor component
-const PageEditor: React.FC<{ page: Page, onSave: (content: string) => void, onCancel: () => void }> = ({ page, onSave, onCancel }) => {
-  const [content, setContent] = useState(page.content);
-
-  const handleContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setContent(event.target.value);
-  };
-
-  //save the text to page
-  const handleSave = () => {
-    onSave(content);
-  };
-
-  //in case of cancel
-  const handleCancel = () => {
-    onCancel();
-  };
-
-  return (
-    <div>
-      <textarea
-        value={ content }
-        onChange={ handleContentChange }
-        maxLength={310} rows={10} cols={50} />
-      <button onClick={ handleSave }>Save</button>
-      <button onClick={ handleCancel }>Cancel</button>
-    </div>
-  );
-};
-
-
-//React.FC = react functional component
 const StoryBook: React.FC = () => {
   const [pages, setPages] = useState<Page[]>([]);
-  const [selectedPage, setSelectedPage] = useState<Page | null>(null);
+  const [stories, setStories] = useState<Story[]>([]);
+  const [selectedStory, setSelectedStory] = useState<Story | null>(null);
   const [showNewStoryForm, setShowNewStoryForm] = useState(false);
-  const [coverImageURL, setCoverImageURL] = useState<string | null>(null);
-  const [story, setStory] = useState<Story | null>(null);
-  const [numberOfPages, setNumberOfPages] = useState<number | null>(null);
 
-  //functionality to add new page
-  const addNewPage = () => {
-    const nextpage_number = pages.length + 1;
-    const newPage: Page = { page_number: nextpage_number, content: '', story: '' };
-    setPages([...pages, newPage]);
-  };
-
-  //handle click on page
-  const handlePageClick = (page: Page) => {
-    setSelectedPage(page);
-  };
-
-  //save page after editing it
-  const handleSavePage = async (content: string) => {
-    if (selectedPage && story) {
-      const updatedPages = pages.map(page => {
-        if (page.page_number === selectedPage.page_number) {
-          return { ...page, content };
-        }
-        return page;
-      });
-
-      setPages(updatedPages);
-      setSelectedPage(null);
-
-      //send a request to the server to save the page
+  //fetch stories from the server
+  useEffect(() => {
+    const fetchStories = async () => {
       try {
-        const response = await fetch('/api/pages', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            page_number: selectedPage.page_number,
-            content: content,
-            storyId: story.id
-          })
-        });
-
-        const responseData = await response.json();
-        console.log(responseData);
-        //check for ok response
-        if (!response.ok) {
-          console.error('Failed to save the page-client');
-        }
-
-        console.log('Page saved successfully-client', responseData);
+        const response = await fetch('/api/stories');
+        const data = await response.json();
+        // console.log(data);
+        setStories(data);
       } catch (error) {
-        console.error('Failed to save the page-client:', error);
+        console.error('Failed to fetch stories-client', error);
       }
-    }
-  };
+    };
+    fetchStories();
+  }, []);
 
-  //functionality to cancel the editing
-  const handleCancelEdit = () => {
-    setSelectedPage(null);
+  useEffect(() => {
+    const fetchPages = async () => {
+      if (selectedStory) {
+        try {
+          const response = await fetch(`/api/pages?storyId=${selectedStory.id}`);
+          const data = await response.json();
+          console.log(data);
+
+          const newPages = data.map((fetchedPage: any) => {
+            return { page_number: fetchedPage.page_number, content: fetchedPage.content, story: selectedStory.title };
+          });
+
+          setPages(newPages);
+
+        } catch (error) {
+          console.error('Failed to fetch pages', error);
+        }
+      }
+    };
+    fetchPages();
+  }, [selectedStory]);
+
+  //handle click on a story title
+  const handleStoryClick = (story: Story) => {
+    console.log('bananas');
+    setSelectedStory(story);
   };
 
   const handleCreateStory = (createdStory: Story) => {
-    setStory(createdStory);
-    setCoverImageURL(createdStory.coverImage ? URL.createObjectURL(createdStory.coverImage) : null);
+    setStories([...stories, createdStory]);
+    setSelectedStory(createdStory);
     setShowNewStoryForm(false);
   };
 
@@ -127,117 +79,33 @@ const StoryBook: React.FC = () => {
     setShowNewStoryForm(true);
   };
 
+  //functionality to add new page
+  const addNewPage = (content = '', pageNumber = 2) => {
+    if (selectedStory) {
+      const newPage: Page = { page_number: pageNumber, content, story: selectedStory.title };
+      setPages(prevPages => [...prevPages, newPage]);
+    }
+  };
+
   return (
-    <div
-      style={{
-        display:'flex',
-        borderColor: 'yellow',
-        border: '10px'
-      }}>
-      <div
-      style={{
-        backgroundColor: 'maroon',
-        width: '199px',
-        height: '199px',
-        border: '5px'
-      }}>
-        Collaborators' names
+    <div style={{ display: 'flex' }}>
+      <div style={{ marginRight: '20px' }}>
+        {stories.map((story, index) => (
+          <div key={ index } onClick={() => handleStoryClick(story)}>
+            { story.title }
+          </div>
+        ))}
+        <button onClick={ handleShowNewStoryForm }>Create New Story</button>
+        <button onClick={() => { addNewPage() } }>Add New Page</button>
       </div>
-      <div
-      style={{
-        backgroundColor: 'blue',
-        width: '199px',
-        height: '199px',
-        border: '5px'
-      }}>
-        Finished Stories
-      </div>
-      <div
-      style={{
-        backgroundColor: 'purple',
-        width: '199px',
-        height: '199px',
-        border: '5px'
-      }}>
-        In Progress Stories
-      </div>
-      <button onClick={ addNewPage }>Add New Page</button>
-      <button onClick={ handleShowNewStoryForm }>Create New Story</button>
+
       {showNewStoryForm ? (
-      <NewStoryForm onCreateStory={ handleCreateStory } onCancel={ handleCancelCreateStory } />
-    ) : (
-      <>
-        <HTMLFlipBook
-          size={'stretch'}
-          minWidth={300}
-          maxWidth={500}
-          minHeight={300}
-          maxHeight={500}
-          drawShadow={true}
-          flippingTime={500}
-          usePortrait={false}
-          startZIndex={0}
-          autoSize={true}
-          maxShadowOpacity={0}
-          mobileScrollSupport={false}
-          clickEventForward={false}
-          swipeDistance={0}
-          showPageCorners={true}
-          disableFlipByClick={false}
-          width={500}
-          height={500}
-          className={'book'}
-          startPage={1}
-          showCover={true}
-          useMouseEvents={true}
-          style={{
-            backgroundColor: '#f7f3eb',
-            border: '1px solid #ddd',
-            boxShadow: '0 2px 5px rgba(0, 0, 0, 0.3)',
-            overflow: 'hidden',
-            borderRadius: '5px'
-          }}
-        >
-          {pages.map((page, index) => (
-            <div
-              key={index}
-              onClick={() => handlePageClick(page)}
-              style={{ position: 'relative', height: '100%' }}
-            >
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  fontSize: '24px',
-                  fontWeight: 'bold'
-                }}
-              >
-                { page.content }
-              </div>
-            </div>
-          ))}
-        </HTMLFlipBook>
-        {selectedPage && (
-          <PageEditor
-            page={ selectedPage }
-            onSave={ handleSavePage }
-            onCancel={ handleCancelEdit } />
-        )}
-      </>
-    )}
-      <div
-      style={{
-        backgroundColor: 'green',
-        width: '199px',
-        height: '199px',
-        border: '5px'
-      }}>
-        PeerJS div
-      </div>
+        <NewStoryForm onCreateStory={ handleCreateStory } onCancel={ handleCancelCreateStory } />
+      ) : (
+        selectedStory && <FlipBook story={ selectedStory } selectedStoryPages={ pages }  />
+      )}
     </div>
-  );
+);
 };
 
 export default StoryBook;
