@@ -9,6 +9,9 @@ const Draw: React.FC = () => {
   const pathRef = useRef<paper.Path | null>(null);
   const penColorRef = useRef<Color>(new Color('white'));
   const [selectedColor, setSelectedColor] = useState<string>(penColorRef.current.toCSS(true));
+  const [penWidth, setPenWidth] = useState(5);
+  const penWidthRef = useRef<number>(penWidth);
+
 
   const handlePenColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -21,6 +24,14 @@ const Draw: React.FC = () => {
     }
   };
 
+  const handlePenWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const width = Number(value);
+    setPenWidth(width);
+    penWidthRef.current = width;
+  };
+
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -32,7 +43,7 @@ const Draw: React.FC = () => {
     tool.onMouseDown = (event: paper.ToolEvent) => {
       const path = new paper.Path();
       path.strokeColor = penColorRef.current;
-      path.strokeWidth = 5;
+      path.strokeWidth = penWidthRef.current;
       path.strokeCap = 'smooth';
       path.strokeJoin = 'round';
       path.add(event.point);
@@ -82,6 +93,13 @@ const Draw: React.FC = () => {
   return (
     <>
       <input type="color" value={selectedColor} onChange={handlePenColorChange} />
+      <input
+        type="number"
+        value={penWidth.toString()}
+        onChange={handlePenWidthChange}
+        min={1}
+        max={100}
+      />
       <canvas
         id="canvas"
         ref={canvasRef}
