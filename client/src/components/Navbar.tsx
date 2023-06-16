@@ -19,6 +19,9 @@ const Navbar = () => {
           <li>
             <Link to='/logout'>Log out</Link>
           </li>
+          <li>
+            <Link to='/ear'>ear</Link>
+          </li>
         </ul>
       </nav>
     </>
