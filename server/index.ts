@@ -32,6 +32,29 @@ app.get('*', (req, res) => {
   });
 });
 
+app.post('/api/stories', async (req, res) => {
+  try {
+    const newStoryData = req.body;
+    const newStory = await Story.create(newStoryData);
+    res.status(201).json(newStory);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error: Could not create story-server');
+  }
+});
+
+app.post('/api/pages', async (req, res) => {
+  try {
+    const newPage = req.body;
+    const newSavePage = await Story.create(newPage);
+    res.status(201).json(newPage);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error: Could not create page-server');
+  }
+});
+
+
 sequelize.authenticate()
   .then(() => console.info('Connected to the database'))
   .catch((err) => console.warn('Cannot connect to database:\n', err));

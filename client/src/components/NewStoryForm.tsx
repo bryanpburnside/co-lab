@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
 interface Page {
-  pageNumber: number;
+  id?: number;
+  page_number: number;
   content: string;
   story: string;
 }
 
 interface Story {
+  id?: number;
   title: string;
   coverImage: File | null;
   numberOfPages: number | null;
@@ -55,8 +57,14 @@ const NewStoryForm: React.FC<{ onCreateStory: (story: Story) => void, onCancel: 
         },
         body: JSON.stringify(story),
       });
-      if (response) {
-        console.log('Story created successfully-client')
+
+      const data = await response.json();
+      console.log(data);
+      if (response.ok) {
+        console.log('Story created successfully-client');
+        //trying to grab the story id
+        onCreateStory(data);
+        // console.log(data);
       } else {
         console.error('Story not created-client');
       }

@@ -105,6 +105,7 @@ const Pages = sequelize.define('pages', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     allowNull: false,
+    autoIncrement: true
   },
   page_number: {
     type: DataTypes.INTEGER

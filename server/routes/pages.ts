@@ -5,22 +5,16 @@ const pagesRouter = Router();
 
 pagesRouter.post('/', async (req, res) => {
   try {
-    const { pageNumber, content, storyId } = req.body;
-
-    //check for story
-    const story = await Story.findByPk(storyId);
-    if (!story) {
-      return res.status(404).json({ message: 'Story not found-router' });
-    }
+    const { page_number, content, storyId } = req.body;
 
     //create the page and save it to the database
-    const page = await Pages.create({
-      page_number: pageNumber,
+    const page: any = await Pages.create({
+      page_number: page_number,
       content,
       storyId,
     });
-
-    res.status(201).json({ message: 'Page created successfully-router', page });
+    await page.save();
+    res.status(201).json(page);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Failed to create the page-router' });

@@ -3,12 +3,14 @@ import HTMLFlipBook from 'react-pageflip';
 import NewStoryForm from "./NewStoryForm";
 
 interface Page {
-  pageNumber: number;
+  id?: number;
+  page_number: number;
   content: string;
   story: string;
 }
 
 interface Story {
+  id?: number;
   title: string;
   // collaborators: string[];
   coverImage: File | null;
@@ -57,8 +59,8 @@ const StoryBook: React.FC = () => {
 
   //functionality to add new page
   const addNewPage = () => {
-    const nextPageNumber = pages.length + 1;
-    const newPage: Page = { pageNumber: nextPageNumber, content: '', story: '' };
+    const nextpage_number = pages.length + 1;
+    const newPage: Page = { page_number: nextpage_number, content: '', story: '' };
     setPages([...pages, newPage]);
   };
 
@@ -68,16 +70,41 @@ const StoryBook: React.FC = () => {
   };
 
   //save page after editing it
-  const handleSavePage = (content: string) => {
-    if (selectedPage) {
+  const handleSavePage = async (content: string) => {
+    if (selectedPage && story) {
       const updatedPages = pages.map(page => {
-        if (page.pageNumber === selectedPage.pageNumber) {
+        if (page.page_number === selectedPage.page_number) {
           return { ...page, content };
         }
         return page;
       });
+
       setPages(updatedPages);
       setSelectedPage(null);
+
+      //send a request to the server to save the page
+      try {
+        const response = await fetch('/api/pages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            page_number: selectedPage.page_number,
+            content: content,
+            storyId: story.id
+          })
+        });
+
+        const responseData = await response.json();
+        console.log(responseData);
+        //check for ok response
+        if (!response.ok) {
+          console.error('Failed to save the page-client');
+        }
+
+        console.log('Page saved successfully-client', responseData);
+      } catch (error) {
+        console.error('Failed to save the page-client:', error);
+      }
     }
   };
 
@@ -86,9 +113,9 @@ const StoryBook: React.FC = () => {
     setSelectedPage(null);
   };
 
-  const handleCreateStory = (newStory: Story) => {
-    setStory(newStory);
-    setCoverImageURL(newStory.coverImage ? URL.createObjectURL(newStory.coverImage) : null);
+  const handleCreateStory = (createdStory: Story) => {
+    setStory(createdStory);
+    setCoverImageURL(createdStory.coverImage ? URL.createObjectURL(createdStory.coverImage) : null);
     setShowNewStoryForm(false);
   };
 

@@ -17,8 +17,7 @@ CreateStoryRouter.post('/', async (req, res) => {
 
     //save the new story to the database
     await createdStory.save();
-
-    res.status(201).json({ message: 'Story created successfully-Router' });
+    res.status(201).json(createdStory);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Failed to create the story-Router' });
