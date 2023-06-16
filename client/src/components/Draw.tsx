@@ -5,11 +5,6 @@ import React, { useEffect, useRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import paper, { Color } from 'paper';
-import ActiveComponent from './VisualArt';
-
-// interface DrawProps {
-//   mode: ActiveComponent;
-// }
 
 const Draw: React.FC = () => {
   const { user } = useAuth0();
@@ -26,8 +21,8 @@ const Draw: React.FC = () => {
 
     tool.onMouseDown = (event: paper.ToolEvent) => {
       path = new paper.Path();
-      path.strokeColor = new (Color as typeof Color)('black');
-      path.strokeWidth = 3;
+      path.strokeColor = new (Color as typeof Color)('white');
+      path.strokeWidth = 5;
       path.strokeCap = 'smooth';
       path.strokeJoin = 'round';
       path.add(event.point);
