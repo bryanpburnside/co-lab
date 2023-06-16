@@ -15,7 +15,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
   const [selectedColor, setSelectedColor] = useState<string>(penColorRef.current.toCSS(true));
   const [penWidth, setPenWidth] = useState(5);
   const penWidthRef = useRef<number>(penWidth);
-
+  const [eraseMode, setEraseMode] = useState(false);
 
   const handlePenColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -35,6 +35,17 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
     penWidthRef.current = width;
   };
 
+  const handleEraserClick = () => {
+    setEraseMode((prevState) => {
+      if (prevState) {
+        penColorRef.current = new Color(selectedColor);
+        return false;
+      } else {
+        penColorRef.current = new Color(backgroundColor);
+        return true;
+      }
+    });
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -97,15 +108,18 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
   return (
     <>
       <div>
-        <label for="bg-color">Canvas color</label>
+        <button onClick={handleEraserClick}>Erase</button>
+      </div>
+      <div>
+        <label htmlFor="bg-color">Canvas color</label>
         <input type="color" id="bg-color" value={backgroundColor} onChange={handleBackgroundColorChange} />
       </div>
       <div>
-        <label for="pen-color">Pen color</label>
+        <label htmlFor="pen-color">Pen color</label>
         <input type="color" id="pen-color" value={selectedColor} onChange={handlePenColorChange} />
       </div>
       <div>
-        <label for="pen-width">Pen width</label>
+        <label htmlFor="pen-width">Pen width</label>
         <input
           type="number"
           id="pen-width"
