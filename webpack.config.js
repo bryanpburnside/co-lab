@@ -15,7 +15,7 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.(png|jpe?g|gif)$/i,
+        test: /\.(png|jpe?g|gif|ico)$/i,
         use: [
           {
             loader: 'file-loader',
@@ -52,7 +52,7 @@ const config = {
   plugins: [
     new HtmlWebpackPlugin({
       title: 'co-lab',
-      templateContent: ({ htmlWebpackPlugin }) => '<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>' + htmlWebpackPlugin.options.title + '</title><link rel="icon" type="image/x-icon" href="assets/images/favicon.ico"></head><body><div id=\"app\"></div></body></html>',
+      templateContent: ({ htmlWebpackPlugin }) => `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${htmlWebpackPlugin.options.title}</title><link rel='icon' type='image/x-icon' href='assets/images/favicon.ico'></head><body><div id="app"></div></body></html>`,
       filename: 'index.html',
     }),
     new webpack.DefinePlugin({
@@ -70,6 +70,7 @@ const config = {
 };
 
 export default config;
+
 
 
 
