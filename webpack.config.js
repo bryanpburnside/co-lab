@@ -15,6 +15,18 @@ const config = {
   module: {
     rules: [
       {
+        test: /\.(png|jpe?g|gif)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'assets/images',
+            },
+          },
+        ],
+      },
+      {
         test: /\.(js|jsx)$/,
         use: 'babel-loader',
         exclude: /node_modules/
@@ -63,6 +75,7 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
+      title: 'co-lab',
       templateContent: ({ htmlWebpackPlugin }) => '<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>' + htmlWebpackPlugin.options.title + '</title></head><body><div id=\"app\"></div></body></html>',
       filename: 'index.html',
     }),
