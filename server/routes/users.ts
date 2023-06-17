@@ -18,4 +18,3 @@ Users.post('/', async (req, res) => {
 
 export default Users;
 
-export default Users;
