@@ -2,8 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import paper, { Color } from 'paper';
+import 'bulma/css/bulma.min.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPen, faPenFancy, faImage, faEraser, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
+import '../styles.css';
+
 interface DrawProps {
-  backgroundColor: string,
+  backgroundColor: string;
   handleBackgroundColorChange: (color: string) => void;
 }
 
@@ -16,6 +21,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
   const [penWidth, setPenWidth] = useState(5);
   const penWidthRef = useRef<number>(penWidth);
   const [eraseMode, setEraseMode] = useState(false);
+  const [showPenWidthSlider, setShowPenWidthSlider] = useState(false);
 
   const handlePenColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -33,6 +39,21 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
     const width = Number(value);
     setPenWidth(width);
     penWidthRef.current = width;
+  };
+
+  const handlePenWidthButtonClick = () => {
+    setShowPenWidthSlider(true);
+  };
+
+  const handlePenWidthSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const width = Number(value);
+    setPenWidth(width);
+    penWidthRef.current = width;
+  };
+
+  const handlePenWidthSliderClose = () => {
+    setShowPenWidthSlider(false);
   };
 
   const handleEraserClick = () => {
@@ -133,39 +154,108 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
     await saveArt(art);
   };
 
-
-
   return (
-    <>
-      <div>
-        <button onClick={handleEraserClick}>Erase</button>
-      </div>
-      <div>
-        <label htmlFor="bg-color">Canvas color</label>
-        <input type="color" id="bg-color" value={backgroundColor} onChange={handleBackgroundColorChange} />
-      </div>
-      <div>
-        <label htmlFor="pen-color">Pen color</label>
-        <input type="color" id="pen-color" value={selectedColor} onChange={handlePenColorChange} />
-      </div>
-      <div>
-        <label htmlFor="pen-width">Pen width</label>
-        <input
-          type="number"
-          id="pen-width"
-          value={penWidth.toString()}
-          onChange={handlePenWidthChange}
-          min={1}
-          max={100}
-        />
-      </div>
+    <div style={{ position: 'relative' }}>
       <canvas
         id="canvas"
         ref={canvasRef}
         style={{ width: '100vw', height: '100vh', backgroundColor }}
       />
-      <button type="submit" onClick={handleSaveClick}>Save</button>
-    </>
+      <div
+        className="buttons is-flex-direction-column is-justify-content-center"
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '0',
+          transform: 'translateY(-50%)',
+        }}
+      >
+        <div className="field">
+          <div className="control">
+            <input
+              type="color"
+              id="bg-color"
+              value={backgroundColor}
+              onChange={handleBackgroundColorChange}
+              className="input is-hidden"
+            />
+            <button
+              type="button"
+              className="button"
+              onClick={() => document.getElementById('bg-color')?.click()}
+            >
+              <FontAwesomeIcon icon={faImage} />
+            </button>
+          </div>
+        </div>
+        <div className="field">
+          <div className="control has-icons-left">
+            <input
+              type="color"
+              id="pen-color"
+              value={selectedColor}
+              onChange={handlePenColorChange}
+              className="input is-hidden"
+            />
+            <button
+              type="button"
+              className="button"
+              onClick={() => document.getElementById('pen-color')?.click()}
+            >
+              <FontAwesomeIcon icon={faPen} />
+            </button>
+          </div>
+        </div>
+        <div className="field">
+          <div className="control">
+            <button
+              type="button"
+              className="button"
+              onClick={handlePenWidthButtonClick}
+            >
+              <FontAwesomeIcon icon={faPenFancy} />
+            </button>
+            {showPenWidthSlider && (
+              <div className="pen-width-slider">
+                <input
+                  type="range"
+                  value={penWidth.toString()}
+                  onChange={handlePenWidthSliderChange}
+                  min={1}
+                  max={100}
+                  className="slider is-small"
+                />
+                <button
+                  type="button"
+                  className="button"
+                  onClick={handlePenWidthSliderClose}
+                >
+                  Close
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="field">
+          <div className="control">
+            <button onClick={handleEraserClick} className="button">
+              <FontAwesomeIcon icon={faEraser} />
+            </button>
+          </div>
+        </div>
+        <div className="field">
+          <div className="control">
+            <button
+              type="submit"
+              className="button"
+              onClick={handleSaveClick}
+            >
+              <FontAwesomeIcon icon={faFloppyDisk} />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
