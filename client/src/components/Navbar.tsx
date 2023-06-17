@@ -20,9 +20,6 @@ const Navbar = () => {
           <li>
             <Link to='/logout'>Log out</Link>
           </li>
-          <li>
-            <Link to='/stories'>Story Book</Link>
-          </li>
         </ul>
       </nav>
     </>
