@@ -20,6 +20,28 @@ pagesRouter.post('/', async (req, res) => {
   }
 });
 
+pagesRouter.put('/:pageId', async (req, res) => {
+  try {
+    const pageId = req.params.pageId;
+    const { content } = req.body;
+
+    //find the existing page
+    const page: any = await Pages.findByPk(pageId);
+
+    if (page) {
+      //update the page
+      page.content = content;
+      await page.save();
+      res.status(200).json(page);
+    } else {
+      res.status(404).json({ message: 'Page not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to update the page-router' });
+  }
+});
+
 pagesRouter.get('/', async (req, res) => {
   try {
     const storyId = req.query.storyId;

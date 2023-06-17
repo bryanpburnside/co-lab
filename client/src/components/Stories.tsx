@@ -87,9 +87,10 @@ const StoryBook: React.FC = () => {
 
 
   //functionality to add new page
-  const addNewPage = (content = '', pageNumber = 2) => {
+  const addNewPage = (content = '') => {
     if (selectedStory) {
-      const newPage: Page = { page_number: pageNumber, content, story: selectedStory.title };
+      const newPageNumber = pages.length + 1;
+      const newPage: Page = { page_number: newPageNumber, content, story: selectedStory.title };
       setPages(prevPages => [...prevPages, newPage]);
     }
   };

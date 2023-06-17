@@ -63,17 +63,21 @@ const FlipBook: React.FC<{ story: Story, selectedStoryPages: Page[], onPageUpdat
       onPageUpdate(updatedPage);
       setSelectedPage(null);
 
-      //send a request to the server to save the page
-      try {
-        const response = await fetch('/api/pages', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            page_number: selectedPage.page_number,
-            content: content,
-            storyId: story.id
-          })
-        });
+    //check if new page or updating old page
+    const isNewPage = !updatedPage.id;
+    const method = isNewPage ? 'POST' : 'PUT';
+    const endpoint = isNewPage ? '/api/pages' : `/api/pages/${updatedPage.id}`;
+
+    try {
+      const response = await fetch(endpoint, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          page_number: selectedPage.page_number,
+          content: content,
+          storyId: story.id
+        })
+      });
 
         const responseData = await response.json();
         //check for ok response

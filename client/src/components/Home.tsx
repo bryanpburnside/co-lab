@@ -14,7 +14,7 @@ const Home = () => {
   const [roomId, setRoomId] = useState('');
   const socket = io('http://localhost:8000');
 
-  const generateRoomId = async (endpoint) => {
+  const generateRoomId = async (endpoint: any) => {
     try {
       if (user) {
         const response = await axios.post('/api/rooms', { userId: user.sub });
@@ -79,7 +79,12 @@ const Home = () => {
         <img src={hand} alt="hand" />
       </div>
       <Link to='/story' className='image-link'>
+      <div
+        className='image-link'
+        onClick={() => generateRoomId('story')}
+        style={{ cursor: 'pointer' }}>
         <img src={mouth} alt="mouth" />
+        </div>
       </Link>
     </div>
   );
