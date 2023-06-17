@@ -3,7 +3,7 @@
     "outDir": "./dist/",
     "sourceMap": true,
     "strict": true,
-    "noImplicitReturns": true,
+    "noImplicitReturns": false,
     "noImplicitAny": true,
     "module": "ESNext",
     "moduleResolution": "node",
@@ -13,9 +13,8 @@
     "esModuleInterop": true
   },
   "include": [
-    "client/src/**/*.ts",
-    "server/**/*.ts"
-  ],
+    "client/src/**/*",
+    "server/**/*.ts"],
   "exclude": [
     "dist",
     "node_modules"
