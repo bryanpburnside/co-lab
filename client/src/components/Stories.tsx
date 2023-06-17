@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import NewStoryForm from "./NewStoryForm";
 import FlipBook from "./FlipBook";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useParams } from 'react-router-dom'
+import { io } from 'socket.io-client';
 
 interface Page {
   id?: number;
@@ -17,10 +20,35 @@ interface Story {
 }
 
 const StoryBook: React.FC = () => {
+  const { user } = useAuth0();
+  const { roomId } = useParams();
+  const socket = io('http://localhost:8000');
   const [pages, setPages] = useState<Page[]>([]);
   const [stories, setStories] = useState<Story[]>([]);
   const [selectedStory, setSelectedStory] = useState<Story | null>(null);
   const [showNewStoryForm, setShowNewStoryForm] = useState(false);
+
+  useEffect(() => {
+    socket.on('roomCreated', (userId, roomId) => {
+      console.log(`${userId} created room: ${roomId}`);
+    });
+
+    socket.on('userJoined', (userId) => {
+      socket.emit('logJoinUser', userId);
+      console.log(`User ${userId} joined the room`);
+    });
+
+    socket.on('userLeft', (userId) => {
+      console.log(`User ${userId} left the room`);
+    });
+
+    // Clean up the socket.io connection when the component unmounts
+    return () => {
+      socket.emit('disconnectUser', user?.sub);
+      socket.disconnect();
+    };
+  }, [roomId]);
+
 
   //fetch stories from the server
   useEffect(() => {
@@ -97,7 +125,7 @@ const StoryBook: React.FC = () => {
 
   return (
     <div style={{ display: 'flex' }}>
-      <div style={{ marginRight: '20px' }}>
+      <div style={{ marginRight: '20px', marginLeft: '20px' }}>
         {stories.map((story, index) => (
           <div key={ index } onClick={() => handleStoryClick(story)}>
             { story.title }

@@ -18,9 +18,9 @@ const App = () => {
         <Route path='/login/*' element={<LoginButton />} />
         <Route path='/profile' element={<Profile />} />
         <Route path='/logout' element={<LogoutButton />} />
-        <Route path='/stories' element={<StoryBook />} />
         <Route path='/visualart/:roomId' element={<VisualArt />} />
         <Route path='/sculpture/:roomId' element={<Sculpture />} />
+        <Route path='/stories/:roomId' element={<StoryBook />} />
       </Routes>
     </Router>
   );

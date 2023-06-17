@@ -81,7 +81,7 @@ const Home = () => {
       <Link to='/story' className='image-link'>
       <div
         className='image-link'
-        onClick={() => generateRoomId('story')}
+        onClick={() => generateRoomId('stories')}
         style={{ cursor: 'pointer' }}>
         <img src={mouth} alt="mouth" />
         </div>

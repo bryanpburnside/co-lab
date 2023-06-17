@@ -122,21 +122,28 @@ const FlipBook: React.FC<{ story: Story, selectedStoryPages: Page[], onPageUpdat
       showCover={true}
       useMouseEvents={true}
       style={{
-        backgroundColor: "#f7f3eb",
+        backgroundColor: "#EADDCA",
         border: "1px solid #ddd",
         boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
         overflow: "hidden",
         borderRadius: "5px",
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
       }}
-      >
-      <div style={{ height: '100%', textAlign: 'center', padding: '20px' }}>
-        { story.title }
-      </div>
+    >
+        <div data-density="hard" className="title-page">
+          { story.title }
+        </div>
         {selectedStoryPages.map((page, index) => (
-          <div key={ index } style={{ height: '100%', textAlign: 'center', padding: '20px' }}
-            onClick={() => handlePageClick(page)}>
+          <div
+          key={index}
+          className="page-container"
+          onClick={() => handlePageClick(page)}>
+          <div className="pages">
             { page.content }
           </div>
+        </div>
         ))}
       </HTMLFlipBook>
       {selectedPage && (
