@@ -46,7 +46,31 @@ const config = {
           allowTsInNodeModules: true,
           transpileOnly: true
         }
-      }
+      },
+      {
+        test: /\.(mp3)$/,
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 8192,
+            name: '[path][name].[ext]',
+            fallback: 'file-loader',
+          },
+        },
+      },
+      {
+        test: /\.(png|jpe?g|gif)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'images',
+              publicPath: '/'
+            },
+          },
+        ],
+      },
     ]
   },
   plugins: [
