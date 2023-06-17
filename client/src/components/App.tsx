@@ -5,22 +5,20 @@ import Home from './Home';
 import LoginButton from './LoginButton';
 import LogoutButton from './LogoutButton';
 import Profile from './Profile';
-
-// interface Props {
-//   name:
-//   string
-// }
+import Sculpture from './Sculpture'
+import VisualArt from './VisualArt';
 
 const App = () => {
   return (
-
     <Router>
       <Navbar />
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='/login' element={<LoginButton />} />
+        <Route path='/login/*' element={<LoginButton />} />
         <Route path='/profile' element={<Profile />} />
         <Route path='/logout' element={<LogoutButton />} />
+        <Route path='/visualart/:roomId' element={<VisualArt />} />
+        <Route path='/sculpture/:roomId' element={<Sculpture />} />
       </Routes>
     </Router>
   );

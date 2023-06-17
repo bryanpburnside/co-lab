@@ -1,26 +1,31 @@
 import { Sequelize, DataTypes } from 'sequelize';
+const { DB_NAME, DB_USER } = process.env;
 
-const sequelize = new Sequelize('colab', 'root', '', {
+const sequelize = new Sequelize(DB_NAME || 'colab', DB_USER || 'root', '', {
   host: 'localhost',
   dialect: 'postgres',
   define: {
     freezeTableName: true
-  }
+  },
+  logging: false
 });
 
 const User = sequelize.define('users', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     primaryKey: true,
     allowNull: false,
   },
   name: {
     type: DataTypes.STRING,
   },
+  email: {
+    type: DataTypes.STRING,
+  },
   friends: {
     type: DataTypes.ARRAY(DataTypes.INTEGER),
   },
-  photo: {
+  picture: {
     type: DataTypes.STRING,
   },
 });
@@ -40,6 +45,7 @@ const Artwork = sequelize.define('artwork', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
     allowNull: false,
   },
   type: {
@@ -51,6 +57,7 @@ const VisualArt = sequelize.define('visualart', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
     allowNull: false,
   },
   title: {
@@ -146,12 +153,10 @@ Message.belongsTo(User, { foreignKey: 'recipientId' });
 
 const initialize = async () => {
   try {
-    await sequelize.sync({ force: true });
+    await sequelize.sync({ alter: true });
     console.log('Tables successfully created!');
   } catch (error) {
     console.error('Error creating tables :(', error);
-  } finally {
-    sequelize.close();
   }
 };
 
