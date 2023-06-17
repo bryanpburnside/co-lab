@@ -19,6 +19,8 @@ const App = () => {
         <Route path='/profile' element={<Profile />} />
         <Route path='/logout' element={<LogoutButton />} />
         <Route path='/music' element={<Ear />} />
+        <Route path='/visualart/:roomId' element={<VisualArt />} />
+        <Route path='/sculpture/:roomId' element={<Sculpture />} />
       </Routes>
     </Router>
   );
