@@ -1,6 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Comme:wght@100&family=Quicksand:wght@600;700&display=swap');
+
 h1 {
   color: white;
-  background-color: black;
+}
+
+a:visited {
+  color: #ffffff;
+}
+
+body {
+  font-family: "Quicksand", sans-serif;
+  color: white;
+  background-color: #3d3983;
+}
+
+.container {
+  background-color: #3d3983;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.container img {
+  width: 10vw;
+  cursor: pointer;
+  margin: 50px;
+}
+
+.image-link {
+  display: inline-block;
 }
 
 /* flip book */

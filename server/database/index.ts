@@ -1,27 +1,31 @@
 import { Sequelize, DataTypes } from 'sequelize';
-const { DB_USER, DB_PW } = process.env;
+const { DB_NAME, DB_USER, DB_PW } = process.env;
 
-const sequelize = new Sequelize('colab', DB_USER as string, DB_PW as string, {
+const sequelize = new Sequelize(DB_NAME || 'colab', DB_USER as string, DB_PW as string, {
   host: 'localhost',
   dialect: 'postgres',
   define: {
     freezeTableName: true
   },
+  logging: false
 });
 
 const User = sequelize.define('users', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     primaryKey: true,
     allowNull: false,
   },
   name: {
     type: DataTypes.STRING,
   },
+  email: {
+    type: DataTypes.STRING,
+  },
   friends: {
     type: DataTypes.ARRAY(DataTypes.INTEGER),
   },
-  photo: {
+  picture: {
     type: DataTypes.STRING,
   },
 });
@@ -41,6 +45,7 @@ const Artwork = sequelize.define('artwork', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
     allowNull: false,
   },
   type: {
@@ -52,6 +57,7 @@ const VisualArt = sequelize.define('visualart', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
     allowNull: false,
   },
   title: {
