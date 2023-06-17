@@ -5,7 +5,7 @@ import paper, { Color } from 'paper';
 import 'bulma/css/bulma.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faPenFancy, faImage, faEraser, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
-import '../styles.css';
+import '../../styles.css';
 
 interface DrawProps {
   backgroundColor: string;

@@ -6,7 +6,7 @@ import LoginButton from './LoginButton';
 import LogoutButton from './LogoutButton';
 import Profile from './Profile';
 import Sculpture from './Sculpture'
-import VisualArt from './VisualArt';
+import VisualArt from './Eye/VisualArt';
 
 const App = () => {
   return (

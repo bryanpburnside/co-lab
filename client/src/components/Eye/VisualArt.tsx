@@ -1,6 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import React, { useState, useEffect } from 'react';
-import Draw from './Draw';
+import Draw from './Sketch';
 import RandomPattern from './RandomPattern';
 import { useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
