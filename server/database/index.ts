@@ -1,8 +1,7 @@
 import { Sequelize, DataTypes } from 'sequelize';
-const { DB_USER, DB_PW } = process.env;
-const { DB_NAME, DB_USER } = process.env;
+const { DB_NAME, DB_USER, DB_PW } = process.env;
 
-const sequelize = new Sequelize(DB_NAME || 'colab', DB_USER || DB_USER as string, DB_PW as string, {
+const sequelize = new Sequelize(DB_NAME || 'colab', DB_USER as string, DB_PW as string, {
   host: 'localhost',
   dialect: 'postgres',
   define: {
@@ -94,12 +93,31 @@ const Story = sequelize.define('stories', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     allowNull: false,
+    autoIncrement: true
   },
   title: {
     type: DataTypes.STRING,
   },
+  coverImage: {
+    type: DataTypes.STRING,
+  },
+  numberOfPages: {
+    type: DataTypes.INTEGER,
+  }
+});
+
+const Pages = sequelize.define('pages', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    allowNull: false,
+    autoIncrement: true
+  },
+  page_number: {
+    type: DataTypes.INTEGER
+  },
   content: {
-    type: DataTypes.TEXT,
+    type: DataTypes.TEXT
   }
 });
 
@@ -151,10 +169,11 @@ UserCollaboration.belongsTo(Collaboration, { foreignKey: 'collaborationId' });
 UserCollaboration.belongsTo(User, { foreignKey: 'userId' });
 Message.belongsTo(User, { foreignKey: 'userId' });
 Message.belongsTo(User, { foreignKey: 'recipientId' });
+Pages.belongsTo(Story, { foreignKey: 'storyId'})
 
 const initialize = async () => {
   try {
-    await sequelize.sync({ alter: true });
+    await sequelize.sync({ force: false });
     console.log('Tables successfully created!');
   } catch (error) {
     console.error('Error creating tables :(', error);
@@ -173,4 +192,7 @@ export {
   Sculpture,
   Collaboration,
   UserCollaboration,
+  Pages,
 };
+
+

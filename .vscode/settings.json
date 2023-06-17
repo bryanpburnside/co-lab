@@ -7,25 +7,34 @@
     "Bulma",
     "Caity",
     "Claddie",
+    "Cloudinary",
+    "colab",
     "Colpeka",
     "contribs",
     "dpage",
     "fakeelement",
     "flipbook",
+    "fontawesome",
+    "fortawesome",
     "fpage",
     "fparent",
     "fwrapper",
+    "handpose",
+    "handtrackjs",
     "Khtml",
     "Marvas",
+    "mediapipe",
     "necess",
+    "nextpage",
+    "Opelka",
     "overf",
-    "tpage",
-    "turnjs"
-  ]
-}{
-  "cSpell.words": [
-    "colab",
     "pageflip",
-    "usercollaborations"
+    "peerjs",
+    "recordrtc",
+    "tfjs",
+    "tpage",
+    "turnjs",
+    "usercollaborations",
+    "visualartwork"
   ]
 }

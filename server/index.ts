@@ -2,7 +2,7 @@ import express, { Router } from 'express';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-import { sequelize, initialize } from './database/index.js';
+import { sequelize, initialize, Story, Pages } from './database/index.js';
 import { v4 as generateRoomId } from 'uuid';
 import http from 'http';
 import { Server, Socket } from 'socket.io';
@@ -12,6 +12,9 @@ dotenv.config({ path: path.resolve(dirname(fileURLToPath(import.meta.url)), '../
 const { PORT, CLOUD_NAME, CLOUD_API_KEY, CLOUD_SECRET } = process.env;
 import Users from './routes/users.js';
 import VisualArtwork from './routes/visualartwork.js';
+// import Login from './routes/login.js';
+import CreateStoryRouter from './routes/story.js';
+import pagesRouter from './routes/pages.js';
 
 cloudinary.config({
   cloud_name: CLOUD_NAME,
@@ -28,6 +31,7 @@ const io = new Server(server, {
   cors: {
     origin: 'http://localhost:8000',
     methods: ['GET', 'POST'],
+    credentials: true
   }
 });
 
@@ -41,7 +45,8 @@ app.use(express.json({ limit: '10mb' }));
 app.use('/api/rooms', Rooms);
 app.use('/users', Users);
 app.use('/visualart', VisualArtwork);
-
+app.use('/api/stories', CreateStoryRouter);
+app.use('/api/pages', pagesRouter);
 app.use(express.static(staticFilesPath));
 
 app.get('*', (req, res) => {
@@ -52,6 +57,62 @@ app.get('*', (req, res) => {
     }
   });
 });
+
+app.get('/api/stories', async (req, res) => {
+  try {
+    const stories = await Story.findAll();
+    res.status(200).json(stories);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error: Could not get stories-server');
+  }
+});
+
+app.post('/api/stories', async (req, res) => {
+  try {
+    const newStoryData = req.body;
+    const newStory = await Story.create(newStoryData);
+    res.status(201).json(newStory);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error: Could not create story-server');
+  }
+});
+
+app.post('/api/pages', async (req, res) => {
+  try {
+    const newPage = req.body;
+    const newSavePage = await Pages.create(newPage);
+    res.status(201).json(newPage);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error: Could not create page-server');
+  }
+});
+
+app.put('/api/pages/:id', async (req, res) => {
+  try {
+    const pageId = req.params.id;
+    const { content } = req.body;
+
+    //find the existing page by its id
+    const page: any = await Pages.findOne({ where: { id: pageId } });
+
+    if (page) {
+      //update the page
+      page.content = content;
+      await page.save();
+      res.status(200).json(page);
+    } else {
+      res.status(404).send('Error: Page not found');
+    }
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error: Could not update page-server');
+  }
+});
+
 
 sequelize.authenticate()
   .then(() => console.info('Connected to the database'))
