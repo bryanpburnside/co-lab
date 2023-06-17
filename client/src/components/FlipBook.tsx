@@ -49,7 +49,7 @@ const PageEditor: React.FC<{ page: Page, onSave: (content: string) => void, onCa
   );
 };
 
-const FlipBook: React.FC<{ story: Story, selectedStoryPages: Page[] }> = ({ story, selectedStoryPages }) => {
+const FlipBook: React.FC<{ story: Story, selectedStoryPages: Page[], onPageUpdate: (page: Page) => void }> = ({ story, selectedStoryPages, onPageUpdate }) => {
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
   // console.log('Pages passed to FlipBook:', selectedStoryPages);
   const handlePageClick = (page: Page) => {
@@ -59,13 +59,8 @@ const FlipBook: React.FC<{ story: Story, selectedStoryPages: Page[] }> = ({ stor
   //save page after editing it
   const handleSavePage = async (content: string) => {
     if (selectedPage && story) {
-      const updatedPages = selectedStoryPages.map(page => {
-        if (page.page_number === selectedPage.page_number) {
-          return { ...page, content };
-        }
-        return page;
-      });
-
+      const updatedPage = { ...selectedPage, content };
+      onPageUpdate(updatedPage);
       setSelectedPage(null);
 
       //send a request to the server to save the page
@@ -133,11 +128,12 @@ const FlipBook: React.FC<{ story: Story, selectedStoryPages: Page[] }> = ({ stor
       <div style={{ height: '100%', textAlign: 'center', padding: '20px' }}>
         { story.title }
       </div>
-      {selectedStoryPages.map((page, index) => (
-        <div key={ index } style={{ height: '100%', textAlign: 'center', padding: '20px' }}>
-          { page.content }
-        </div>
-      ))}
+        {selectedStoryPages.map((page, index) => (
+          <div key={ index } style={{ height: '100%', textAlign: 'center', padding: '20px' }}
+            onClick={() => handlePageClick(page)}>
+            { page.content }
+          </div>
+        ))}
       </HTMLFlipBook>
       {selectedPage && (
         <PageEditor
