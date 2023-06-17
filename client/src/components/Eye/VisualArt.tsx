@@ -40,7 +40,7 @@ const VisualArt: React.FC = () => {
     };
   }, [roomId]);
 
-  const handleBackgroundColorChange = (e) => {
+  const handleBackgroundColorChange = (e: any) => {
     const { value } = e.target;
     setBackgroundColor(value);
   };

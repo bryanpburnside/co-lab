@@ -1,5 +1,5 @@
 # **co-lab**
-co-lab is an application that brings artists together to collaborate on artistic projects like 3D sculpting, musical expression, story writing, and painting. It's an experience that is designed to be shared with friends and the community. What problem does this project solve? 
+co-lab is an application that brings artists together to collaborate on artistic projects like 3D sculpting, musical expression, story writing, and visual art. It's an experience that is designed to be shared with friends and the community. What problem does this project solve?
 
  [Markdown Info](https://www.w3schools.io/file/markdown-emphasis/) for Bryan, Emmy, and Marvas
 
@@ -7,12 +7,12 @@ co-lab is an application that brings artists together to collaborate on artistic
 * [Getting Started](#start)
 * [Dependencies](#deps)
 * [Documentation](#docs)
-* [How to Collaborate](#)
 * [Features](#feats)
-  * [Collaborative Painting Experience](#paint)
+  * [Collaborative Visual Art Experience](#paint)
   * [Collaborative Music Experience](#music)
   * [Collaborative 3D Modeling Experience](#3D)
   * [Collaborative Story Writing Experience](#story)
+* [How to Collaborate](#colab)
 * [References](#refs)
 * [Contributions](#contribs)
 
@@ -34,29 +34,46 @@ Run `npm install` to access these dependencies:
   <li>PeerJS</li>
   <li>PaperJS</li>
   <li>ThreeJS</li>
-  <li>TurnJS</li>
-  <li>Passport</li>
+  <li>P5JS</li>
+  <li>React Pageflip</li>
+  <li>Auth0</li>
+  <li>Cloudinary</li>
 </ul>
 
-PostgresSQL
-Bulma
-Trello
-
-#### **Google OAuth**
-
-Before integrating Google OAuth, make sure you have the following:
-
-* A Google Cloud Platform
-* OAuth 2.0 client credentials (Client ID and Client Secret)
 
 #### **NodeJs**
-`node v.18.14.1`
+`Node v.18.14.1`
+
+#### **React**
+`v.18.2`
+
+#### **Database**
+`PostgresQL`
+#### **Styling**
+* `Bulma`
+
+* `CSS`
+
+* `Styled Components`
+#### **Project Management**
+`Trello`
+
+#### **Auth0**
+
+Before integrating Auth0, make sure you have the following:
+
+* An Auth0 account
+* Grab credentials(domain and clientId)
+* Setup authorized URIs
 
 #### **Environmental Variables**
-* CLIENT_ID
-* CLIENT_SECRET
-* 
-* 
+* PORT
+* DB_NAME
+* DB_USER
+* DB_PW
+* CLOUD_NAME
+* CLOUD_API_KEY
+* CLOUD_SECRET
 
 --------------------------------------
 
@@ -81,6 +98,11 @@ Collaborative Story Writing Experience:
 
 --------------------------------------
 
+<a id=colab></a>
+#### **How To Collaborate**
+
+explanation of how to use PeerJS + other software like socket.io/quillJS/ShareDB
+
 <a id=contribs></a>
 #### **Contributions**
 Collaborators:
@@ -92,7 +114,7 @@ Collaborators:
 
 Instructors:
 
-* Caity Colpeka
+* Caity Opelka
 * Peter Barnum
 
 

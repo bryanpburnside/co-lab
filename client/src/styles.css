@@ -38,6 +38,37 @@ html {
   display: inline-block;
 }
 
+
+.page-container {
+  width: 450px;
+  height: 450px;;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pages {
+  font-family: 'Georgia', serif;
+  background: ivory;
+  color: black;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  line-height: 1.6;
+  font-size: 18px;
+  width: 500px;
+  height: 500px;
+  padding: 10px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.title-page {
+  text-align: center;
+  height: 100%;
+  line-height: 500px;
+  font-size: 18px;
+  color: black;
+}
+
 .pen-width-slider {
   position: absolute;
   bottom: 50px;
@@ -59,3 +90,4 @@ html {
 .pen-width-slider button {
   margin-left: 10px;
 }
+
