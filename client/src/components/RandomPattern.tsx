@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import paper, { Point, Path, Color, Gradient, GradientStop } from 'paper';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faImage } from '@fortawesome/free-solid-svg-icons';
 
 interface PatternProps {
   backgroundColor: string,
@@ -160,113 +162,130 @@ const RandomPattern: React.FC<PatternProps> = ({ backgroundColor, handleBackgrou
   useRandomPattern(colorRange);
 
   return (
-    <div>
-      <input
-        type="color"
-        value={backgroundColor}
-        onChange={handleBackgroundColorChange}
-      />
-      <div>
-        <label>
-          Min Hue:
-          <input
-            type="range"
-            min="0"
-            max="360"
-            value={colorRange.minHue}
-            onChange={(e) =>
-              setColorRange((prevRange) => ({
-                ...prevRange,
-                minHue: parseInt(e.target.value),
-              }))
-            }
-          />
-        </label>
-        <label>
-          Max Hue:
-          <input
-            type="range"
-            min="0"
-            max="360"
-            value={colorRange.maxHue}
-            onChange={(e) =>
-              setColorRange((prevRange) => ({
-                ...prevRange,
-                maxHue: parseInt(e.target.value),
-              }))
-            }
-          />
-        </label>
+    <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+      <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 0 }}>
+        {/* Hue Sliders */}
+        <div className="panel">
+          <div className="field">
+            <div className="control">
+              <input
+                type="color"
+                id="bg-color"
+                value={backgroundColor}
+                onChange={handleBackgroundColorChange}
+                className="input is-hidden"
+              />
+              <button
+                type="button"
+                className="button"
+                onClick={() => document.getElementById('bg-color')?.click()}
+              >
+                <FontAwesomeIcon icon={faImage} />
+              </button>
+            </div>
+          </div>
+          <div className="panel-heading">Hue</div>
+          <div className="panel-block">
+            <input
+              type="range"
+              min="0"
+              max="360"
+              value={colorRange.minHue}
+              onChange={(e) =>
+                setColorRange((prevRange) => ({
+                  ...prevRange,
+                  minHue: parseInt(e.target.value),
+                }))
+              }
+            />
+          </div>
+          <div className="panel-block">
+            <input
+              type="range"
+              min="0"
+              max="360"
+              value={colorRange.maxHue}
+              onChange={(e) =>
+                setColorRange((prevRange) => ({
+                  ...prevRange,
+                  maxHue: parseInt(e.target.value),
+                }))
+              }
+            />
+          </div>
+        </div>
+        {/* Saturation Sliders */}
+        <div className="panel">
+          <div className="panel-heading">Saturation</div>
+          <div className="panel-block">
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.1"
+              value={colorRange.minSaturation}
+              onChange={(e) =>
+                setColorRange((prevRange) => ({
+                  ...prevRange,
+                  minSaturation: parseFloat(e.target.value),
+                }))
+              }
+            />
+          </div>
+          <div className="panel-block">
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.1"
+              value={colorRange.maxSaturation}
+              onChange={(e) =>
+                setColorRange((prevRange) => ({
+                  ...prevRange,
+                  maxSaturation: parseFloat(e.target.value),
+                }))
+              }
+            />
+          </div>
+        </div>
+        {/* Lightness Sliders */}
+        <div className="panel">
+          <div className="panel-heading">Lightness</div>
+          <div className="panel-block">
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.1"
+              value={colorRange.minLightness}
+              onChange={(e) =>
+                setColorRange((prevRange) => ({
+                  ...prevRange,
+                  minLightness: parseFloat(e.target.value),
+                }))
+              }
+            />
+          </div>
+          <div className="panel-block">
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.1"
+              value={colorRange.maxLightness}
+              onChange={(e) =>
+                setColorRange((prevRange) => ({
+                  ...prevRange,
+                  maxLightness: parseFloat(e.target.value),
+                }))
+              }
+            />
+          </div>
+        </div>
       </div>
       <div>
-        <label>
-          Min Saturation:
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.1"
-            value={colorRange.minSaturation}
-            onChange={(e) =>
-              setColorRange((prevRange) => ({
-                ...prevRange,
-                minSaturation: parseFloat(e.target.value),
-              }))
-            }
-          />
-        </label>
-        <label>
-          Max Saturation:
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.1"
-            value={colorRange.maxSaturation}
-            onChange={(e) =>
-              setColorRange((prevRange) => ({
-                ...prevRange,
-                maxSaturation: parseFloat(e.target.value),
-              }))
-            }
-          />
-        </label>
+        <canvas id="canvas" style={{ width: '100vw', height: '100vh', backgroundColor }} />
       </div>
-      <div>
-        <label>
-          Min Lightness:
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.1"
-            value={colorRange.minLightness}
-            onChange={(e) =>
-              setColorRange((prevRange) => ({
-                ...prevRange,
-                minLightness: parseFloat(e.target.value),
-              }))
-            }
-          />
-        </label>
-        <label>
-          Max Lightness:
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.1"
-            value={colorRange.maxLightness}
-            onChange={(e) =>
-              setColorRange((prevRange) => ({
-                ...prevRange,
-                maxLightness: parseFloat(e.target.value),
-              }))
-            }
-          />
-        </label>
-      </div>
-      <canvas id="canvas" style={{ width: '100vw', height: '100vh', backgroundColor }} />
     </div>
   );
 };

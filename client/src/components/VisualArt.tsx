@@ -2,8 +2,9 @@ import { useAuth0 } from "@auth0/auth0-react";
 import React, { useState, useEffect } from 'react';
 import Draw from './Draw';
 import RandomPattern from './RandomPattern';
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
+import 'bulma/css/bulma.min.css';
 
 enum ActiveComponent {
   DrawMode,
@@ -51,17 +52,32 @@ const VisualArt: React.FC = () => {
       case DrawMode:
         return <Draw backgroundColor={backgroundColor} handleBackgroundColorChange={handleBackgroundColorChange} />;
     }
-  }
+  };
 
   return (
-    <div>
-      <label htmlFor="mode">Select a Mode</label>
-      <div id="mode">
-        <button onClick={() => setMode(DrawMode)}>Drawing</button>
-        <button onClick={() => setMode(PatternMode)}>Pattern</button>
+    <>
+      <div className="container is-flex-direction-column" style={{ marginTop: '2rem' }}>
+        <div className="columns is-centered">
+          <div className="column">
+            <div className="buttons is-centered">
+              <button
+                className={`button ${mode === DrawMode ? 'is-primary' : ''}`}
+                onClick={() => setMode(DrawMode)}
+              >
+                sketch
+              </button>
+              <button
+                className={`button ${mode === PatternMode ? 'is-primary' : ''}`}
+                onClick={() => setMode(PatternMode)}
+              >
+                random pattern
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-      {renderComponent()}
-    </div>
+      <div>{renderComponent()}</div>
+    </>
   )
 }
 

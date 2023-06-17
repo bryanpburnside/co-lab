@@ -6,6 +6,7 @@ import LoginButton from './LoginButton';
 import LogoutButton from './LogoutButton';
 import Profile from './Profile';
 import StoryBook from './Stories';
+import Ear from './EarStuff/Instrument'
 import Sculpture from './Sculpture'
 import VisualArt from './VisualArt';
 
@@ -21,6 +22,7 @@ const App = () => {
         <Route path='/visualart/:roomId' element={<VisualArt />} />
         <Route path='/sculpture/:roomId' element={<Sculpture />} />
         <Route path='/stories/:roomId' element={<StoryBook />} />
+        <Route path='/music' element={<Ear />} />
       </Routes>
     </Router>
   );
