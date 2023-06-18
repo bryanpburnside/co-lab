@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import paper, { Point, Path, Color, Gradient, GradientStop } from 'paper';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faImage } from '@fortawesome/free-solid-svg-icons';
+import { faPalette } from '@fortawesome/free-solid-svg-icons';
+import '../../styles.css';
 
 interface PatternProps {
   backgroundColor: string,
@@ -163,29 +164,27 @@ const RandomPattern: React.FC<PatternProps> = ({ backgroundColor, handleBackgrou
 
   return (
     <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-      <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 0 }}>
+      <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: '5%' }}>
         {/* Hue Sliders */}
-        <div className="panel">
-          <div className="field">
-            <div className="control">
-              <input
-                type="color"
-                id="bg-color"
-                value={backgroundColor}
-                onChange={handleBackgroundColorChange}
-                className="input is-hidden"
-              />
-              <button
-                type="button"
-                className="button"
-                onClick={() => document.getElementById('bg-color')?.click()}
-              >
-                <FontAwesomeIcon icon={faImage} />
-              </button>
-            </div>
+        <div style={{ padding: '1rem' }}>
+          <div style={{ marginBottom: '0.5rem' }}>
+            <input
+              type="color"
+              id="bg-color"
+              value={backgroundColor}
+              onChange={handleBackgroundColorChange}
+              style={{ display: 'none' }}
+            />
+            <button
+              type="button"
+              style={{ padding: '0.5rem', color: 'white', fontSize: '2.5rem', background: 'none', border: 'none' }}
+              onClick={() => document.getElementById('bg-color')?.click()}
+            >
+              <FontAwesomeIcon icon={faPalette} />
+            </button>
           </div>
-          <div className="panel-heading">Hue</div>
-          <div className="panel-block">
+          <div style={{ marginBottom: '0.5rem' }}>Hue</div>
+          <div style={{ marginBottom: '0.5rem' }}>
             <input
               type="range"
               min="0"
@@ -199,7 +198,7 @@ const RandomPattern: React.FC<PatternProps> = ({ backgroundColor, handleBackgrou
               }
             />
           </div>
-          <div className="panel-block">
+          <div style={{ marginBottom: '0.5rem' }}>
             <input
               type="range"
               min="0"
@@ -215,9 +214,9 @@ const RandomPattern: React.FC<PatternProps> = ({ backgroundColor, handleBackgrou
           </div>
         </div>
         {/* Saturation Sliders */}
-        <div className="panel">
-          <div className="panel-heading">Saturation</div>
-          <div className="panel-block">
+        <div style={{ padding: '1rem' }}>
+          <div style={{ marginBottom: '0.5rem' }}>Saturation</div>
+          <div style={{ marginBottom: '0.5rem' }}>
             <input
               type="range"
               min="0"
@@ -232,7 +231,7 @@ const RandomPattern: React.FC<PatternProps> = ({ backgroundColor, handleBackgrou
               }
             />
           </div>
-          <div className="panel-block">
+          <div style={{ marginBottom: '0.5rem' }}>
             <input
               type="range"
               min="0"
@@ -249,9 +248,9 @@ const RandomPattern: React.FC<PatternProps> = ({ backgroundColor, handleBackgrou
           </div>
         </div>
         {/* Lightness Sliders */}
-        <div className="panel">
-          <div className="panel-heading">Lightness</div>
-          <div className="panel-block">
+        <div style={{ padding: '1rem' }}>
+          <div style={{ marginBottom: '0.5rem' }}>Lightness</div>
+          <div style={{ marginBottom: '0.5rem' }}>
             <input
               type="range"
               min="0"
@@ -266,7 +265,7 @@ const RandomPattern: React.FC<PatternProps> = ({ backgroundColor, handleBackgrou
               }
             />
           </div>
-          <div className="panel-block">
+          <div style={{ marginBottom: '0.5rem' }}>
             <input
               type="range"
               min="0"
@@ -288,6 +287,7 @@ const RandomPattern: React.FC<PatternProps> = ({ backgroundColor, handleBackgrou
       </div>
     </div>
   );
+
 };
 
 export default RandomPattern;
