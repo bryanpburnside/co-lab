@@ -2,10 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import paper, { Color } from 'paper';
-import 'bulma/css/bulma.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faPenFancy, faImage, faEraser, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
-import '../styles.css';
+import { faPen, faPenFancy, faPalette, faEraser, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 
 interface DrawProps {
   backgroundColor: string;
@@ -162,56 +160,76 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
         style={{ width: '100vw', height: '100vh', backgroundColor }}
       />
       <div
-        className="buttons is-flex-direction-column is-justify-content-center"
         style={{
           position: 'absolute',
           top: '50%',
-          left: '0',
+          left: '5%',
           transform: 'translateY(-50%)',
         }}
       >
-        <div className="field">
-          <div className="control">
+        <div style={{ marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
             <input
               type="color"
               id="bg-color"
               value={backgroundColor}
               onChange={handleBackgroundColorChange}
-              className="input is-hidden"
+              style={{ display: 'none' }}
             />
             <button
               type="button"
-              className="button"
               onClick={() => document.getElementById('bg-color')?.click()}
+              style={{
+                border: 'none',
+                background: 'none',
+                cursor: 'pointer',
+                color: 'white',
+                fontSize: '2.5rem',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+              }}
             >
-              <FontAwesomeIcon icon={faImage} />
+              <FontAwesomeIcon icon={faPalette} />
             </button>
           </div>
         </div>
-        <div className="field">
-          <div className="control has-icons-left">
+        <div style={{ marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
             <input
               type="color"
               id="pen-color"
               value={selectedColor}
               onChange={handlePenColorChange}
-              className="input is-hidden"
+              style={{ display: 'none' }}
             />
             <button
               type="button"
-              className="button"
               onClick={() => document.getElementById('pen-color')?.click()}
+              style={{
+                border: 'none',
+                background: 'none',
+                cursor: 'pointer',
+                color: 'white',
+                fontSize: '2.5rem',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+              }}
             >
               <FontAwesomeIcon icon={faPen} />
             </button>
           </div>
         </div>
-        <div className="field">
-          <div className="control">
+        <div style={{ marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
             <button
               type="button"
-              className="button"
               onClick={handlePenWidthButtonClick}
+              style={{
+                border: 'none',
+                background: 'none',
+                cursor: 'pointer',
+                color: 'white',
+                fontSize: '2.5rem',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+              }}
             >
               <FontAwesomeIcon icon={faPenFancy} />
             </button>
@@ -227,8 +245,15 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
                 />
                 <button
                   type="button"
-                  className="button"
                   onClick={handlePenWidthSliderClose}
+                  style={{
+                    border: 'none',
+                    background: 'none',
+                    cursor: 'pointer',
+                    color: 'white',
+                    fontSize: '2.5rem',
+                    textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+                  }}
                 >
                   Close
                 </button>
@@ -236,19 +261,36 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
             )}
           </div>
         </div>
-        <div className="field">
-          <div className="control">
-            <button onClick={handleEraserClick} className="button">
+        <div style={{ marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+            <button
+              onClick={handleEraserClick}
+              style={{
+                border: 'none',
+                background: 'none',
+                cursor: 'pointer',
+                color: 'white',
+                fontSize: '2.5rem',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+              }}
+            >
               <FontAwesomeIcon icon={faEraser} />
             </button>
           </div>
         </div>
-        <div className="field">
-          <div className="control">
+        <div style={{ marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
             <button
               type="submit"
-              className="button"
               onClick={handleSaveClick}
+              style={{
+                border: 'none',
+                background: 'none',
+                cursor: 'pointer',
+                color: 'white',
+                fontSize: '2.5rem',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+              }}
             >
               <FontAwesomeIcon icon={faFloppyDisk} />
             </button>
@@ -257,6 +299,8 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
       </div>
     </div>
   );
+
+
 };
 
 export default Draw;

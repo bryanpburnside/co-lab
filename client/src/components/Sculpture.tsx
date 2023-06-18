@@ -3,6 +3,9 @@ import React, { useState, useEffect } from "react";
 // import Peer from 'peerjs';
 import { useParams } from 'react-router-dom'
 import { io } from 'socket.io-client';
+import { Canvas } from '@react-three/fiber';
+import { PerspectiveCamera, PositionalAudio, Sphere, Plane, Box} from '@react-three/drei'
+import GenerativeArt from "./GenerativeArt";
 
 const Sculpture = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
@@ -32,9 +35,7 @@ const Sculpture = () => {
   }, [roomId]);
 
   return (
-    <div>
-
-    </div>
+      <GenerativeArt />
   );
 };
 
