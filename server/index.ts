@@ -12,7 +12,6 @@ dotenv.config({ path: path.resolve(dirname(fileURLToPath(import.meta.url)), '../
 const { PORT, CLOUD_NAME, CLOUD_API_KEY, CLOUD_SECRET } = process.env;
 import Users from './routes/users.js';
 import VisualArtwork from './routes/visualartwork.js';
-// import Login from './routes/login.js';
 import CreateStoryRouter from './routes/story.js';
 import pagesRouter from './routes/pages.js';
 
