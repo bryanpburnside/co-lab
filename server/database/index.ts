@@ -169,11 +169,11 @@ UserCollaboration.belongsTo(Collaboration, { foreignKey: 'collaborationId' });
 UserCollaboration.belongsTo(User, { foreignKey: 'userId' });
 Message.belongsTo(User, { foreignKey: 'userId' });
 Message.belongsTo(User, { foreignKey: 'recipientId' });
-Pages.belongsTo(Story, { foreignKey: 'storyId'})
+Pages.belongsTo(Story, { foreignKey: 'storyId' })
 
 const initialize = async () => {
   try {
-    await sequelize.sync({ force: false });
+    await sequelize.sync({ alter: true });
     console.log('Tables successfully created!');
   } catch (error) {
     console.error('Error creating tables :(', error);
