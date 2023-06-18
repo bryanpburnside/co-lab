@@ -13,7 +13,7 @@ const ActiveComponent = {
 const VisualArt: React.FC = () => {
   const { user } = useAuth0();
   const { roomId } = useParams();
-  const socket = io('http://localhost:8000');
+  const socket = io('/');
   const { DrawMode, PatternMode } = ActiveComponent;
   const [mode, setMode] = useState(DrawMode);
   const [backgroundColor, setBackgroundColor] = useState('#3d3983');
