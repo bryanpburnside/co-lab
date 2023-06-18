@@ -13,7 +13,7 @@ const Home = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const navigate = useNavigate();
   const [roomId, setRoomId] = useState('');
-  const socket = io('http://localhost:8000');
+  const socket = io('/');
 
   const generateRoomId = async (endpoint: any) => {
     try {

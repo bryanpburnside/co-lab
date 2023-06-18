@@ -22,7 +22,7 @@ interface Story {
 const StoryBook: React.FC = () => {
   const { user } = useAuth0();
   const { roomId } = useParams();
-  const socket = io('http://localhost:8000');
+  const socket = io('/');
   const [pages, setPages] = useState<Page[]>([]);
   const [stories, setStories] = useState<Story[]>([]);
   const [selectedStory, setSelectedStory] = useState<Story | null>(null);
