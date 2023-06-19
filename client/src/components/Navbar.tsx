@@ -2,7 +2,6 @@ import React from "react";
 import { Outlet, Link } from "react-router-dom";
 import LoginButton from "./LoginButton";
 import { useAuth0 } from "@auth0/auth0-react";
-import '../styles.css';
 
 const Navbar = () => {
   const { logout } = useAuth0();

@@ -9,7 +9,6 @@ import StoryBook from './Stories';
 import Ear from './EarStuff/Instrument'
 import Sculpture from './Sculpture'
 import VisualArt from './Eye/VisualArt';
-import '../styles.css';
 
 const App = () => {
   return (
