@@ -79,7 +79,7 @@ const Home = () => {
       >
         <img src={hand} alt="hand" />
       </div>
-      <Link to='/story' className='image-link'>
+      <Link to='/stories' className='image-link'>
         <div
           className='image-link'
           onClick={() => generateRoomId('stories')}

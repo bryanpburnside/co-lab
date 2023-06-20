@@ -160,3 +160,11 @@ html {
   color: #fff;
   text-decoration: none;
 }
+
+.stt {
+  margin: 1em 0;
+  width: 100%;
+  border-radius: 30px;
+  border: 10px;
+  border-color: #f06b80;
+}

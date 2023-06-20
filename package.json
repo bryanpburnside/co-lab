@@ -68,6 +68,7 @@
         "@types/react-router-dom": "^5.3.3",
         "@types/socket.io-client": "^3.0.0",
         "@types/uuid": "^9.0.2",
+        "@types/webspeechapi": "^0.0.29",
         "babel-jest": "^29.5.0",
         "babel-loader": "^9.1.2",
         "babel-preset-airbnb": "^5.0.0",
