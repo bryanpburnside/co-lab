@@ -160,3 +160,17 @@ html {
   color: #fff;
   text-decoration: none;
 }
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Set the container height to 100% of the viewport height */
+}
+
+.post {
+  background-color: yellow;
+  width: 600px;
+  height:800px;
+  /* Add other styles for your post div */
+}
