@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import NewStoryForm from "./NewStoryForm";
 import FlipBook from "./FlipBook";
 import STT from  './STT';
+import TranscriptLog from "./Transcript";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useParams } from 'react-router-dom'
 import { io } from 'socket.io-client';
@@ -130,9 +131,7 @@ const StoryBook: React.FC = () => {
   return (
 
     <div style={{ display: 'flex' }}>
-      <STT>
-      
-      </STT>
+      <TranscriptLog></TranscriptLog>
       <div style={{ marginRight: '20px', marginLeft: '20px' }}>
         {stories.map((story, index) => (
           <div key={ index } onClick={() => handleStoryClick(story)}>

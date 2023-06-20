@@ -168,3 +168,14 @@ html {
   border: 10px;
   border-color: #f06b80;
 }
+
+.transcript-log {
+  height: 700px;
+  width: 300px;
+  border: 5px solid #f06b80;
+  background-color: whitesmoke;
+  color: black;
+  overflow-y: scroll;
+  padding: 10px;
+  font-weight: 900;
+}
