@@ -7,12 +7,13 @@ import ear from '../assets/images/ear.png';
 import hand from '../assets/images/hand.png';
 import mouth from '../assets/images/mouth.png';
 import { io } from "socket.io-client";
+import '../styles.css';
 
 const Home = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const navigate = useNavigate();
   const [roomId, setRoomId] = useState('');
-  const socket = io('http://localhost:8000');
+  const socket = io('/');
 
   const generateRoomId = async (endpoint: any) => {
     try {
@@ -60,7 +61,7 @@ const Home = () => {
   }, [user])
 
   return (
-    <div className="container">
+    <div className="body-container" style={{}}>
       <div
         className='image-link'
         onClick={() => generateRoomId('visualart')}
@@ -79,11 +80,11 @@ const Home = () => {
         <img src={hand} alt="hand" />
       </div>
       <Link to='/story' className='image-link'>
-      <div
-        className='image-link'
-        onClick={() => generateRoomId('stories')}
-        style={{ cursor: 'pointer' }}>
-        <img src={mouth} alt="mouth" />
+        <div
+          className='image-link'
+          onClick={() => generateRoomId('stories')}
+          style={{ cursor: 'pointer' }}>
+          <img src={mouth} alt="mouth" />
         </div>
       </Link>
     </div>

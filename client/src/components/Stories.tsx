@@ -22,7 +22,7 @@ interface Story {
 const StoryBook: React.FC = () => {
   const { user } = useAuth0();
   const { roomId } = useParams();
-  const socket = io('http://localhost:8000');
+  const socket = io('/');
   const [pages, setPages] = useState<Page[]>([]);
   const [stories, setStories] = useState<Story[]>([]);
   const [selectedStory, setSelectedStory] = useState<Story | null>(null);
@@ -71,7 +71,7 @@ const StoryBook: React.FC = () => {
         try {
           const response = await fetch(`/api/pages?storyId=${selectedStory.id}`);
           const data = await response.json();
-          console.log(data);
+          // console.log(data);
 
           const newPages = data.map((fetchedPage: any) => {
             return { page_number: fetchedPage.page_number, content: fetchedPage.content, story: selectedStory.title };
@@ -89,7 +89,7 @@ const StoryBook: React.FC = () => {
 
   //handle click on a story title
   const handleStoryClick = (story: Story) => {
-    console.log('bananas');
+    // console.log('bananas');
     setSelectedStory(story);
   };
 
@@ -107,10 +107,13 @@ const StoryBook: React.FC = () => {
     setShowNewStoryForm(true);
   };
 
-  const handlePageUpdate = (updatedPage: Page) => {
-    setPages(prevPages => prevPages.map(page =>
-      page.page_number === updatedPage.page_number ? updatedPage : page
-    ));
+  const handleUpdatePage = (updatedPage: Page) => {
+    // Update the pages array with the new page content
+    setPages(prevPages =>
+      prevPages.map(page =>
+        page.page_number === updatedPage.page_number ? updatedPage : page
+      )
+    );
   };
 
 
@@ -138,7 +141,7 @@ const StoryBook: React.FC = () => {
       {showNewStoryForm ? (
         <NewStoryForm onCreateStory={ handleCreateStory } onCancel={ handleCancelCreateStory } />
       ) : (
-        selectedStory && <FlipBook story={ selectedStory } selectedStoryPages={ pages } onPageUpdate={handlePageUpdate} />
+        selectedStory && <FlipBook story={ selectedStory } selectedStoryPages={ pages } onUpdatePage={ handleUpdatePage } />
       )}
     </div>
 );

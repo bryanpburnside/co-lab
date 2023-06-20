@@ -9,10 +9,6 @@ interface Page {
   story: string;
 }
 
-interface Props {
-  story: any;
-}
-
 interface Story {
   id?: number;
   title: string;
@@ -49,46 +45,76 @@ const PageEditor: React.FC<{ page: Page, onSave: (content: string) => void, onCa
   );
 };
 
-const FlipBook: React.FC<{ story: Story, selectedStoryPages: Page[], onPageUpdate: (page: Page) => void }> = ({ story, selectedStoryPages, onPageUpdate }) => {
+interface FlipBookProps {
+  story: Story;
+  selectedStoryPages: Page[];
+  onUpdatePage: (updatedPage: Page) => void;
+}
+
+const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdatePage }) => {
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
-  // console.log('Pages passed to FlipBook:', selectedStoryPages);
+
   const handlePageClick = (page: Page) => {
     setSelectedPage(page);
   };
 
+
   //save page after editing it
   const handleSavePage = async (content: string) => {
     if (selectedPage && story) {
-      const updatedPage = { ...selectedPage, content };
-      onPageUpdate(updatedPage);
-      setSelectedPage(null);
-
-    //check if new page or updating old page
-    const isNewPage = !updatedPage.id;
-    const method = isNewPage ? 'POST' : 'PUT';
-    const endpoint = isNewPage ? '/api/pages' : `/api/pages/${updatedPage.id}`;
-
-    try {
-      const response = await fetch(endpoint, {
-        method: method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          page_number: selectedPage.page_number,
-          content: content,
-          storyId: story.id
-        })
+      const existingPage = selectedStoryPages.find(page => page.page_number === selectedPage.page_number);
+      let response;
+  
+      if (existingPage) {
+        //update the existing page
+        try {
+          response = await fetch(`/api/pages/${existingPage.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              content: content
+            })
+          });
+        } catch (error) {
+          console.error('Failed to update the page-client:', error);
+          return;
+        }
+      } else {
+        //create a new page
+        try {
+          response = await fetch('/api/pages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              page_number: selectedPage.page_number,
+              content: content,
+              storyId: story.id
+            })
+          });
+        } catch (error) {
+          console.error('Failed to create the page-client:', error);
+          return;
+        }
+      }
+  
+      //handle the response
+      const responseData = await response.json();
+      if (!response) {
+        console.error('Failed to save the page - client');
+      } else {
+        console.log('Page saved successfully - client', responseData);
+      }
+      onUpdatePage({ ...selectedPage, content: content });
+      //update the pages to display the current info
+      //map over selectedStoryPages looking for the page and set the content
+      selectedStoryPages.map((page: any) => {
+        if (existingPage && page.page_number === existingPage.page_number) {
+          return { ...page, content: content };
+        }
+        return page;
       });
 
-        const responseData = await response.json();
-        //check for ok response
-        if (!response.ok) {
-          console.error('Failed to save the page-client');
-        }
-
-        console.log('Page saved successfully-client', responseData);
-      } catch (error) {
-        console.error('Failed to save the page-client:', error);
-      }
+      setSelectedPage(null);
     }
   };
 

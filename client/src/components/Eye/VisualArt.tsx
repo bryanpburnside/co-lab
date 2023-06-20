@@ -1,22 +1,21 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import React, { useState, useEffect } from 'react';
-import Draw from './Draw';
+import Draw from './Sketch';
 import RandomPattern from './RandomPattern';
 import { useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
-import 'bulma/css/bulma.min.css';
 
-enum ActiveComponent {
-  DrawMode,
-  PatternMode
-}
+const ActiveComponent = {
+  DrawMode: 0,
+  PatternMode: 1
+};
 
 const VisualArt: React.FC = () => {
   const { user } = useAuth0();
   const { roomId } = useParams();
-  const socket = io('http://localhost:8000');
+  const socket = io('/');
   const { DrawMode, PatternMode } = ActiveComponent;
-  const [mode, setMode] = useState<ActiveComponent>(DrawMode);
+  const [mode, setMode] = useState(DrawMode);
   const [backgroundColor, setBackgroundColor] = useState('#3d3983');
 
   useEffect(() => {
@@ -56,18 +55,36 @@ const VisualArt: React.FC = () => {
 
   return (
     <>
-      <div className="container is-flex-direction-column" style={{ marginTop: '2rem' }}>
-        <div className="columns is-centered">
-          <div className="column">
-            <div className="buttons is-centered">
+      <div style={{ marginTop: '2rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ width: '100%' }}>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
               <button
-                className={`button ${mode === DrawMode ? 'is-primary' : ''}`}
+                style={{
+                  margin: '0 5px 5px',
+                  background: mode === DrawMode ? '#3273dc' : '#e4e4e4',
+                  color: mode === DrawMode ? '#fff' : '#333',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '10px 20px',
+                  fontSize: '18px',
+                  cursor: 'pointer'
+                }}
                 onClick={() => setMode(DrawMode)}
               >
                 sketch
               </button>
               <button
-                className={`button ${mode === PatternMode ? 'is-primary' : ''}`}
+                style={{
+                  margin: '0 5px 5px',
+                  background: mode === PatternMode ? '#3273dc' : '#e4e4e4',
+                  color: mode === PatternMode ? '#fff' : '#333',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '10px 20px',
+                  fontSize: '18px',
+                  cursor: 'pointer'
+                }}
                 onClick={() => setMode(PatternMode)}
               >
                 random pattern
