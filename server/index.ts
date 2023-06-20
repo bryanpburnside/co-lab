@@ -12,7 +12,6 @@ dotenv.config({ path: path.resolve(dirname(fileURLToPath(import.meta.url)), '../
 const { PORT, CLOUD_NAME, CLOUD_API_KEY, CLOUD_SECRET } = process.env;
 import Users from './routes/users.js';
 import VisualArtwork from './routes/visualartwork.js';
-// import Login from './routes/login.js';
 import CreateStoryRouter from './routes/story.js';
 import pagesRouter from './routes/pages.js';
 
@@ -29,7 +28,7 @@ app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:8000',
+    origin: '/',
     methods: ['GET', 'POST'],
     credentials: true
   }
@@ -83,7 +82,7 @@ app.post('/api/pages', async (req, res) => {
   try {
     const newPage = req.body;
     const newSavePage = await Pages.create(newPage);
-    res.status(201).json(newPage);
+    res.status(201).json(newSavePage);
   } catch (error) {
     console.error(error);
     res.status(500).send('Error: Could not create page-server');

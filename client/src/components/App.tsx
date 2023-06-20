@@ -8,7 +8,8 @@ import Profile from './Profile';
 import StoryBook from './Stories';
 import Ear from './EarStuff/Instrument'
 import Sculpture from './Sculpture'
-import VisualArt from './VisualArt';
+import VisualArt from './Eye/VisualArt';
+import '../styles.css';
 
 const App = () => {
   return (
@@ -19,10 +20,10 @@ const App = () => {
         <Route path='/login/*' element={<LoginButton />} />
         <Route path='/profile' element={<Profile />} />
         <Route path='/logout' element={<LogoutButton />} />
-        <Route path='/visualart/:roomId' element={<VisualArt />} />
-        <Route path='/sculpture/:roomId' element={<Sculpture />} />
         <Route path='/stories/:roomId' element={<StoryBook />} />
         <Route path='/music' element={<Ear />} />
+        <Route path='/visualart/:roomId' element={<VisualArt />} />
+        <Route path='/sculpture/:roomId' element={<Sculpture />} />
       </Routes>
     </Router>
   );

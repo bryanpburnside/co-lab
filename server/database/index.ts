@@ -1,7 +1,7 @@
 import { Sequelize, DataTypes } from 'sequelize';
 const { DB_NAME, DB_USER, DB_PW } = process.env;
 
-const sequelize = new Sequelize(DB_NAME || 'colab', DB_USER as string, DB_PW as string, {
+const sequelize = new Sequelize(DB_NAME || 'colab', DB_USER || 'root', DB_PW || '', {
   host: 'localhost',
   dialect: 'postgres',
   define: {
@@ -169,11 +169,11 @@ UserCollaboration.belongsTo(Collaboration, { foreignKey: 'collaborationId' });
 UserCollaboration.belongsTo(User, { foreignKey: 'userId' });
 Message.belongsTo(User, { foreignKey: 'userId' });
 Message.belongsTo(User, { foreignKey: 'recipientId' });
-Pages.belongsTo(Story, { foreignKey: 'storyId'})
+Pages.belongsTo(Story, { foreignKey: 'storyId' })
 
 const initialize = async () => {
   try {
-    await sequelize.sync({ force: false });
+    await sequelize.sync({ alter: true });
     console.log('Tables successfully created!');
   } catch (error) {
     console.error('Error creating tables :(', error);

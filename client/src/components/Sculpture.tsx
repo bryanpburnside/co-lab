@@ -1,13 +1,16 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import React, { useState, useEffect } from "react";
-// import Peer from 'peerjs';
 import { useParams } from 'react-router-dom'
 import { io } from 'socket.io-client';
+import GenerativeArt from "./GenerativeArt";
+// import { Canvas } from '@react-three/fiber';
+// import { PerspectiveCamera, PositionalAudio, Sphere, Plane, Box} from '@react-three/drei'
+// import Peer from 'peerjs';
 
 const Sculpture = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const { roomId } = useParams();
-  const socket = io('http://localhost:8000');
+  const socket = io('/');
 
 
   useEffect(() => {
@@ -32,9 +35,7 @@ const Sculpture = () => {
   }, [roomId]);
 
   return (
-    <div>
-
-    </div>
+      <GenerativeArt />
   );
 };
 

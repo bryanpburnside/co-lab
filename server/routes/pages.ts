@@ -15,7 +15,7 @@ pagesRouter.post('/', async (req, res) => {
     });
     res.status(201).json(page);
   } catch (error) {
-    console.error(error);
+    console.error('this is a router error', error);
     res.status(500).json({ message: 'Failed to create the page-router' });
   }
 });
