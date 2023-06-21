@@ -144,7 +144,7 @@ io.on('connection', socket => {
     console.log(`User ${userId} joined the room`);
   });
 
-  socket.on('privateMessage', async ({ senderId, receiverId, message }) => {
+  socket.on('directMessage', async ({ senderId, receiverId, message }) => {
     try {
       const newMessage = await Message.create({
         senderId,
@@ -159,16 +159,16 @@ io.on('connection', socket => {
     }
   });
 
-  socket.on('joinMsgRoom', (userId) => {
+  socket.on('joinThread', (userId) => {
     const room = `user-${userId}`;
     socket.join(room);
-    console.log(`User ${userId} joined the MESSAGE room`);
+    console.log(`User ${userId} joined the message thread`);
   });
 
-  socket.on('disconnectMsgUser', (userId) => {
+  socket.on('disconnectThread', (userId) => {
     const room = `user-${userId}`;
     socket.leave(room);
-    console.log(`${userId} left the room`);
+    console.log(`${userId} left the message thread`);
   });
 
   socket.on('disconnectUser', userId => {

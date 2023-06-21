@@ -38,14 +38,14 @@ const Messages = () => {
     if (userId) {
       getMessages();
 
-      socket.emit('joinMsgRoom', userId);
+      socket.emit('joinThread', userId);
 
-      socket.on('privateMessage', (newMessage) => {
+      socket.on('directMessage', (newMessage) => {
         setMessages((prevMessages) => [...prevMessages, newMessage]);
       });
 
       return () => {
-        socket.emit('disconnectMsgUser', userId);
+        socket.emit('disconnectThread', userId);
         socket.off();
       };
     }
@@ -56,7 +56,7 @@ const Messages = () => {
 
     if (message.trim() === '') return;
 
-    socket.emit('privateMessage', {
+    socket.emit('directMessage', {
       senderId: userId,
       receiverId,
       message,
