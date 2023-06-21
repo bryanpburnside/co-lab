@@ -34,10 +34,24 @@ const Message = sequelize.define('messages', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
     allowNull: false,
   },
-  text: {
+  senderId: {
     type: DataTypes.STRING,
+    allowNull: false,
+  },
+  receiverId: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  message: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
+  timestamp: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
   },
 });
 
@@ -167,8 +181,8 @@ Story.belongsTo(User, { foreignKey: 'originalCreatorId' });
 Sculpture.belongsTo(Artwork, { foreignKey: 'artworkId' });
 UserCollaboration.belongsTo(Collaboration, { foreignKey: 'collaborationId' });
 UserCollaboration.belongsTo(User, { foreignKey: 'userId' });
-Message.belongsTo(User, { foreignKey: 'userId' });
-Message.belongsTo(User, { foreignKey: 'recipientId' });
+Message.belongsTo(User, { foreignKey: 'senderId' });
+Message.belongsTo(User, { foreignKey: 'receiverId' });
 Pages.belongsTo(Story, { foreignKey: 'storyId' })
 
 const initialize = async () => {
