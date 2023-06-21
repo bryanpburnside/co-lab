@@ -4,7 +4,6 @@ import io from 'socket.io-client';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const socket = io('/');
-
 interface Message {
   id: number;
   senderId: string;
@@ -18,21 +17,30 @@ const Messages = () => {
   const [receiverId, setReceiverId] = useState<string>('google-oauth2|104097737553983109767');
   const [userId, setUserId] = useState<string | undefined>(user?.sub);
 
+  const getMessages = async () => {
+    try {
+      const thread = await axios.get(`/messages/${userId}`);
+      console.log(thread.data);
+      setMessages(thread.data);
+    } catch (err) {
+      console.error('Failed to GET messages to client:', err);
+    }
+  }
+
   useEffect(() => {
     setUserId(user?.sub);
   }, [user])
 
   useEffect(() => {
     if (userId) {
-      socket.on('connect', () => {
-        socket.emit('joinMsgRoom', userId);
-      });
+      getMessages();
+
+      socket.emit('logJoinUser', userId);
+      socket.emit('joinMsgRoom', userId);
 
       socket.on('privateMessage', (newMessage) => {
         setMessages((prevMessages) => [...prevMessages, newMessage]);
       });
-
-      socket.emit('logJoinUser', userId);
 
       return () => {
         socket.emit('disconnectMsgUser', userId);
