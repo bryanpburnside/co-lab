@@ -11,6 +11,7 @@ import { v2 as cloudinary } from 'cloudinary';
 dotenv.config({ path: path.resolve(dirname(fileURLToPath(import.meta.url)), '../.env') });
 const { PORT, CLOUD_NAME, CLOUD_API_KEY, CLOUD_SECRET } = process.env;
 import Users from './routes/users.js';
+import { Message } from './database/index.js';
 import VisualArtwork from './routes/visualartwork.js';
 import CreateStoryRouter from './routes/story.js';
 import pagesRouter from './routes/pages.js';
@@ -128,26 +129,53 @@ Rooms.post('/', (req, res) => {
 
 io.on('connection', socket => {
   // Handle create room event
-  socket.on('createRoom', (userId, roomId) => {
-    socket.join(roomId); // Join the room with the generated ID
-    socket.emit('roomCreated', userId, roomId); // Emit the roomCreated event to the user
-    console.log(`${userId} created room: ${roomId}`);
-  });
+  // socket.on('createRoom', (userId, roomId) => {
+  //   socket.join(roomId); // Join the room with the generated ID
+  //   socket.emit('roomCreated', userId, roomId); // Emit the roomCreated event to the user
+  //   console.log(`${userId} created room: ${roomId}`);
+  // });
 
   // Handle join room event
-  socket.on('joinRoom', (userId, roomId) => {
-    socket.join(roomId); // Join the room with the provided ID
-    socket.to(roomId).emit('userJoined', userId); // Emit the userJoined event to the participants in the room
-    console.log(`User ${userId} joined the room`);
-  });
+  // socket.on('joinRoom', (userId, roomId) => {
+  //   socket.join(roomId); // Join the room with the provided ID
+  //   socket.to(roomId).emit('userJoined', userId); // Emit the userJoined event to the participants in the room
+  //   console.log(`User ${userId} joined the room`);
+  // });
 
   socket.on('logJoinUser', (userId) => {
     console.log(`User ${userId} joined the room`);
   });
 
-  socket.on('disconnectUser', userId => {
+  socket.on('privateMessage', async ({ senderId, receiverId, message }) => {
+    try {
+      const newMessage = await Message.create({
+        senderId,
+        receiverId,
+        message,
+      });
+
+      socket.emit('messageSent', newMessage);
+      socket.to(`user-${receiverId}`).emit('messageReceived', newMessage);
+    } catch (err) {
+      console.error(err);
+    }
+  });
+
+  socket.on('joinMsgRoom', (userId) => {
+    const room = `user-${userId}`;
+    socket.join(room);
+    // console.log(`User ${userId} joined the room`);
+  });
+
+  socket.on('disconnectMsgUser', (userId) => {
+    const room = `user-${userId}`;
+    socket.leave(room);
     console.log(`${userId} left the room`);
   });
+
+  // socket.on('disconnectUser', userId => {
+  //   console.log(`${userId} left the room`);
+  // });
 });
 
 server.listen(PORT, () => {
