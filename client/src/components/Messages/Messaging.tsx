@@ -8,6 +8,9 @@ interface Message {
   id: number;
   senderId: string;
   message: string;
+  sender: {
+    name: string;
+  };
 }
 
 const Messages = () => {
@@ -64,12 +67,11 @@ const Messages = () => {
 
   return (
     <div>
-      <h2>Private Messaging</h2>
-      {userId}
+      <h2>Inbox</h2>
       <div>
         {messages.map((msg) => (
           <div key={msg.id}>
-            <span>{msg.senderId}:</span> {msg.message}
+            <span>{msg.sender.name}:</span> {msg.message}
           </div>
         ))}
       </div>
