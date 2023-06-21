@@ -12,6 +12,7 @@ Messages.get('/:userId', async (req, res) => {
         { model: User, as: 'sender', attributes: ['name'] },
         { model: User, as: 'receiver', attributes: ['name'] },
       ],
+      order: [['timestamp', 'ASC']]
     });
     if (thread) {
       res.status(200).send(thread);
