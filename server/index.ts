@@ -11,6 +11,7 @@ import { v2 as cloudinary } from 'cloudinary';
 dotenv.config({ path: path.resolve(dirname(fileURLToPath(import.meta.url)), '../.env') });
 const { PORT, CLOUD_NAME, CLOUD_API_KEY, CLOUD_SECRET } = process.env;
 import Users from './routes/users.js';
+import Messages from './routes/messages.js';
 import { Message } from './database/index.js';
 import VisualArtwork from './routes/visualartwork.js';
 import CreateStoryRouter from './routes/story.js';
@@ -44,6 +45,7 @@ app.use(express.json({ limit: '10mb' }));
 // ROUTES
 app.use('/api/rooms', Rooms);
 app.use('/users', Users);
+app.use('/messages', Messages);
 app.use('/visualart', VisualArtwork);
 app.use('/api/stories', CreateStoryRouter);
 app.use('/api/pages', pagesRouter);
@@ -129,20 +131,16 @@ Rooms.post('/', (req, res) => {
 
 io.on('connection', socket => {
   // Handle create room event
-  // socket.on('createRoom', (userId, roomId) => {
-  //   socket.join(roomId); // Join the room with the generated ID
-  //   socket.emit('roomCreated', userId, roomId); // Emit the roomCreated event to the user
-  //   console.log(`${userId} created room: ${roomId}`);
-  // });
+  socket.on('createRoom', (userId, roomId) => {
+    socket.join(roomId); // Join the room with the generated ID
+    socket.emit('roomCreated', userId, roomId); // Emit the roomCreated event to the user
+    console.log(`${userId} created room: ${roomId}`);
+  });
 
   // Handle join room event
-  // socket.on('joinRoom', (userId, roomId) => {
-  //   socket.join(roomId); // Join the room with the provided ID
-  //   socket.to(roomId).emit('userJoined', userId); // Emit the userJoined event to the participants in the room
-  //   console.log(`User ${userId} joined the room`);
-  // });
-
-  socket.on('logJoinUser', (userId) => {
+  socket.on('joinRoom', (userId, roomId) => {
+    socket.join(roomId); // Join the room with the provided ID
+    socket.to(roomId).emit('userJoined', userId); // Emit the userJoined event to the participants in the room
     console.log(`User ${userId} joined the room`);
   });
 
@@ -164,7 +162,7 @@ io.on('connection', socket => {
   socket.on('joinMsgRoom', (userId) => {
     const room = `user-${userId}`;
     socket.join(room);
-    // console.log(`User ${userId} joined the room`);
+    console.log(`User ${userId} joined the MESSAGE room`);
   });
 
   socket.on('disconnectMsgUser', (userId) => {
@@ -173,9 +171,9 @@ io.on('connection', socket => {
     console.log(`${userId} left the room`);
   });
 
-  // socket.on('disconnectUser', userId => {
-  //   console.log(`${userId} left the room`);
-  // });
+  socket.on('disconnectUser', userId => {
+    console.log(`${userId} left the room`);
+  });
 });
 
 server.listen(PORT, () => {
