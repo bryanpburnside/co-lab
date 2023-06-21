@@ -9,7 +9,7 @@ import StoryBook from './Stories';
 import Ear from './EarStuff/Instrument'
 import Sculpture from './Sculpture'
 import VisualArt from './Eye/VisualArt';
-import Dashboard from './Messages/Dashboard';
+import Messages from './Messages/Messaging';
 
 const App = () => {
   return (
@@ -24,7 +24,7 @@ const App = () => {
         <Route path='/music' element={<Ear />} />
         <Route path='/visualart/:roomId' element={<VisualArt />} />
         <Route path='/sculpture/:roomId' element={<Sculpture />} />
-        <Route path='/messages' element={<Dashboard />} />
+        <Route path='/messages' element={<Messages />} />
       </Routes>
     </Router>
   );
