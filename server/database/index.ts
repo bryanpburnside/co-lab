@@ -35,7 +35,6 @@ const Message = sequelize.define('messages', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
-    allowNull: false,
   },
   senderId: {
     type: DataTypes.STRING,
