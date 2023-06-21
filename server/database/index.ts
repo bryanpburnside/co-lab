@@ -180,8 +180,8 @@ Story.belongsTo(User, { foreignKey: 'originalCreatorId' });
 Sculpture.belongsTo(Artwork, { foreignKey: 'artworkId' });
 UserCollaboration.belongsTo(Collaboration, { foreignKey: 'collaborationId' });
 UserCollaboration.belongsTo(User, { foreignKey: 'userId' });
-Message.belongsTo(User, { foreignKey: 'senderId' });
-Message.belongsTo(User, { foreignKey: 'receiverId' });
+Message.belongsTo(User, { foreignKey: 'senderId', as: 'sender' });
+Message.belongsTo(User, { foreignKey: 'receiverId', as: 'receiver' });
 Pages.belongsTo(Story, { foreignKey: 'storyId' })
 
 const initialize = async () => {
