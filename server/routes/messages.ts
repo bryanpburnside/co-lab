@@ -5,7 +5,6 @@ import { Message } from '../database/index.js';
 
 Messages.get('/:userId', async (req, res) => {
   const { userId } = req.params;
-  console.log('user id', userId);
   try {
     const thread = await Message.findAll({ where: { [Op.or]: [{ senderId: userId }, { receiverId: userId }] } });
     if (thread) {
