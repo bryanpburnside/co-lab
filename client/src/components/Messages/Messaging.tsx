@@ -35,7 +35,6 @@ const Messages = () => {
     if (userId) {
       getMessages();
 
-      socket.emit('logJoinUser', userId);
       socket.emit('joinMsgRoom', userId);
 
       socket.on('privateMessage', (newMessage) => {
