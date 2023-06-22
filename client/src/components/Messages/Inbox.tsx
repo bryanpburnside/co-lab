@@ -1,9 +1,7 @@
 import React, { createContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import io, { Socket } from 'socket.io-client';
-import Messages from './Messaging';
 import Sidebar from './Sidebar';
-import Footer from './Footer';
 import styled from 'styled-components';
 
 const BodyContainer = styled.div`
@@ -23,7 +21,6 @@ const Inbox: React.FC = () => {
     <SocketContext.Provider value={msgSocket}>
       <BodyContainer>
         <Sidebar />
-        <Footer />
       </BodyContainer>
     </SocketContext.Provider>
   )
