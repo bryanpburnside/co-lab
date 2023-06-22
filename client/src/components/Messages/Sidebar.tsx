@@ -42,6 +42,10 @@ const Sidebar = () => {
     }
   }
 
+  const handleUserClick = (recipientId: string) => {
+    setRecipient(recipientId);
+  }
+
   useEffect(() => {
     setUserId(user?.sub);
   }, [user])
@@ -55,10 +59,10 @@ const Sidebar = () => {
   return (
     <SidebarContainer>
       <MessageList>
-        <h1>Threads</h1>
+        <h1>Inbox</h1>
         <ul>
           {userList.map((user) => (
-            <li key={user.id}>
+            <li key={user.id} onClick={() => handleUserClick(user.id)}>
               {user.name}
             </li>
           ))}
