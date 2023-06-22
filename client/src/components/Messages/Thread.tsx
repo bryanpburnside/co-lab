@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+
 interface Message {
   id: number;
   senderId: string;
@@ -54,22 +55,13 @@ const Thread = ({ userId, recipient }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<string>('');
   const conversationContainerRef = useRef<HTMLDivElement>(null);
-  const page = useRef<number>(1);
-  const hasMore = useRef<boolean>(true);
 
   const getMessages = async () => {
     try {
-      const response = await axios.get(`/messages/${userId}`, {
-        params: { page: page.current },
-      });
+      const response = await axios.get(`/messages/${userId}`);
       console.log(response.data);
       const newMessages = response.data;
-      if (newMessages.length === 0) {
-        hasMore.current = false;
-        return;
-      }
       setMessages((prevMessages) => [...prevMessages, ...newMessages]);
-      page.current++;
     } catch (err) {
       console.error('Failed to GET messages:', err);
     }
@@ -89,9 +81,7 @@ const Thread = ({ userId, recipient }) => {
 
   return (
     <>
-      <ConversationContainer
-        ref={conversationContainerRef}
-      >
+      <ConversationContainer ref={conversationContainerRef}>
         {messages.map((msg) => (
           <div key={msg.id}>
             <BubbleContainer>
