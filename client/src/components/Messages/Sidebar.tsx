@@ -21,6 +21,8 @@ const ThreadContainer = styled.div`
   flex: 3;
   width: 75%;
   padding: 20px;
+  max-height: 100%;
+  overflow-y: auto;
 `;
 
 const Sidebar = () => {

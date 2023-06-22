@@ -11,8 +11,8 @@ const BodyContainer = styled.div`
   display: flex;
   justify-content: space-between;
   width: 80vw;
+  height: 80vh;
   margin: 0 auto;
-  height: 60vh;
 `;
 
 export const SocketContext = createContext<Socket | null>(null);
