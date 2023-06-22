@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import NewStoryForm from "./NewStoryForm";
 import FlipBook from "./FlipBook";
 import STT from  './STT';
@@ -35,6 +35,7 @@ const StoryBook: React.FC = () => {
   const [selectedStory, setSelectedStory] = useState<Story | null>(null);
   const [showNewStoryForm, setShowNewStoryForm] = useState(false);
   const [speakText, setSpeakText] = useState('');
+
 
   useEffect(() => {
     socket.on('roomCreated', (userId, roomId) => {
@@ -104,9 +105,17 @@ const StoryBook: React.FC = () => {
     setSelectedStory(story);
   };
 
+  const hoverTimeout = React.useRef<any>(null);
   //for TTS component to read title of story on hover
+  // handle hover over a story
   const handleStoryHover = (story: Story) => {
-    setSpeakText(story.title);
+    if (hoverTimeout.current) {
+      clearTimeout(hoverTimeout.current);
+    }
+    // start a new timeout
+    hoverTimeout.current = setTimeout(() => {
+      setSpeakText(story.title);
+    }, 1000);
   };
 
   //might need
