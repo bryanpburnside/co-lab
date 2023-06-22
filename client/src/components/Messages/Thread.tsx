@@ -58,7 +58,7 @@ const Thread = ({ userId, recipient }) => {
 
   const getMessages = async () => {
     try {
-      const response = await axios.get(`/messages/${userId}`);
+      const response = await axios.get(`/messages/${userId}/${recipient}`);
       const newMessages = response.data;
       setMessages((prevMessages) => [...prevMessages, ...newMessages]);
     } catch (err) {
@@ -67,10 +67,10 @@ const Thread = ({ userId, recipient }) => {
   };
 
   useEffect(() => {
-    if (userId) {
+    if (userId && recipient) {
       getMessages();
     }
-  }, [userId]);
+  }, [userId, recipient]);
 
   useEffect(() => {
     if (conversationContainerRef.current) {
