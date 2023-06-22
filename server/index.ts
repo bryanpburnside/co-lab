@@ -78,40 +78,6 @@ app.post('/api/stories', async (req, res) => {
   }
 });
 
-app.post('/api/pages', async (req, res) => {
-  try {
-    const newPage = req.body;
-    const newSavePage = await Pages.create(newPage);
-    res.status(201).json(newSavePage);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error: Could not create page-server');
-  }
-});
-
-app.put('/api/pages/:id', async (req, res) => {
-  try {
-    const pageId = req.params.id;
-    const { content } = req.body;
-
-    //find the existing page by its id
-    const page: any = await Pages.findOne({ where: { id: pageId } });
-
-    if (page) {
-      //update the page
-      page.content = content;
-      await page.save();
-      res.status(200).json(page);
-    } else {
-      res.status(404).send('Error: Page not found');
-    }
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error: Could not update page-server');
-  }
-});
-
 
 sequelize.authenticate()
   .then(() => console.info('Connected to the database'))

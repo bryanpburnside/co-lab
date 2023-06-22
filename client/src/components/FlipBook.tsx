@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import HTMLFlipBook from "react-pageflip";
+import STT from './STT';
 import '../styles.css';
 
 interface Page {
@@ -32,6 +33,11 @@ const PageEditor: React.FC<{ page: Page, onSave: (content: string) => void, onCa
     onCancel();
   };
 
+  //for transcribing data into the page
+  const updateContentWithTranscript = (transcript: string) => {
+    setContent((prevContent) => prevContent + ' ' + transcript);
+  };
+
   return (
     <div>
       <textarea
@@ -39,8 +45,9 @@ const PageEditor: React.FC<{ page: Page, onSave: (content: string) => void, onCa
         onChange={handleContentChange}
         maxLength={310} rows={10} cols={50}
       />
-      <button onClick={handleSave}>Save</button>
-      <button onClick={handleCancel}>Cancel</button>
+      <STT updateTranscript={updateContentWithTranscript} />
+      <button onClick={ handleSave }>Save</button>
+      <button onClick={ handleCancel }>Cancel</button>
     </div>
   );
 };
@@ -49,9 +56,10 @@ interface FlipBookProps {
   story: Story;
   selectedStoryPages: Page[];
   onUpdatePage: (updatedPage: Page) => void;
+  fetchPages: () => void;
 }
 
-const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdatePage }) => {
+const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdatePage, fetchPages }) => {
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
 
   const handlePageClick = (page: Page) => {
@@ -72,39 +80,23 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              content: content
+              content,
+              id: existingPage.id,
             })
           });
         } catch (error) {
           console.error('Failed to update the page-client:', error);
           return;
         }
-      } else {
-        //create a new page
-        try {
-          response = await fetch('/api/pages', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              page_number: selectedPage.page_number,
-              content: content,
-              storyId: story.id
-            })
-          });
-        } catch (error) {
-          console.error('Failed to create the page-client:', error);
+        if (!response.ok) {
+          console.error('Failed to update the page-server:', await response.text());
           return;
         }
       }
-  
-      //handle the response
-      const responseData = await response.json();
-      if (!response) {
-        console.error('Failed to save the page - client');
-      } else {
-        console.log('Page saved successfully - client', responseData);
-      }
-      onUpdatePage({ ...selectedPage, content: content });
+
+      //update the pages to display the current info
+      //map over selectedStoryPages looking for the page and set the content
+      // onUpdatePage({ ...selectedPage, content: content });
       //update the pages to display the current info
       //map over selectedStoryPages looking for the page and set the content
       selectedStoryPages.map((page: any) => {
@@ -114,6 +106,10 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
         return page;
       });
 
+      //sort the pages according to page number
+      // const sortedPagesByPageNumber: any = selectedStoryPages.sort((a, b) => a.page_number - b.page_number);
+      // setPages(sortedPagesByPageNumber);
+      fetchPages();
       setSelectedPage(null);
     }
   };

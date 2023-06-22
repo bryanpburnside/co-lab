@@ -44,7 +44,7 @@ const StoryBook: React.FC = () => {
       console.log(`User ${userId} left the room`);
     });
 
-    // Clean up the socket.io connection when the component unmounts
+    //clean up the socket.io connection when the component unmounts
     return () => {
       socket.emit('disconnectUser', user?.sub);
       socket.disconnect();
@@ -58,7 +58,6 @@ const StoryBook: React.FC = () => {
       try {
         const response = await fetch('/api/stories');
         const data = await response.json();
-        // console.log(data);
         setStories(data);
       } catch (error) {
         console.error('Failed to fetch stories-client', error);
@@ -67,47 +66,57 @@ const StoryBook: React.FC = () => {
     fetchStories();
   }, []);
 
-  useEffect(() => {
-    const fetchPages = async () => {
-      if (selectedStory) {
-        try {
-          const response = await fetch(`/api/pages?storyId=${selectedStory.id}`);
-          const data = await response.json();
-          // console.log(data);
+  //fetch the pages for a specific story from the database
+  const fetchPages = async () => {
+    if (selectedStory) {
+      try {
+        const response = await fetch(`/api/pages?storyId=${selectedStory.id}`);
+        const data = await response.json();
 
-          const newPages = data.map((fetchedPage: any) => {
-            return { page_number: fetchedPage.page_number, content: fetchedPage.content, story: selectedStory.title };
-          });
+        let newPages = data.map((fetchedPage: any) => {
+          return { id: fetchedPage.id, page_number: fetchedPage.page_number, content: fetchedPage.content, story: selectedStory.title };
+        });
 
-          setPages(newPages);
+       //sort pages by page_number
+        newPages = newPages.sort((a: any, b: any) => a.page_number - b.page_number);
 
-        } catch (error) {
-          console.error('Failed to fetch pages', error);
-        }
+        setPages(newPages);
+
+      } catch (error) {
+        console.error('Failed to fetch pages', error);
       }
-    };
+    }
+  };
+
+  useEffect(() => {
     fetchPages();
   }, [selectedStory]);
 
   //handle click on a story title
+  //put the selectedStory on the page
   const handleStoryClick = (story: Story) => {
-    // console.log('bananas');
     setSelectedStory(story);
   };
 
+  //create a new story should show the form
+  //add the story to the list of stories
+  //and set the created story as the current working story
   const handleCreateStory = (createdStory: Story) => {
     setStories([...stories, createdStory]);
     setSelectedStory(createdStory);
     setShowNewStoryForm(false);
   };
 
+  //in case of cancel
   const handleCancelCreateStory = () => {
     setShowNewStoryForm(false);
   };
 
+  //to toggle showing the story form
   const handleShowNewStoryForm = () => {
     setShowNewStoryForm(true);
   };
+
 
   const handleUpdatePage = (updatedPage: Page) => {
     // Update the pages array with the new page content
@@ -118,18 +127,35 @@ const StoryBook: React.FC = () => {
     );
   };
 
-
   //functionality to add new page
-  const addNewPage = (content = '') => {
+  //changed to make POST request to database
+  //so the new page gets an id immediately
+  const addNewPage = async (content = '') => {
     if (selectedStory) {
       const newPageNumber = pages.length + 1;
       const newPage: Page = { page_number: newPageNumber, content, story: selectedStory.title };
-      setPages(prevPages => [...prevPages, newPage]);
+      //POST request to save the new page to the database
+      try {
+        const response = await fetch('/api/pages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            page_number: newPageNumber,
+            content,
+            storyId: selectedStory.id
+          })
+        });
+        const savedPage = await response.json();
+        //update the new page with the id
+        newPage.id = savedPage.id;
+        setPages(prevPages => [...prevPages, newPage]);
+      } catch (error) {
+        console.error('Failed to add new page', error);
+      }
     }
   };
 
   return (
-
     <div style={{ display: 'flex' }}>
       <TranscriptLog></TranscriptLog>
       <div style={{ marginRight: '20px', marginLeft: '20px' }}>
@@ -145,7 +171,7 @@ const StoryBook: React.FC = () => {
       {showNewStoryForm ? (
         <NewStoryForm onCreateStory={ handleCreateStory } onCancel={ handleCancelCreateStory } />
       ) : (
-        selectedStory && <FlipBook story={ selectedStory } selectedStoryPages={ pages } onUpdatePage={ handleUpdatePage } />
+        selectedStory && <FlipBook story={ selectedStory } selectedStoryPages={ pages } onUpdatePage={ handleUpdatePage } fetchPages={ fetchPages } />
       )}
     </div>
   );
