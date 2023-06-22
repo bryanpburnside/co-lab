@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import '../styles.css';
+import { FaMicrophoneAlt } from 'react-icons/fa';
+import TooltipIcon from "./TooltipIcons";
 
 interface STTProps {
   updateTranscript: (newTranscript: string) => void;
@@ -34,8 +36,11 @@ const STT: React.FC<STTProps> = ({ updateTranscript }) => {
 
   return(
     <div className="stt">
-      <div>Speech To Text Component</div>
-      <button onClick={ () => { startListening() } }>microphone</button>
+      <TooltipIcon
+        icon={ FaMicrophoneAlt }
+        tooltipText="Click for speech to text"
+        handleClick={ startListening }
+         />
     </div>
   );
 };

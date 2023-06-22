@@ -6,6 +6,9 @@ import TranscriptLog from "./Transcript";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useParams } from 'react-router-dom'
 import { io } from 'socket.io-client';
+import { FaPlusCircle } from 'react-icons/fa';
+import { IconType } from 'react-icons';
+import TooltipIcon from './TooltipIcons';
 
 interface Page {
   id?: number;
@@ -20,6 +23,7 @@ interface Story {
   coverImage: File | null;
   numberOfPages: number | null;
 }
+
 
 const StoryBook: React.FC = () => {
   const { user } = useAuth0();
@@ -155,23 +159,33 @@ const StoryBook: React.FC = () => {
     }
   };
 
+
   return (
     <div style={{ display: 'flex' }}>
-      <TranscriptLog></TranscriptLog>
+      {/* <TranscriptLog></TranscriptLog> */}
       <div style={{ marginRight: '20px', marginLeft: '20px' }}>
-        {stories.map((story, index) => (
-          <div key={ index } onClick={() => handleStoryClick(story)}>
-            { story.title }
-          </div>
-        ))}
-        <button onClick={ handleShowNewStoryForm }>Create New Story</button>
-        <button onClick={() => { addNewPage() } }>Add New Page</button>
-      </div>
-
+      {stories.map((story, index) => (
+        <div key={ index } onClick={() => handleStoryClick(story)}>
+          { story.title }
+        </div>
+      ))}
+      <TooltipIcon
+        icon={ FaPlusCircle }
+        tooltipText="Create new story"
+        handleClick={ handleShowNewStoryForm }
+      />
+    </div>
       {showNewStoryForm ? (
         <NewStoryForm onCreateStory={ handleCreateStory } onCancel={ handleCancelCreateStory } />
       ) : (
-        selectedStory && <FlipBook story={ selectedStory } selectedStoryPages={ pages } onUpdatePage={ handleUpdatePage } fetchPages={ fetchPages } />
+        selectedStory && <FlipBook
+                          story={ selectedStory }
+                          selectedStoryPages={ pages }
+                          onUpdatePage={ handleUpdatePage }
+                          fetchPages={ fetchPages }
+                          TooltipIcon={ TooltipIcon }
+                          addNewPage={ addNewPage }
+                          />
       )}
     </div>
   );

@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import HTMLFlipBook from "react-pageflip";
 import STT from './STT';
 import '../styles.css';
+import { FaSave, FaTimesCircle, FaPlusCircle } from 'react-icons/fa';
+import TooltipIcon from './TooltipIcons';
+
 
 interface Page {
   id?: number;
@@ -17,8 +20,15 @@ interface Story {
   numberOfPages: number | null;
 }
 
+interface PageEditorProps {
+  page: Page;
+  onSave: (content: string) => void;
+  onCancel: () => void;
+  TooltipIcon: typeof TooltipIcon;
+}
+
 //PageEditor component
-const PageEditor: React.FC<{ page: Page, onSave: (content: string) => void, onCancel: () => void }> = ({ page, onSave, onCancel }) => {
+const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, TooltipIcon }) => {
   const [content, setContent] = useState(page.content);
 
   const handleContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -40,26 +50,83 @@ const PageEditor: React.FC<{ page: Page, onSave: (content: string) => void, onCa
 
   return (
     <div>
-      <textarea
-        value={content}
-        onChange={handleContentChange}
-        maxLength={310} rows={10} cols={50}
-      />
-      <STT updateTranscript={updateContentWithTranscript} />
-      <button onClick={ handleSave }>Save</button>
-      <button onClick={ handleCancel }>Cancel</button>
+      <div style={{ position: 'relative', display: 'inline-block' }}>
+        <textarea
+          value={ content }
+          onChange={ handleContentChange }
+          maxLength={310}
+          rows={10}
+          cols={50}
+          style={{ width: '100%', height: '100%' }}
+        />
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        right: 0
+      }}>
+        <TooltipIcon
+          style={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            color: '#3d3983',
+            backgroundColor: 'white',
+            borderRadius: '50%'
+          }}
+          icon={ FaTimesCircle }
+          tooltipText="Cancel"
+          handleClick={ handleCancel }
+        />
+      </div>
+      </div>
+      <STT updateTranscript={ updateContentWithTranscript } />
+      <TooltipIcon
+        icon={ FaSave }
+        tooltipText="Save"
+        handleClick={ handleSave } />
     </div>
   );
+
 };
+
+
+// return (
+//   <div>
+//     <div style={{ position: 'relative', display: 'inline-block' }}>
+//       <textarea
+//         value={content}
+//         onChange={handleContentChange}
+//         maxLength={310}
+//         rows={10}
+//         cols={50}
+//         style={{ width: '100%', height: '100%' }}
+//       />
+//       <div style={{
+//         position: 'absolute',
+//         top: 0,
+//         right: 0
+//       }}>
+//         <TooltipIcon
+//           icon={ FaTimesCircle }
+//           tooltipText="Cancel"
+//           handleClick={ handleCancel }
+//         />
+//       </div>
+//     </div>
+
+//   </div>
+// );
 
 interface FlipBookProps {
   story: Story;
   selectedStoryPages: Page[];
   onUpdatePage: (updatedPage: Page) => void;
   fetchPages: () => void;
+  addNewPage: () => void;
+  TooltipIcon: typeof TooltipIcon;
 }
 
-const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdatePage, fetchPages }) => {
+const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdatePage, fetchPages, addNewPage, TooltipIcon }) => {
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
 
   const handlePageClick = (page: Page) => {
@@ -167,12 +234,17 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
           </div>
         </div>
         ))}
+          <TooltipIcon
+            icon={ FaPlusCircle }
+            tooltipText="Add New Page"
+            handleClick={ addNewPage } />
       </HTMLFlipBook>
       {selectedPage && (
         <PageEditor
           page={ selectedPage }
           onSave={ handleSavePage }
           onCancel={ handleCancelEdit }
+          TooltipIcon={ TooltipIcon }
         />
       )}
     </>
