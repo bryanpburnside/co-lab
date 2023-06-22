@@ -9,6 +9,7 @@ import { io } from 'socket.io-client';
 import { FaPlusCircle } from 'react-icons/fa';
 import { IconType } from 'react-icons';
 import TooltipIcon from './TooltipIcons';
+import TTS from "./TTS";
 
 interface Page {
   id?: number;
@@ -33,6 +34,7 @@ const StoryBook: React.FC = () => {
   const [stories, setStories] = useState<Story[]>([]);
   const [selectedStory, setSelectedStory] = useState<Story | null>(null);
   const [showNewStoryForm, setShowNewStoryForm] = useState(false);
+  const [speakText, setSpeakText] = useState('');
 
   useEffect(() => {
     socket.on('roomCreated', (userId, roomId) => {
@@ -102,6 +104,16 @@ const StoryBook: React.FC = () => {
     setSelectedStory(story);
   };
 
+  //for TTS component to read title of story on hover
+  const handleStoryHover = (story: Story) => {
+    setSpeakText(story.title);
+  };
+
+  //might need
+  const handleStoryLeave = () => {
+    setSpeakText('');
+  };
+
   //create a new story should show the form
   //add the story to the list of stories
   //and set the created story as the current working story
@@ -162,31 +174,43 @@ const StoryBook: React.FC = () => {
 
   return (
     <div style={{ display: 'flex' }}>
-      {/* <TranscriptLog></TranscriptLog> */}
-      <div style={{ marginRight: '20px', marginLeft: '20px' }}>
-      {stories.map((story, index) => (
-        <div key={ index } onClick={() => handleStoryClick(story)}>
-          { story.title }
-        </div>
-      ))}
       <TooltipIcon
         icon={ FaPlusCircle }
         tooltipText="Create new story"
         handleClick={ handleShowNewStoryForm }
       />
-    </div>
+      {/* <TranscriptLog></TranscriptLog> */}
+      <div style={{
+        marginRight: '20px',
+        marginLeft: '20px',
+        border: '1px solid #ccc',
+        borderRadius: '5px',
+        padding: '10px',
+      }}>
+      {stories.map((story, index) => (
+        <div
+          key={ index }
+          onClick={() => handleStoryClick(story)}
+          onMouseEnter={() => handleStoryHover(story)}
+          style={{ marginBottom: '20px' }}>
+          { story.title }
+        </div>
+      ))}
+      </div>
       {showNewStoryForm ? (
         <NewStoryForm onCreateStory={ handleCreateStory } onCancel={ handleCancelCreateStory } />
       ) : (
-        selectedStory && <FlipBook
-                          story={ selectedStory }
-                          selectedStoryPages={ pages }
-                          onUpdatePage={ handleUpdatePage }
-                          fetchPages={ fetchPages }
-                          TooltipIcon={ TooltipIcon }
-                          addNewPage={ addNewPage }
-                          />
+        selectedStory &&
+        <FlipBook
+          story={ selectedStory }
+          selectedStoryPages={ pages }
+          onUpdatePage={ handleUpdatePage }
+          fetchPages={ fetchPages }
+          TooltipIcon={ TooltipIcon }
+          addNewPage={ addNewPage }
+          />
       )}
+      {speakText && <TTS text={speakText} />}
     </div>
   );
 };

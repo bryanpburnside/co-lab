@@ -6,6 +6,7 @@ import { FaSave, FaTimesCircle, FaPlusCircle } from 'react-icons/fa';
 import TooltipIcon from './TooltipIcons';
 
 
+
 interface Page {
   id?: number;
   page_number: number;
@@ -51,20 +52,15 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
   return (
     <div>
       <div style={{ position: 'relative', display: 'inline-block' }}>
-        <textarea
-          value={ content }
-          onChange={ handleContentChange }
+      <textarea
+          value={content}
+          onChange={handleContentChange}
           maxLength={310}
           rows={10}
           cols={50}
           style={{ width: '100%', height: '100%' }}
         />
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        right: 0
-      }}>
-        <TooltipIcon
+        <FaTimesCircle
           style={{
             position: 'absolute',
             top: 0,
@@ -73,11 +69,9 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
             backgroundColor: 'white',
             borderRadius: '50%'
           }}
-          icon={ FaTimesCircle }
-          tooltipText="Cancel"
-          handleClick={ handleCancel }
+          size={30}
+          onClick={ handleCancel }
         />
-      </div>
       </div>
       <STT updateTranscript={ updateContentWithTranscript } />
       <TooltipIcon
@@ -88,34 +82,6 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
   );
 
 };
-
-
-// return (
-//   <div>
-//     <div style={{ position: 'relative', display: 'inline-block' }}>
-//       <textarea
-//         value={content}
-//         onChange={handleContentChange}
-//         maxLength={310}
-//         rows={10}
-//         cols={50}
-//         style={{ width: '100%', height: '100%' }}
-//       />
-//       <div style={{
-//         position: 'absolute',
-//         top: 0,
-//         right: 0
-//       }}>
-//         <TooltipIcon
-//           icon={ FaTimesCircle }
-//           tooltipText="Cancel"
-//           handleClick={ handleCancel }
-//         />
-//       </div>
-//     </div>
-
-//   </div>
-// );
 
 interface FlipBookProps {
   story: Story;
