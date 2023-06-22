@@ -5,13 +5,22 @@ import { io } from 'socket.io-client';
 import GenerativeArt from "./GenerativeArt";
 // import { Canvas } from '@react-three/fiber';
 // import { PerspectiveCamera, PositionalAudio, Sphere, Plane, Box} from '@react-three/drei'
-// import Peer from 'peerjs';
+import Peer from 'peerjs';
+import p5 from 'p5';
 
 const Sculpture = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const { roomId } = useParams();
   const socket = io('/');
+  const peer = new Peer(user?.nickname as string, {
+    host: '/',
+    port: 8001,
+  })
 
+  navigator.mediaDevices.getUserMedia({
+    video: false,
+    audio: true
+  })
 
   useEffect(() => {
     socket.on('roomCreated', (userId, roomId) => {
@@ -27,15 +36,43 @@ const Sculpture = () => {
       console.log(`User ${userId} left the room`);
     });
 
-    // Clean up the socket.io connection when the component unmounts
+    // Emit mouse movement event
+    const handleMouseMove = (event: MouseEvent) => {
+      const { clientX, clientY } = event;
+      const data = { x: clientX, y: clientY }
+      socket.emit('mouseMove', data, roomId);
+    };
+
+    // Emit mouse click event
+    const handleMouseClick = (event: MouseEvent) => {
+      const { clientX, clientY } = event;
+      const data = { x: clientX, y: clientY }
+      socket.emit('mouseClick', data, roomId);
+    };
+
+    // Emit key press event
+    const handleKeyPress = (event: KeyboardEvent) => {
+      const { key } = event;
+      socket.emit('keyPress', key, roomId);
+    };
+
+    // Add event listeners
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('click', handleMouseClick);
+    window.addEventListener('keypress', handleKeyPress);
+
+    // Clean up event listeners
     return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('click', handleMouseClick);
+      window.removeEventListener('keypress', handleKeyPress);
       socket.emit('disconnectUser', user?.sub);
       socket.disconnect();
     };
-  }, [roomId]);
+  }, [socket]);
 
   return (
-      <GenerativeArt />
+    <GenerativeArt socket={socket} />
   );
 };
 
