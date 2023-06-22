@@ -87,21 +87,10 @@ const Thread = ({ userId, recipient }) => {
     }
   }, [messages]);
 
-  const handleScroll = () => {
-    if (
-      conversationContainerRef.current &&
-      conversationContainerRef.current.scrollTop === 0 &&
-      hasMore.current
-    ) {
-      getMessages();
-    }
-  };
-
   return (
     <>
       <ConversationContainer
         ref={conversationContainerRef}
-        onScroll={handleScroll}
       >
         {messages.map((msg) => (
           <div key={msg.id}>
