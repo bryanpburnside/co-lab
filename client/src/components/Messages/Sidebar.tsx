@@ -15,6 +15,11 @@ const MessageList = styled.div`
   flex: 1;
   width: 25%;
   padding: 20px;
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
 `;
 
 const ThreadContainer = styled.div`
