@@ -3,12 +3,12 @@ import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import { Socket } from 'socket.io-client';
 import { SocketContext } from './Inbox';
-import Messages from './Messaging';
 import Thread from './Thread';
 import styled from 'styled-components';
 
 const SidebarContainer = styled.div`
   display: flex;
+  width: 100%;
 `;
 
 const MessageList = styled.div`
