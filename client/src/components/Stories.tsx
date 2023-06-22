@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, createContext } from "react";
 import NewStoryForm from "./NewStoryForm";
 import FlipBook from "./FlipBook";
 import STT from  './STT';
@@ -6,7 +6,7 @@ import TranscriptLog from "./Transcript";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useParams } from 'react-router-dom'
 import { io } from 'socket.io-client';
-import { FaPlusCircle } from 'react-icons/fa';
+import { FaPlusCircle, FaTty } from 'react-icons/fa';
 import { IconType } from 'react-icons';
 import TooltipIcon from './TooltipIcons';
 import TTS from "./TTS";
@@ -25,6 +25,13 @@ interface Story {
   numberOfPages: number | null;
 }
 
+export const TTSToggleContext = createContext<{
+  ttsOn: boolean;
+  setTtsOn: React.Dispatch<React.SetStateAction<boolean>>;
+}>({
+  ttsOn: true,
+  setTtsOn: () => {},
+});
 
 const StoryBook: React.FC = () => {
   const { user } = useAuth0();
@@ -35,6 +42,7 @@ const StoryBook: React.FC = () => {
   const [selectedStory, setSelectedStory] = useState<Story | null>(null);
   const [showNewStoryForm, setShowNewStoryForm] = useState(false);
   const [speakText, setSpeakText] = useState('');
+  const [ttsOn, setTtsOn] = useState(true);
 
 
   useEffect(() => {
@@ -180,14 +188,21 @@ const StoryBook: React.FC = () => {
     }
   };
 
-
   return (
+    <TTSToggleContext.Provider value={{ ttsOn, setTtsOn }}>
     <div style={{ display: 'flex' }}>
       <TooltipIcon
         icon={ FaPlusCircle }
         tooltipText="Create new story"
         handleClick={ handleShowNewStoryForm }
       />
+      <TooltipIcon
+        icon={ FaTty }
+        tooltipText={ttsOn ? "Turn TTS Off" : "Turn TTS On"}
+        handleClick={() => setTtsOn(!ttsOn)}
+      >
+        {ttsOn ? "Turn TTS Off" : "Turn TTS On"}
+      </TooltipIcon>
       {/* <TranscriptLog></TranscriptLog> */}
       <div style={{
         marginRight: '20px',
@@ -221,6 +236,7 @@ const StoryBook: React.FC = () => {
       )}
       {speakText && <TTS text={speakText} />}
     </div>
+    </TTSToggleContext.Provider>
   );
 };
 

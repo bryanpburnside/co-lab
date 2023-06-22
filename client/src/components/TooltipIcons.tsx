@@ -3,6 +3,7 @@ import { IconType } from 'react-icons';
 import '../styles.css';
 
 interface TooltipIconProps {
+  children?: React.ReactNode;
   icon: IconType;
   tooltipText: string;
   handleClick: () => void;

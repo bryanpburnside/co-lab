@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import TTS from './TTS';
+import '../styles.css';
 
 interface Page {
   id?: number;
@@ -24,6 +26,7 @@ const NewStoryForm: React.FC<{ onCreateStory: (story: Story) => void, onCancel: 
   // const [collaborators, setCollaborators] = useState('');
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [numberOfPages, setNumberOfPages] = useState<number | null>(null);
+  const [speakText, setSpeakText] = useState('');
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
@@ -59,12 +62,10 @@ const NewStoryForm: React.FC<{ onCreateStory: (story: Story) => void, onCancel: 
       });
 
       const data = await response.json();
-      // console.log(data);
       if (response.ok) {
         console.log('Story created successfully-client');
         //trying to grab the story id
         onCreateStory(data);
-        // console.log(data);
       } else {
         console.error('Story not created-client');
       }
@@ -77,11 +78,36 @@ const NewStoryForm: React.FC<{ onCreateStory: (story: Story) => void, onCancel: 
     onCancel();
   };
 
+  const hoverTimeout = React.useRef<any>(null);
+
+  const handleHover = (text: string) => {
+    if (hoverTimeout.current) {
+      clearTimeout(hoverTimeout.current);
+    }
+    hoverTimeout.current = setTimeout(() => {
+      setSpeakText(text);
+    }, 1000);
+  };
+
+  const handleLeave = () => {
+    if (hoverTimeout.current) {
+      clearTimeout(hoverTimeout.current);
+    }
+    setSpeakText('');
+  };
+
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={ handleSubmit } className="new-story-form">
       <div>
         <label htmlFor="title">Title:</label>
-        <input type="text" id="title" value={ title } onChange={ handleTitleChange } />
+        <input
+          placeholder='Title'
+          type="text"
+          id="title"
+          value={ title }
+          onChange={ handleTitleChange }
+          onMouseEnter={() => handleHover('Title')}
+          onMouseLeave={() => handleLeave()} />
       </div>
       {/* <div>
         <label htmlFor="collaborators">Collaborators:</label>
@@ -89,10 +115,29 @@ const NewStoryForm: React.FC<{ onCreateStory: (story: Story) => void, onCancel: 
       </div> */}
       <div>
         <label htmlFor="coverImage">Cover Image:</label>
-        <input type="file" id="coverImage" accept="image/*" onChange={ handleCoverImageChange } />
+        <input
+          placeholder='coverImage'
+          type="file"
+          id="coverImage"
+          accept="image/*"
+          onChange={ handleCoverImageChange }
+          onMouseEnter={() => handleHover('Cover Image')}
+          onMouseLeave={() => handleLeave()} />
       </div>
-      <button type="submit">Create Story</button>
-      <button type="button" onClick={ handleCancel }>Cancel</button>
+      <button
+        type="submit"
+        onMouseEnter={() => handleHover('Create Story')}
+        onMouseLeave={() => handleLeave()}>
+        Create Story
+      </button>
+      <button
+        type="button"
+        onClick={ handleCancel }
+        onMouseEnter={() => handleHover('Cancel')}
+        onMouseLeave={() => handleLeave()}>
+        Cancel
+      </button>
+      {speakText && <TTS text={ speakText } />}
     </form>
   );
 };

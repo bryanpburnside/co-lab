@@ -207,4 +207,39 @@ html {
   font-weight: 900;
 }
 
+.new-story-form {
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  padding: 20px;
+  max-width: 500px;
+  margin: auto;
+}
 
+.new-story-form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.new-story-form input {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 5px;
+  border: 1px solid #cccccc;
+}
+
+.new-story-form button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  color: #ffffff;
+  background-color: #f06b80;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.new-story-form button:hover {
+  background-color: #f06b80;
+}
