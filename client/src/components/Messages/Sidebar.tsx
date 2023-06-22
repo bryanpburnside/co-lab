@@ -66,11 +66,13 @@ const Sidebar = () => {
       <MessageList>
         <h1>Inbox</h1>
         <ul>
-          {userList.map((user) => (
-            <li key={user.id} onClick={() => handleUserClick(user.id)}>
-              {user.name}
-            </li>
-          ))}
+          {userList.map((user) => {
+            if (user.id !== userId) {
+              return (<li key={user.id} onClick={() => handleUserClick(user.id)}>
+                {user.name}
+              </li>)
+            }
+          })}
         </ul>
       </MessageList>
       <ThreadContainer>
