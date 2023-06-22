@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import p5 from 'p5';
 import { FaSave } from 'react-icons/fa';
-import '../styles.css';
 
-const GenerativeArt = () => {
+const GenerativeArt = ({ socket }) => {
   const canvasRef = useRef(null);
+  const [socketMouseX, setSocketMouseX] = useState(0); // Variable to store the received X coordinate from the socket
+  const [socketMouseY, setSocketMouseY] = useState(0); // Variable to store the received Y coordinate from the socket
 
   useEffect(() => {
     // Create p5 sketch
@@ -27,7 +28,6 @@ const GenerativeArt = () => {
 
       p.draw = () => {
         p.background(61, 57, 131); // Set background color to #3d3983
-
         if (p.millis() > next && painting) {
           current.x = p.mouseX - p.width / 2;
           current.y = p.mouseY - p.height / 2;
@@ -134,6 +134,22 @@ const GenerativeArt = () => {
     // Create new p5 instance
     new p5(sketch);
   }, []);
+
+  useEffect(() => {
+    // Socket event handlers
+    const handleMouseMove = (data) => {
+      // Update the received socket coordinates
+      setSocketMouseX(data.x);
+      setSocketMouseY(data.y);
+    };
+
+    socket.on('mouseMove', handleMouseMove);
+
+    // Clean up socket event listener
+    return () => {
+      socket.off('mouseMove', handleMouseMove);
+    };
+  }, [socket]);
 
   const handleSave = () => {
     const canvas = canvasRef.current.querySelector('canvas');
