@@ -28,7 +28,7 @@ app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: '/',
+    origin: 'http://localhost:8000',
     methods: ['GET', 'POST'],
     credentials: true
   }
@@ -46,6 +46,9 @@ app.use('/users', Users);
 app.use('/visualart', VisualArtwork);
 app.use('/api/stories', CreateStoryRouter);
 app.use('/api/pages', pagesRouter);
+// app.use('/peerjs', require('peer').ExpressPeerServer(server, {
+//   debug: true
+// }));
 app.use(express.static(staticFilesPath));
 
 app.get('*', (req, res) => {
@@ -148,6 +151,24 @@ io.on('connection', socket => {
   socket.on('disconnectUser', userId => {
     console.log(`${userId} left the room`);
   });
+
+    // Handle mouse movement event
+    socket.on('mouseMove', (data, roomId: string) => {
+      // Broadcast the mouse movement to all participants in the same room
+      socket.in(roomId).emit('mouseMove', data);
+    });
+
+    // Handle mouse click event
+    socket.on('mouseClick', (data, roomId: string) => {
+      // Broadcast the mouse click to all participants in the same room
+      socket.in(roomId).emit('mouseClick', data);
+    });
+
+    // Handle key press event
+    socket.on('keyPress', (key: string, roomId: string) => {
+      // Broadcast the key press to all participants in the same room
+      socket.in(roomId).emit('keyPress', key);
+    });
 });
 
 server.listen(PORT, () => {
