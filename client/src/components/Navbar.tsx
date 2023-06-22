@@ -26,6 +26,9 @@ const Navbar = () => {
         <li className="navbar-item">
           <Link to="/messages">Messages</Link>
         </li>
+        <li className="navbar-item">
+          <Link to="/messages-test">Test</Link>
+        </li>
         <li
           className="navbar-item"
           onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}

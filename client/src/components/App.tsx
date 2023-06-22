@@ -10,6 +10,7 @@ import Ear from './EarStuff/Instrument'
 import Sculpture from './Sculpture'
 import VisualArt from './Eye/VisualArt';
 import Messages from './Messages/Messaging';
+import Inbox from './Messages/Inbox';
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
         <Route path='/visualart/:roomId' element={<VisualArt />} />
         <Route path='/sculpture/:roomId' element={<Sculpture />} />
         <Route path='/messages' element={<Messages />} />
+        <Route path='/messages-test' element={<Inbox />} />
       </Routes>
     </Router>
   );

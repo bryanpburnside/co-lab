@@ -1,3 +1,17 @@
+import React from 'react';
+
+const Sidebar = () => {
+  return (
+    <div>sidebar</div>
+  )
+}
+
+export default Sidebar;
+
+
+
+
+
 // import React from 'react';
 // import Threads from './Threads';
 
