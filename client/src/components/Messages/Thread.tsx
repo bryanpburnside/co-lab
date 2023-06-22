@@ -59,7 +59,6 @@ const Thread = ({ userId, recipient }) => {
   const getMessages = async () => {
     try {
       const response = await axios.get(`/messages/${userId}`);
-      console.log(response.data);
       const newMessages = response.data;
       setMessages((prevMessages) => [...prevMessages, ...newMessages]);
     } catch (err) {
