@@ -15,6 +15,7 @@ const ConversationContainer = styled.div`
   flex-direction: column;
   flex-grow: 1;
   overflow-y: auto;
+  height: 100%;
 `;
 
 const BubbleContainer = styled.div`
