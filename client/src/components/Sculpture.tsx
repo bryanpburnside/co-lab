@@ -13,10 +13,10 @@ export const SocketContext = createContext<Socket | null>(null)
 const Sculpture = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const { roomId } = useParams();
-  const peer = new Peer(user?.nickname as string, {
-    host: '/',
-    port: 8001,
-  })
+  // const peer = new Peer(user?.nickname as string, {
+  //   host: '/',
+  //   port: 8001,
+  // })
 
   navigator.mediaDevices.getUserMedia({
     video: false,
@@ -24,53 +24,61 @@ const Sculpture = () => {
   })
 
   useEffect(() => {
-    socket.on('roomCreated', (userId, roomId) => {
-      console.log(`${userId} created room: ${roomId}`);
-    });
+    // socket.on('roomCreated', (userId, roomId) => {
+    //   console.log(`${userId} created room: ${roomId}`);
+    // });
 
-    socket.on('userJoined', (userId) => {
-      socket.emit('logJoinUser', userId);
-      console.log(`User ${userId} joined the room`);
-    });
+    // socket.on('userJoined', (userId) => {
+    //   socket.emit('logJoinUser', userId);
+    //   console.log(`User ${userId} joined the room`);
+    // });
 
-    socket.on('userLeft', (userId) => {
-      console.log(`User ${userId} left the room`);
-    });
+    // socket.on('userLeft', (userId) => {
+    //   console.log(`User ${userId} left the room`);
+    // });
 
-    // Emit mouse movement event
-    const handleMouseMove = (event: MouseEvent) => {
-      const { clientX, clientY } = event;
-      const data = { x: clientX, y: clientY }
-      socket.emit('mouseMove', data, roomId);
-    };
+    // // Emit mouse movement event
+    // const handleMouseMove = (event: MouseEvent) => {
+    //   const { clientX, clientY } = event;
+    //   const data = { x: clientX, y: clientY }
+    //   socket.emit('mouseMove', data, roomId);
+    // };
 
-    // Emit mouse click event
-    const handleMouseClick = (event: MouseEvent) => {
-      const { clientX, clientY } = event;
-      const data = { x: clientX, y: clientY }
-      socket.emit('mouseClick', data, roomId);
-    };
+    // // Emit mouse click event
+    // const handleMousePress = (event: MouseEvent) => {
+    //   const { clientX, clientY } = event;
+    //   const data = { x: clientX, y: clientY }
+    //   socket.emit('mousePress', data, roomId);
+    // };
 
-    // Emit key press event
-    const handleKeyPress = (event: KeyboardEvent) => {
-      const { key } = event;
-      socket.emit('keyPress', key, roomId);
-    };
+    // const handleMouseRelease = (event: MouseEvent) => {
+    //   const { clientX, clientY } = event;
+    //   const data = { x: clientX, y: clientY }
+    //   socket.emit('mouseRelease', data, roomId);
+    // };
+
+    // // Emit key press event
+    // const handleKeyPress = (event: KeyboardEvent) => {
+    //   const { key } = event;
+    //   socket.emit('keyPress', key, roomId);
+    // };
 
     // Add event listeners
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('click', handleMouseClick);
-    window.addEventListener('keypress', handleKeyPress);
+    // window.addEventListener('mousemove', handleMouseMove);
+    // window.addEventListener('mousedown', handleMousePress);
+    // window.addEventListener('mouseup', handleMouseRelease);
+    // window.addEventListener('keypress', handleKeyPress);
 
     // Clean up event listeners
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('click', handleMouseClick);
-      window.removeEventListener('keypress', handleKeyPress);
-      socket.emit('disconnectUser', user?.sub);
-      socket.disconnect();
-    };
-  }, [socket]);
+    // return () => {
+      // window.removeEventListener('mousemove', handleMouseMove);
+      // window.removeEventListener('mousedown', handleMousePress);
+      // window.removeEventListener('mouseup', handleMouseRelease);
+      // window.removeEventListener('keypress', handleKeyPress);
+      // socket.emit('disconnectUser', user?.sub);
+      // socket.disconnect();
+    // };
+  }, []);
 
   return (
     <SocketContext.Provider value={socket}>

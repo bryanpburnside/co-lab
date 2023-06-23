@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { Socket } from 'socket.io-client';
 import { SocketContext } from './Sculpture';
@@ -5,9 +6,8 @@ import p5 from 'p5';
 import { FaSave } from 'react-icons/fa';
 
 const GenerativeArt = ( {roomId} ) => {
+  const { user, isAuthenticated, isLoading } = useAuth0();
   const canvasRef = useRef(null);
-  const [socketMouseX, setSocketMouseX] = useState(0); // Variable to store the received X coordinate from the socket
-  const [socketMouseY, setSocketMouseY] = useState(0); // Variable to store the received Y coordinate from the socket
   const socket = useContext(SocketContext) as Socket;
   useEffect(() => {
     // Create p5 sketch
@@ -26,6 +26,25 @@ const GenerativeArt = ( {roomId} ) => {
         p.background(61, 57, 131); // Set background color to #3d3983
         current = p.createVector(0, 0, 0);
         previous = p.createVector(0, 0, 0);
+        socket.on('Drawing', data => {
+          if (p.canvas) {
+            if (data.painting) {
+              current.x = data.x - p.width / 2
+              current.y = data.y - p.height / 2
+              // current.z = p.random(-100, 100)
+              let force = p5.Vector.sub(current, previous);
+              force.mult(0.05);
+
+              paths[paths.length - 1].add(current, force);
+
+              next = p.millis() + p.random(100);
+
+              previous.x = current.x;
+              previous.y = current.y;
+              // previous.z = current.z;
+            }
+          }
+        });
       };
 
       p.draw = () => {
@@ -33,7 +52,7 @@ const GenerativeArt = ( {roomId} ) => {
         if (p.millis() > next && painting) {
           current.x = p.mouseX - p.width / 2;
           current.y = p.mouseY - p.height / 2;
-          current.z = p.random(-100, 100);
+          // current.z = p.random(-100, 100);
 
           let force = p5.Vector.sub(current, previous);
           force.mult(0.05);
@@ -44,11 +63,19 @@ const GenerativeArt = ( {roomId} ) => {
 
           previous.x = current.x;
           previous.y = current.y;
-          previous.z = current.z;
+          // previous.z = current.z;
+
+          socket.emit('Drawing', {
+            x: p.mouseX,
+            y: p.mouseY,
+            // z: p.mouseZ,
+            painting,
+            roomId
+          })
         }
 
-        p.orbitControl();
-        p.translate(0, 0, -p.width / 2);
+        // p.orbitControl();
+        // p.translate(0, 0, -p.width / 2);
 
         for (let i = 0; i < paths.length; i++) {
           paths[i].update();
@@ -61,7 +88,7 @@ const GenerativeArt = ( {roomId} ) => {
         painting = true;
         previous.x = p.mouseX - p.width / 2;
         previous.y = p.mouseY - p.height / 2;
-        previous.z = p.random(-100, 100);
+        // previous.z = p.random(-100, 100);
         paths.push(new Path());
       };
 
@@ -123,51 +150,37 @@ const GenerativeArt = ( {roomId} ) => {
             p.line(
               this.position.x,
               this.position.y,
-              this.position.z,
+              // this.position.z,
               other.position.x,
               other.position.y,
-              other.position.z
+              // other.position.z
             );
           }
         }
       }
     };
-
     // Create new p5 instance
     new p5(sketch);
-  }, []);
 
-  useEffect(() => {
-    const handleMouseMove = (data) => {
-      setSocketMouseX(data.x);
-      setSocketMouseY(data.y);
-      socket.emit('mouseMove', data, roomId);
-    };
+    socket.on('roomCreated', (userId, roomId) => {
+      console.log(`${userId} created room: ${roomId}`);
+    });
 
-    const handleMouseClick = (data) => {
-      // Handle mouse click event
-      // Emit the event to the server
-      socket.emit('mouseClick', data, roomId);
-    };
+    socket.on('userJoined', (userId) => {
+      socket.emit('logJoinUser', userId);
+      console.log(`User ${userId} joined the room`);
+    });
 
-    const handleKeyPress = (key) => {
-      // Handle key press event
-      // Emit the event to the server
-      socket.emit('keyPress', key, roomId);
-    };
+    socket.on('userLeft', (userId) => {
+      console.log(`User ${userId} left the room`);
+    });
 
-    // Register event handlers
-    socket.on('mouseMove', handleMouseMove);
-    socket.on('mouseClick', handleMouseClick);
-    socket.on('keyPress', handleKeyPress);
-
-    // Clean up event handlers
     return () => {
-      socket.off('mouseMove', handleMouseMove);
-      socket.off('mouseClick', handleMouseClick);
-      socket.off('keyPress', handleKeyPress);
-    };
-  }, [socket]);
+      socket.emit('disconnectUser', user?.sub);
+      socket.disconnect();
+    }
+
+  }, []);
 
   const handleSave = () => {
     const canvas = canvasRef.current.querySelector('canvas');

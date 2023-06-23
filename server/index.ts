@@ -152,23 +152,32 @@ io.on('connection', socket => {
     console.log(`${userId} left the room`);
   });
 
-    // Handle mouse movement event
-    socket.on('mouseMove', (data, roomId: string) => {
-      // Broadcast the mouse movement to all participants in the same room
-      io.to(roomId).emit('mouseMove', data);
-    });
+    // // Handle mouse movement event
+    // socket.on('mouseMove', (data, roomId: string) => {
+    //   // Broadcast the mouse movement to all participants in the same room
+    //   socket.to(roomId).emit('mouseMove', data);
+    // });
 
-    // Handle mouse click event
-    socket.on('mouseClick', (data, roomId: string) => {
-      // Broadcast the mouse click to all participants in the same room
-      io.to(roomId).emit('mouseClick', data);
-    });
+    // // Handle mouse click event
+    // socket.on('mousePress', (data, roomId: string) => {
+    //   // Broadcast the mouse click to all participants in the same room
+    //   socket.to(roomId).emit('mousePress', data);
+    // });
 
-    // Handle key press event
-    socket.on('keyPress', (key: string, roomId: string) => {
-      // Broadcast the key press to all participants in the same room
-      io.to(roomId).emit('keyPress', key);
-    });
+    // socket.on('mouseRelease', (data, roomId: string) => {
+    //   // Broadcast the mouse click to all participants in the same room
+    //   socket.to(roomId).emit('mouseRelease', data);
+    // });
+
+    // // Handle key press event
+    // socket.on('keyPress', (key: string, roomId: string) => {
+    //   // Broadcast the key press to all participants in the same room
+    //   socket.to(roomId).emit('keyPress', key);
+    // });
+
+    socket.on('Drawing', data => {
+      socket.broadcast.emit('Drawing', data);
+    })
 });
 
 server.listen(PORT, () => {
