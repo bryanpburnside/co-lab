@@ -1,17 +1,18 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext } from "react";
 import { useParams } from 'react-router-dom'
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import GenerativeArt from "./GenerativeArt";
 // import { Canvas } from '@react-three/fiber';
 // import { PerspectiveCamera, PositionalAudio, Sphere, Plane, Box} from '@react-three/drei'
 import Peer from 'peerjs';
 import p5 from 'p5';
+export const socket = io('/');
+export const SocketContext = createContext<Socket | null>(null)
 
 const Sculpture = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const { roomId } = useParams();
-  const socket = io('/');
   const peer = new Peer(user?.nickname as string, {
     host: '/',
     port: 8001,
@@ -72,7 +73,9 @@ const Sculpture = () => {
   }, [socket]);
 
   return (
-    <GenerativeArt socket={socket} />
+    <SocketContext.Provider value={socket}>
+      <GenerativeArt roomId={roomId} />
+    </SocketContext.Provider>
   );
 };
 

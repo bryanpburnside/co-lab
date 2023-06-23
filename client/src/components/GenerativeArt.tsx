@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { Socket } from 'socket.io-client';
+import { SocketContext } from './Sculpture';
 import p5 from 'p5';
 import { FaSave } from 'react-icons/fa';
 
-const GenerativeArt = ({ socket }) => {
+const GenerativeArt = ( {roomId} ) => {
   const canvasRef = useRef(null);
   const [socketMouseX, setSocketMouseX] = useState(0); // Variable to store the received X coordinate from the socket
   const [socketMouseY, setSocketMouseY] = useState(0); // Variable to store the received Y coordinate from the socket
-
+  const socket = useContext(SocketContext) as Socket;
   useEffect(() => {
     // Create p5 sketch
     const sketch = (p) => {
@@ -136,18 +138,34 @@ const GenerativeArt = ({ socket }) => {
   }, []);
 
   useEffect(() => {
-    // Socket event handlers
     const handleMouseMove = (data) => {
-      // Update the received socket coordinates
       setSocketMouseX(data.x);
       setSocketMouseY(data.y);
+      socket.emit('mouseMove', data, roomId);
     };
 
-    socket.on('mouseMove', handleMouseMove);
+    const handleMouseClick = (data) => {
+      // Handle mouse click event
+      // Emit the event to the server
+      socket.emit('mouseClick', data, roomId);
+    };
 
-    // Clean up socket event listener
+    const handleKeyPress = (key) => {
+      // Handle key press event
+      // Emit the event to the server
+      socket.emit('keyPress', key, roomId);
+    };
+
+    // Register event handlers
+    socket.on('mouseMove', handleMouseMove);
+    socket.on('mouseClick', handleMouseClick);
+    socket.on('keyPress', handleKeyPress);
+
+    // Clean up event handlers
     return () => {
       socket.off('mouseMove', handleMouseMove);
+      socket.off('mouseClick', handleMouseClick);
+      socket.off('keyPress', handleKeyPress);
     };
   }, [socket]);
 

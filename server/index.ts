@@ -155,19 +155,19 @@ io.on('connection', socket => {
     // Handle mouse movement event
     socket.on('mouseMove', (data, roomId: string) => {
       // Broadcast the mouse movement to all participants in the same room
-      socket.in(roomId).emit('mouseMove', data);
+      io.to(roomId).emit('mouseMove', data);
     });
 
     // Handle mouse click event
     socket.on('mouseClick', (data, roomId: string) => {
       // Broadcast the mouse click to all participants in the same room
-      socket.in(roomId).emit('mouseClick', data);
+      io.to(roomId).emit('mouseClick', data);
     });
 
     // Handle key press event
     socket.on('keyPress', (key: string, roomId: string) => {
       // Broadcast the key press to all participants in the same room
-      socket.in(roomId).emit('keyPress', key);
+      io.to(roomId).emit('keyPress', key);
     });
 });
 
