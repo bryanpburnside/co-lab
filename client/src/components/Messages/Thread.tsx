@@ -2,8 +2,15 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import axios from 'axios';
 import { Socket } from 'socket.io-client';
 import { SocketContext } from './Inbox';
-import styled from 'styled-components';
-
+import {
+  ConversationContainer,
+  BubbleContainer,
+  SenderBubble,
+  RecipientBubble,
+  TextInput,
+  SendMessageContainer,
+  SendButton
+} from '../../styled';
 interface Message {
   id: number;
   senderId: string;
@@ -15,46 +22,6 @@ interface Message {
     name: string;
   }
 }
-
-const ConversationContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  overflow-y: auto;
-  height: 100%;
-`;
-
-const BubbleContainer = styled.div`
-  display: flex;
-  margin-bottom: 10px;
-`;
-
-const SenderBubble = styled.div`
-  align-self: flex-end;
-  background-color: #F06b80;
-  min-width: 33%;
-  text-align: right;
-  margin-left: auto;
-  color: #ffffff;
-  border: 2px solid white;
-  border-radius: 20px;
-  padding: 10px;
-  white-space: pre-wrap;
-  font-size: 20px;
-`;
-
-const RecipientBubble = styled.div`
-  align-self: flex-start;
-  background-color: #3d3983;
-  min-width: 33%;
-  margin-right: auto;
-  color: #fff;
-  border: 2px solid white;
-  border-radius: 20px;
-  padding: 10px;
-  white-space: pre-wrap;
-  font-size: 20px;
-`;
 
 const Thread = ({ userId, receiverId, userList, setUserList }) => {
   const socket = useContext(SocketContext) as Socket;
@@ -149,14 +116,17 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
           </div>
         ))}
       </ConversationContainer>
-      <div className="send-message">
-        <input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        <button type="submit" onClick={sendMessage}>Send</button>
-      </div>
+      {receiverId ?
+        <SendMessageContainer>
+          <TextInput
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          <SendButton type="submit" onClick={sendMessage}>Send</SendButton>
+        </SendMessageContainer>
+        : null
+      }
     </>
   );
 };
