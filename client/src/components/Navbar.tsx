@@ -50,7 +50,7 @@ const Navbar = () => {
           <Link to="/feed">Feed</Link>
         </li>
       </ul>
-      {speakText && <TTS text={speakText} />}
+      {/* {speakText && <TTS text={speakText} />} */}
     </nav>
   );
 };

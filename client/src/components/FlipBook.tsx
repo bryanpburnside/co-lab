@@ -8,6 +8,8 @@ import { TTSToggleContext } from './Stories';
 import Switch from "react-switch";
 import axios from "axios";
 import { GrammarlyEditorPlugin } from "@grammarly/editor-sdk-react";
+import TitlePage from "./TitlePage";
+
 
 interface Page {
   id?: number;
@@ -19,7 +21,7 @@ interface Page {
 interface Story {
   id?: number;
   title: string;
-  coverImage: File | null;
+  coverImage: any | null;
   numberOfPages: number | null;
 }
 
@@ -166,8 +168,6 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
 
       //update the pages to display the current info
       //map over selectedStoryPages looking for the page and set the content
-      //update the pages to display the current info
-      //map over selectedStoryPages looking for the page and set the content
       selectedStoryPages.map((page: any) => {
         if (existingPage && page.page_number === existingPage.page_number) {
           return { ...page, content: content };
@@ -205,6 +205,18 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
   //     handleSpeakClick(selectedStoryPages[flipBookRef.current.pageIndex]?.content);
   //   }
   // };
+
+  // const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files?.[0];
+  //   if (file) {
+  //     const url = URL.createObjectURL(file);
+  //     // Here we set the coverImage of the current story. This will be a local URL.
+  //     // Remember, this URL will not be persistent and it will only be available in the current session.
+  //     // You will have to send this image to the server to store it and get a persistent URL in a real application.
+  //     // Also, remember to revoke this URL when it's not needed anymore.
+  //     story.coverImage = url;
+  //   }
+  // }
 
 
   return (
@@ -251,9 +263,17 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
         marginTop: '100px'
       }}
     >
-      <div data-density="hard" className="title-page">
+      {/* <div data-density="hard" className="title-page"
+        style={{
+          backgroundImage: `url(${story.coverImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          height: '500px',
+          width: '500px',
+      }}>
         { story.title }
-      </div>
+      </div> */}
+      <TitlePage coverImage={ story.coverImage } title={ story.title } />
       {selectedStoryPages.map((page, index) => (
         <div key={index}>
           <div data-density="hard" className="page-container" onClick={() => handlePageClick(page)} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>

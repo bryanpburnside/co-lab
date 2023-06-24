@@ -15,6 +15,8 @@ import VisualArtwork from './routes/visualartwork.js';
 import CreateStoryRouter from './routes/story.js';
 import pagesRouter from './routes/pages.js';
 import axios from 'axios';
+import multer from 'multer';
+
 
 cloudinary.config({
   cloud_name: CLOUD_NAME,
@@ -106,6 +108,8 @@ app.post('/api/grammar', async (req, res) => {
     res.status(500).send('Error: Could not check grammar');
   }
 });
+
+const upload = multer({ dest: 'uploads/' });
 
 
 sequelize.authenticate()

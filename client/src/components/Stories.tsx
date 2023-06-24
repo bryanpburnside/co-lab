@@ -20,7 +20,7 @@ interface Page {
 interface Story {
   id?: number;
   title: string;
-  coverImage: File | null;
+  coverImage: string | null;
   numberOfPages: number | null;
 }
 
@@ -189,7 +189,7 @@ const StoryBook: React.FC = () => {
 
   return (
 <TTSToggleContext.Provider value={{ ttsOn, setTtsOn }}>
-  <div style={{ display: 'flex' }}>
+  <div style={{ display: 'flex', marginTop: '20px' }}>
     {/* Column 1: Story List */}
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginRight: '20px' }}>
       <div style={{ display: 'flex', marginBottom: '20px' }}>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import TTS from './TTS';
 import '../styles.css';
+import axios from 'axios';
 
 interface Page {
   id?: number;
@@ -12,7 +13,7 @@ interface Page {
 interface Story {
   id?: number;
   title: string;
-  coverImage: File | null;
+  coverImage: string | null;
   numberOfPages: number | null;
 }
 
@@ -25,6 +26,7 @@ const NewStoryForm: React.FC<{ onCreateStory: (story: Story) => void, onCancel: 
   const [title, setTitle] = useState('');
   // const [collaborators, setCollaborators] = useState('');
   const [coverImage, setCoverImage] = useState<File | null>(null);
+  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
   const [numberOfPages, setNumberOfPages] = useState<number | null>(null);
   const [speakText, setSpeakText] = useState('');
 
@@ -36,11 +38,22 @@ const NewStoryForm: React.FC<{ onCreateStory: (story: Story) => void, onCancel: 
   //   setCollaborators(event.target.value);
   // };
 
-  const handleCoverImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+  const handleCoverImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
-      setCoverImage(event.target.files[0]);
+      const file = event.target.files[0];
+      const formData = new FormData();
+      formData.append('coverImage', file);
+      try {
+        const response = await axios.post('/api/stories/upload', formData);
+        setCoverImage(file);
+        setCoverImageUrl(response.data.imageUrl);
+      } catch (error) {
+        console.error('Error uploading image to server:', error);
+      }
     }
   };
+
 
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -48,7 +61,7 @@ const NewStoryForm: React.FC<{ onCreateStory: (story: Story) => void, onCancel: 
 
     const story: Story = {
       title,
-      coverImage,
+      coverImage: coverImageUrl,
       numberOfPages
     };
 
@@ -73,6 +86,7 @@ const NewStoryForm: React.FC<{ onCreateStory: (story: Story) => void, onCancel: 
       console.error('Unable to save story to database-client', error);
     }
   };
+
 
   const handleCancel = () => {
     onCancel();
@@ -137,6 +151,9 @@ const NewStoryForm: React.FC<{ onCreateStory: (story: Story) => void, onCancel: 
         onMouseLeave={() => handleLeave()}>
         Cancel
       </button>
+      <div>
+        {coverImageUrl && <img src={coverImageUrl} alt="Cover" />}
+      </div>
       {speakText && <TTS text={ speakText } />}
     </form>
   );
