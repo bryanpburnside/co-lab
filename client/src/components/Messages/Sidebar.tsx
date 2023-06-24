@@ -47,7 +47,7 @@ const Sidebar = () => {
     }
   }
 
-  const handleUserClick = (recipientId: string) => {
+  const handleRecipientClick = (recipientId: string) => {
     setRecipient(recipientId);
   }
 
@@ -68,7 +68,7 @@ const Sidebar = () => {
         <ul>
           {userList.map((user) => {
             if (user.id !== userId) {
-              return (<li key={user.id} onClick={() => handleUserClick(user.id)}>
+              return (<li key={user.id} onClick={() => handleRecipientClick(user.id)}>
                 {user.name}
               </li>)
             }
@@ -76,7 +76,7 @@ const Sidebar = () => {
         </ul>
       </MessageList>
       <ThreadContainer>
-        <Thread userId={userId} recipient={recipient} />
+        <Thread userId={userId} receiverId={recipient} userList={userList} setUserList={setUserList} />
       </ThreadContainer>
     </SidebarContainer>
   )
