@@ -24,15 +24,15 @@ const Navbar = () => {
         <li className="navbar-item">
           <Link to="/profile">Profile</Link>
         </li>
+        <li className="navbar-item">
+          <Link to="/feed">Feed</Link>
+        </li>
         <li
           className="navbar-item"
           onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
           style={{ cursor: 'pointer' }}
         >
           Logout
-        </li>
-        <li className="navbar-item">
-          <Link to="/feed">Feed</Link>
         </li>
       </ul>
     </nav>
