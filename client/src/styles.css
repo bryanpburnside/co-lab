@@ -266,3 +266,6 @@ div:hover > .tooltip-text {
   display: block;
 }
 
+.new-story-form button:hover {
+  background-color: #f06b80;
+}
