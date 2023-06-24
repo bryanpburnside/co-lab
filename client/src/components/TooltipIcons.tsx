@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
-import { IconType } from 'react-icons';
 import '../styles.css';
 
+
+interface IconProps {
+  size?: number;
+  className?: string;
+}
 interface TooltipIconProps {
-  icon: IconType;
+  children?: React.ReactNode;
+  icon: React.ComponentType<IconProps>;
   tooltipText: string;
-  handleClick: () => void;
+  handleClick: (e: React.MouseEvent) => void;
   style?: React.CSSProperties;
 }
+
+
 
 const TooltipIcon: React.FC<TooltipIconProps> = ({ icon: Icon, tooltipText, handleClick, style }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -25,7 +32,7 @@ const TooltipIcon: React.FC<TooltipIconProps> = ({ icon: Icon, tooltipText, hand
       onMouseEnter={ handleMouseEnter }
       onMouseLeave={ handleMouseLeave }
       onClick={ handleClick }
-      style={ style }
+      style={{ ...style, position: 'relative' }}
     >
       <Icon size={30} />
       {isHovered && <div className="tooltip-text">{ tooltipText }</div>}

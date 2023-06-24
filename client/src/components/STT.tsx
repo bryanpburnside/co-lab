@@ -38,7 +38,7 @@ const STT: React.FC<STTProps> = ({ updateTranscript }) => {
     <div className="stt">
       <TooltipIcon
         icon={ FaMicrophoneAlt }
-        tooltipText="Click for speech to text"
+        tooltipText="Speech to text"
         handleClick={ startListening }
          />
     </div>

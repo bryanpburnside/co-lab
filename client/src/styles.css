@@ -65,7 +65,6 @@ html {
 .page-container {
   width: 450px;
   height: 450px;
-  ;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -133,9 +132,10 @@ html {
   /* Adjust the width as desired */
   margin: 0 auto;
   /* Center the navbar horizontally */
-  margin-top: 50px;
+  margin-top: 25px;
   padding: 20px;
   border-radius: 10px;
+  margin-bottom: 100px;
 }
 
 .navbar-links {
@@ -207,4 +207,62 @@ html {
   font-weight: 900;
 }
 
+.new-story-form {
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  padding: 20px;
+  max-width: 500px;
+  margin: auto;
+}
+
+.new-story-form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.new-story-form input {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 5px;
+  border: 1px solid #cccccc;
+}
+
+.new-story-form button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  color: #ffffff;
+  background-color: #f06b80;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.new-story-form button:hover {
+  background-color: #f06b80;
+}
+
+.tooltip-text {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 10px;
+  padding: 5px;
+  background-color: #3d3983;
+  color: white;
+  border-radius: 3px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1;
+  display: none;
+  opacity: 0.75;
+}
+
+/* show the tooltip text when hovering */
+div:hover > .tooltip-text {
+  display: block;
+}
 

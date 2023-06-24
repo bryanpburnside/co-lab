@@ -9,11 +9,12 @@ import { Server, Socket } from 'socket.io';
 import cors from 'cors';
 import { v2 as cloudinary } from 'cloudinary';
 dotenv.config({ path: path.resolve(dirname(fileURLToPath(import.meta.url)), '../.env') });
-const { PORT, CLOUD_NAME, CLOUD_API_KEY, CLOUD_SECRET } = process.env;
+const { PORT, CLOUD_NAME, CLOUD_API_KEY, CLOUD_SECRET, RapidAPI_KEY, RapidAPI_HOST } = process.env;
 import Users from './routes/users.js';
 import VisualArtwork from './routes/visualartwork.js';
 import CreateStoryRouter from './routes/story.js';
 import pagesRouter from './routes/pages.js';
+import axios from 'axios';
 
 cloudinary.config({
   cloud_name: CLOUD_NAME,
@@ -75,6 +76,34 @@ app.post('/api/stories', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send('Error: Could not create story-server');
+  }
+});
+
+
+app.post('/api/grammar', async (req, res) => {
+  const { text } = req.body;
+
+  const encodedParams = new URLSearchParams({
+    text: text,
+  });
+
+  const options = {
+    method: 'POST',
+    url: 'https://api.textgears.com/check.php',
+    headers: {
+      'content-type': 'application/x-www-form-urlencoded',
+      'X-RapidAPI-Key': RapidAPI_KEY,
+      'X-RapidAPI-Host': RapidAPI_HOST,
+    },
+    data: encodedParams,
+  };
+
+  try {
+    const response = await axios.request(options);
+    res.status(200).json(response.data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error: Could not check grammar');
   }
 });
 

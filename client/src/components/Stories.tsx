@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, createContext } from "react";
 import NewStoryForm from "./NewStoryForm";
 import FlipBook from "./FlipBook";
 import STT from  './STT';
@@ -6,8 +6,7 @@ import TranscriptLog from "./Transcript";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useParams } from 'react-router-dom'
 import { io } from 'socket.io-client';
-import { FaPlusCircle } from 'react-icons/fa';
-import { IconType } from 'react-icons';
+import { FaPlusCircle, FaTty, FaHeadphones, FaBookMedical } from 'react-icons/fa';
 import TooltipIcon from './TooltipIcons';
 import TTS from "./TTS";
 
@@ -25,6 +24,13 @@ interface Story {
   numberOfPages: number | null;
 }
 
+export const TTSToggleContext = createContext<{
+  ttsOn: boolean;
+  setTtsOn: React.Dispatch<React.SetStateAction<boolean>>;
+}>({
+  ttsOn: true,
+  setTtsOn: () => {},
+});
 
 const StoryBook: React.FC = () => {
   const { user } = useAuth0();
@@ -35,6 +41,7 @@ const StoryBook: React.FC = () => {
   const [selectedStory, setSelectedStory] = useState<Story | null>(null);
   const [showNewStoryForm, setShowNewStoryForm] = useState(false);
   const [speakText, setSpeakText] = useState('');
+  const [ttsOn, setTtsOn] = useState(true);
 
 
   useEffect(() => {
@@ -180,32 +187,51 @@ const StoryBook: React.FC = () => {
     }
   };
 
-
   return (
-    <div style={{ display: 'flex' }}>
-      <TooltipIcon
-        icon={ FaPlusCircle }
-        tooltipText="Create new story"
-        handleClick={ handleShowNewStoryForm }
-      />
-      {/* <TranscriptLog></TranscriptLog> */}
+<TTSToggleContext.Provider value={{ ttsOn, setTtsOn }}>
+  <div style={{ display: 'flex' }}>
+    {/* Column 1: Story List */}
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginRight: '20px' }}>
+      <div style={{ display: 'flex', marginBottom: '20px' }}>
+        <TooltipIcon
+          icon={ FaBookMedical }
+          tooltipText="Create new story"
+          handleClick={ handleShowNewStoryForm }
+          style={{ marginRight: '20px'}}
+        />
+        <TooltipIcon
+          icon={ FaTty }
+          tooltipText={ttsOn ? "Turn TTS Off" : "Turn TTS On"}
+          handleClick={() => setTtsOn(!ttsOn)}
+        >
+          {ttsOn ? "Turn TTS Off" : "Turn TTS On"}
+        </TooltipIcon>
+      </div>
       <div style={{
-        marginRight: '20px',
-        marginLeft: '20px',
         border: '1px solid #ccc',
         borderRadius: '5px',
         padding: '10px',
       }}>
-      {stories.map((story, index) => (
-        <div
-          key={ index }
-          onClick={() => handleStoryClick(story)}
-          onMouseEnter={() => handleStoryHover(story)}
-          style={{ marginBottom: '20px' }}>
-          { story.title }
-        </div>
-      ))}
+        {stories.map((story, index) => (
+          <div
+            key={ index }
+            onClick={() => handleStoryClick(story)}
+            onMouseEnter={() => handleStoryHover(story)}
+            style={{
+              marginBottom: '20px',
+              backgroundColor: index % 2 === 0 ? '#f2f2f2' : '#ffffff',
+              padding: '10px',
+              borderRadius: '5px',
+              color: '#3d3983',
+              width: '200px'
+            }}>
+            { story.title }
+          </div>
+        ))}
       </div>
+    </div>
+    {/* Column 2: FlipBook and PageEditor */}
+    <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '20px', height: '100%', width: '100%' }}>
       {showNewStoryForm ? (
         <NewStoryForm onCreateStory={ handleCreateStory } onCancel={ handleCancelCreateStory } />
       ) : (
@@ -217,10 +243,14 @@ const StoryBook: React.FC = () => {
           fetchPages={ fetchPages }
           TooltipIcon={ TooltipIcon }
           addNewPage={ addNewPage }
-          />
+        />
       )}
-      {speakText && <TTS text={speakText} />}
     </div>
+  </div>
+  {/* TTS */}
+  {speakText && <TTS text={speakText} />}
+</TTSToggleContext.Provider>
+
   );
 };
 

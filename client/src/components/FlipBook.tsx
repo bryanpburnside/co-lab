@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 import STT from './STT';
 import '../styles.css';
-import { FaSave, FaTimesCircle, FaPlusCircle } from 'react-icons/fa';
+import { FaSave, FaTimesCircle, FaPlusCircle, FaVolumeUp, FaTools } from 'react-icons/fa';
 import TooltipIcon from './TooltipIcons';
-
-
+import { TTSToggleContext } from './Stories';
+import Switch from "react-switch";
+import axios from "axios";
+import { GrammarlyEditorPlugin } from "@grammarly/editor-sdk-react";
 
 interface Page {
   id?: number;
@@ -32,6 +34,8 @@ interface PageEditorProps {
 const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, TooltipIcon }) => {
   const [content, setContent] = useState(page.content);
 
+  const { ttsOn } = useContext(TTSToggleContext);
+
   const handleContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContent(event.target.value);
   };
@@ -49,36 +53,66 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
     setContent((prevContent) => prevContent + ' ' + transcript);
   };
 
+  const handleSpeakClick = () => {
+    if (page && 'speechSynthesis' in window) {
+      //cancel any other ongoing speech synthesis
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(page.content);
+      window.speechSynthesis.speak(utterance);
+    } else {
+      console.error('Speech synthesis is not supported in this browser.');
+    }
+  };
+
+
   return (
     <div>
-      <div style={{ position: 'relative', display: 'inline-block' }}>
-      <textarea
-          value={content}
-          onChange={handleContentChange}
-          maxLength={310}
-          rows={10}
-          cols={50}
-          style={{ width: '100%', height: '100%' }}
-        />
+      <div style={{ position: 'relative', display: 'inline-block', top: '145px' }}>
+        <GrammarlyEditorPlugin clientId='client_RZvMQYBxstbSeZEA6Ft7sA'>
+          <textarea
+            value={ content }
+            onChange={ handleContentChange }
+            maxLength={310}
+            rows={10}
+            cols={50}
+            style={{ width: '100%', height: '100%' }}
+          />
+        </GrammarlyEditorPlugin>
         <FaTimesCircle
           style={{
             position: 'absolute',
-            top: 0,
+            top: '-30px',
             right: 0,
             color: '#3d3983',
             backgroundColor: 'white',
-            borderRadius: '50%'
+            borderRadius: '100%'
           }}
           size={30}
           onClick={ handleCancel }
         />
+      <div style={{
+        position: 'absolute',
+        bottom: '-60px',
+        right: 0,
+        display: 'flex',
+        gap: '10px',
+      }}>
+        <TooltipIcon
+          icon={ FaSave }
+          tooltipText="Save"
+          handleClick={ handleSave }
+          style={{ top: '15px'}}
+        />
+        <TooltipIcon
+          icon={ FaVolumeUp }
+          tooltipText="TTY"
+          handleClick={ handleSpeakClick }
+          style={{ top: '15px'}}
+        />
+        <STT updateTranscript={ updateContentWithTranscript } />
       </div>
-      <STT updateTranscript={ updateContentWithTranscript } />
-      <TooltipIcon
-        icon={ FaSave }
-        tooltipText="Save"
-        handleClick={ handleSave } />
     </div>
+  </div>
   );
 
 };
@@ -94,6 +128,9 @@ interface FlipBookProps {
 
 const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdatePage, fetchPages, addNewPage, TooltipIcon }) => {
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
+  const [isAutoReading, setIsAutoReading] = useState(false);
+
+  const flipBookRef = useRef<any>(null);
 
   const handlePageClick = (page: Page) => {
     setSelectedPage(page);
@@ -129,7 +166,6 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
 
       //update the pages to display the current info
       //map over selectedStoryPages looking for the page and set the content
-      // onUpdatePage({ ...selectedPage, content: content });
       //update the pages to display the current info
       //map over selectedStoryPages looking for the page and set the content
       selectedStoryPages.map((page: any) => {
@@ -138,10 +174,6 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
         }
         return page;
       });
-
-      //sort the pages according to page number
-      // const sortedPagesByPageNumber: any = selectedStoryPages.sort((a, b) => a.page_number - b.page_number);
-      // setPages(sortedPagesByPageNumber);
       fetchPages();
       setSelectedPage(null);
     }
@@ -151,9 +183,35 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
     setSelectedPage(null);
   };
 
+  //to read the pages
+  const handleSpeakClick = (content: string) => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(content);
+      window.speechSynthesis.speak(utterance);
+    } else {
+      console.error('Cannot read the page');
+    }
+  };
+
+  // const handleToggleAutoRead = () => {
+  //   setIsAutoReading(!isAutoReading);
+  //   if (window.speechSynthesis.speaking) {
+  //     if (isAutoReading) {
+  //       window.speechSynthesis.pause();
+  //     } else {
+  //       window.speechSynthesis.resume();
+  //     }
+  //   } else if (isAutoReading) {
+  //     handleSpeakClick(selectedStoryPages[flipBookRef.current.pageIndex]?.content);
+  //   }
+  // };
+
+
   return (
     <>
+    <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
     <HTMLFlipBook
+      ref={flipBookRef}
       size={"stretch"}
       minWidth={300}
       maxWidth={500}
@@ -166,16 +224,21 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
       autoSize={true}
       maxShadowOpacity={0}
       mobileScrollSupport={false}
-      clickEventForward={false}
+      clickEventForward={true}
       swipeDistance={0}
-      showPageCorners={true}
-      disableFlipByClick={false}
+      showPageCorners={false}
+      disableFlipByClick={true}
       width={500}
       height={500}
       className={'my-flipbook'}
       startPage={1}
       showCover={true}
       useMouseEvents={true}
+      // onFlip={(e: any) => {
+      //   if (isAutoReading) {
+      //     handleSpeakClick(selectedStoryPages[e.data]?.content);
+      //   }
+      // }}
       style={{
         backgroundColor: "#EADDCA",
         border: "1px solid #ddd",
@@ -184,26 +247,55 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
         borderRadius: "5px",
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        marginTop: '100px'
       }}
     >
-        <div data-density="hard" className="title-page">
-          { story.title }
-        </div>
-        {selectedStoryPages.map((page, index) => (
-          <div
-          key={index}
-          className="page-container"
-          onClick={() => handlePageClick(page)}>
-          <div className="pages">
-            { page.content }
+      <div data-density="hard" className="title-page">
+        { story.title }
+      </div>
+      {selectedStoryPages.map((page, index) => (
+        <div key={index}>
+          <div data-density="hard" className="page-container" onClick={() => handlePageClick(page)} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              { index === selectedStoryPages.length - 1 && (
+                <TooltipIcon
+                  icon={ FaPlusCircle }
+                  tooltipText="Add New Page"
+                  handleClick={(e: React.MouseEvent) => {
+                    e.stopPropagation();
+                    addNewPage();
+                  }}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    color: '#3d3983',
+                    backgroundColor: 'white',
+                    borderRadius: '50%',
+                  }}
+                />
+              )}
+              <div onClick={(e: React.MouseEvent) => {
+                e.stopPropagation();
+                handleSpeakClick(page.content);
+              }}>
+                <FaVolumeUp
+                  style={{
+                    color: '#3d3983',
+                    backgroundColor: 'white',
+                    borderRadius: '50%',
+                  }}
+                  size={30}
+                />
+              </div>
+            </div>
+            <div className="pages" data-density="hard">
+              { page.content }
+            </div>
           </div>
         </div>
-        ))}
-          <TooltipIcon
-            icon={ FaPlusCircle }
-            tooltipText="Add New Page"
-            handleClick={ addNewPage } />
+      ))}
       </HTMLFlipBook>
       {selectedPage && (
         <PageEditor
@@ -213,6 +305,7 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
           TooltipIcon={ TooltipIcon }
         />
       )}
+      </div>
     </>
   );
 };

@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { TTSToggleContext } from './Stories';
 
 interface TTSProps {
   text: string;
 }
 
 const TTS: React.FC<TTSProps> = ({ text }) => {
+  const { ttsOn } = useContext(TTSToggleContext);
+
   const handleSpeakClick = () => {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(text);
@@ -14,13 +17,14 @@ const TTS: React.FC<TTSProps> = ({ text }) => {
     }
   };
 
-  // Auto speak when component is mounted
-  React.useEffect(() => {
-    handleSpeakClick();
-  }, [text]);
+  //auto speak when component is mounted
+  useEffect(() => {
+    if (ttsOn) {
+      handleSpeakClick();
+    }
+  }, [text, ttsOn]);
 
   return null;
-
 };
 
 export default TTS;
