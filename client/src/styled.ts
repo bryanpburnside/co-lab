@@ -44,6 +44,7 @@ const TextInput = styled.input`
   height: 40px;
   width: 100%;
   padding: 5px 10px;
+  margin-right: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 20px;
