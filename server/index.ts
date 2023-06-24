@@ -145,6 +145,8 @@ io.on('connection', socket => {
   });
 
   socket.on('directMessage', async ({ senderId, receiverId, message }) => {
+    const sortedIds = [senderId, receiverId].sort(); // Sort the user IDs
+    const room = `user-${sortedIds[0]}-${sortedIds[1]}`; // Concatenate the sorted IDs
     try {
       const newMessage = await Message.create({
         senderId,
@@ -153,21 +155,23 @@ io.on('connection', socket => {
       });
 
       socket.emit('messageSent', newMessage);
-      socket.to(`user-${receiverId}`).emit('messageReceived', newMessage);
+      io.to(room).emit('messageReceived', newMessage);
     } catch (err) {
       console.error(err);
     }
   });
 
-  socket.on('joinThread', (userId) => {
-    const room = `user-${userId}`;
-    socket.join(room);
-    console.log(`User ${userId} joined the message thread`);
+  socket.on('joinThread', (userId, receiverId) => {
+    const sortedIds = [userId, receiverId].sort();
+    const thread = `user-${sortedIds[0]}-${sortedIds[1]}`;
+    socket.join(thread);
+    console.log(`User ${userId} joined the message thread ${thread}. Recipient is ${receiverId}`);
   });
 
-  socket.on('disconnectThread', (userId) => {
-    const room = `user-${userId}`;
-    socket.leave(room);
+  socket.on('disconnectThread', (userId, receiverId) => {
+    const sortedIds = [userId, receiverId].sort();
+    const thread = `user-${sortedIds[0]}-${sortedIds[1]}`;
+    socket.leave(thread);
     console.log(`${userId} left the message thread`);
   });
 
