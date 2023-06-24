@@ -11,6 +11,9 @@ interface Message {
   sender: {
     name: string;
   };
+  recipient: {
+    name: string;
+  }
 }
 
 const ConversationContainer = styled.div`
@@ -59,10 +62,10 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
   const [message, setMessage] = useState<string>('');
   const conversationContainerRef = useRef<HTMLDivElement>(null);
 
-  const getUserName = (userId: string) => {
-    const user = userList.find((u) => u.id === userId);
-    return user ? user.name : '';
-  };
+  // const getUserName = (userId: string) => {
+  //   const user = userList.find((u) => u.id === userId);
+  //   return user ? user.name : '';
+  // };
 
   const getMessages = async () => {
     try {
@@ -75,19 +78,22 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
     }
   };
 
-  const updateMessages = () => {
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      {
-        id: Date.now(),
-        senderId: userId,
-        message,
-        sender: {
-          name: getUserName(userId),
-        },
-      },
-    ]);
-  }
+  // const updateMessages = () => {
+  //   setMessages((prevMessages) => [
+  //     ...prevMessages,
+  //     {
+  //       id: Date.now(),
+  //       senderId: userId,
+  //       message,
+  //       sender: {
+  //         name: getUserName(userId),
+  //       },
+  //       recipient: {
+  //         name: getUserName(receiverId)
+  //       }
+  //     },
+  //   ]);
+  // }
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -100,21 +106,23 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
       message,
     });
 
-    updateMessages();
     setMessage('');
   };
 
   useEffect(() => {
+    socket.on('messageReceived', (newMessage) => {
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+    });
+  }, [])
+
+  useEffect(() => {
     if (userId && receiverId) {
       getMessages();
-      socket.emit('joinThread', userId);
 
-      socket.on('directMessage', (newMessage) => {
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
-      });
+      socket.emit('joinThread', userId, receiverId);
 
       return () => {
-        socket.emit('disconnectThread', userId);
+        socket.emit('disconnectThread', userId, receiverId);
         socket.off();
       };
     }
