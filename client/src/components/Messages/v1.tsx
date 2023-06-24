@@ -51,19 +51,19 @@
 //     }
 //   }, [userId]);
 
-//   const sendMessage = async (e) => {
-//     e.preventDefault();
+  // const sendMessage = async (e) => {
+  //   e.preventDefault();
 
-//     if (message.trim() === '') return;
+  //   if (message.trim() === '') return;
 
-//     socket.emit('directMessage', {
-//       senderId: userId,
-//       receiverId,
-//       message,
-//     });
+  //   socket.emit('directMessage', {
+  //     senderId: userId,
+  //     receiverId,
+  //     message,
+  //   });
 
-//     setMessage('');
-//   };
+  //   setMessage('');
+  // };
 
 //   return (
 //     <div>

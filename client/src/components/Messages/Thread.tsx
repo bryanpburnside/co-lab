@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import axios from 'axios';
+import { Socket } from 'socket.io-client';
+import { SocketContext } from './Inbox';
 import styled from 'styled-components';
 
 interface Message {
@@ -51,26 +53,72 @@ const RecipientBubble = styled.div`
   font-size: 20px;
 `;
 
-const Thread = ({ userId, recipient }) => {
+const Thread = ({ userId, receiverId, userList, setUserList }) => {
+  const socket = useContext(SocketContext) as Socket;
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<string>('');
   const conversationContainerRef = useRef<HTMLDivElement>(null);
 
+  const getUserName = (userId: string) => {
+    const user = userList.find((u) => u.id === userId);
+    return user ? user.name : '';
+  };
+
   const getMessages = async () => {
     try {
-      const response = await axios.get(`/messages/${userId}/${recipient}`);
+      const response = await axios.get(`/messages/${userId}/${receiverId}`);
       const newMessages = response.data;
-      setMessages((prevMessages) => [...prevMessages, ...newMessages]);
+      console.log(newMessages);
+      setMessages(newMessages);
     } catch (err) {
       console.error('Failed to GET messages:', err);
     }
   };
 
+  const updateMessages = () => {
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      {
+        id: Date.now(),
+        senderId: userId,
+        message,
+        sender: {
+          name: getUserName(userId),
+        },
+      },
+    ]);
+  }
+
+  const sendMessage = async (e) => {
+    e.preventDefault();
+
+    if (message.trim() === '' || receiverId.trim() === '') return;
+
+    socket.emit('directMessage', {
+      senderId: userId,
+      receiverId,
+      message,
+    });
+
+    updateMessages();
+    setMessage('');
+  };
+
   useEffect(() => {
-    if (userId && recipient) {
+    if (userId && receiverId) {
       getMessages();
+      socket.emit('joinThread', userId);
+
+      socket.on('directMessage', (newMessage) => {
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+      });
+
+      return () => {
+        socket.emit('disconnectThread', userId);
+        socket.off();
+      };
     }
-  }, [userId, recipient]);
+  }, [receiverId]);
 
   useEffect(() => {
     if (conversationContainerRef.current) {
@@ -93,6 +141,14 @@ const Thread = ({ userId, recipient }) => {
           </div>
         ))}
       </ConversationContainer>
+      <div className="send-message">
+        <input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
+        <button type="submit" onClick={sendMessage}>Send</button>
+      </div>
     </>
   );
 };
