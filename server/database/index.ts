@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes } from 'sequelize';
+import { Sequelize, DataTypes, Model } from 'sequelize';
 const { DB_NAME, DB_USER, DB_PW } = process.env;
 
 const sequelize = new Sequelize(DB_NAME || 'colab', DB_USER as string, DB_PW as string, {
@@ -10,7 +10,17 @@ const sequelize = new Sequelize(DB_NAME || 'colab', DB_USER as string, DB_PW as 
   logging: false
 });
 
-const User = sequelize.define('users', {
+interface UserAttributes {
+  id: string;
+  name: string;
+  email: string;
+  friends: Array<string>;
+  picture: string;
+}
+
+interface UserModel extends Model<UserAttributes>, UserAttributes { }
+
+const User = sequelize.define<UserModel>('users', {
   id: {
     type: DataTypes.STRING,
     primaryKey: true,
@@ -23,7 +33,7 @@ const User = sequelize.define('users', {
     type: DataTypes.STRING,
   },
   friends: {
-    type: DataTypes.ARRAY(DataTypes.INTEGER),
+    type: DataTypes.ARRAY(DataTypes.STRING),
   },
   picture: {
     type: DataTypes.STRING,
@@ -197,6 +207,7 @@ export {
   sequelize,
   initialize,
   User,
+  UserModel,
   Message,
   Artwork,
   VisualArt,
