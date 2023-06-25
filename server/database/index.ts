@@ -1,7 +1,7 @@
 import { Sequelize, DataTypes, Model } from 'sequelize';
 const { DB_NAME, DB_USER, DB_PW } = process.env;
 
-const sequelize = new Sequelize(DB_NAME || 'colab', DB_USER as string, DB_PW as string, {
+const sequelize = new Sequelize(DB_NAME || 'colab', DB_USER || 'root', DB_PW || '', {
   host: 'localhost',
   dialect: 'postgres',
   define: {
@@ -218,5 +218,4 @@ export {
   UserCollaboration,
   Pages,
 };
-
 
