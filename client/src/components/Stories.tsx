@@ -192,7 +192,7 @@ const StoryBook: React.FC = () => {
   <div style={{ display: 'flex', marginTop: '20px' }}>
     {/* Column 1: Story List */}
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginRight: '20px' }}>
-      <div style={{ display: 'flex', marginBottom: '20px' }}>
+      <div style={{ display: 'flex', marginBottom: '15px', marginTop: '20px' }}>
         <TooltipIcon
           icon={ FaBookMedical }
           tooltipText="Create new story"
@@ -212,7 +212,9 @@ const StoryBook: React.FC = () => {
         borderRadius: '5px',
         padding: '10px',
         overflow: 'auto',
-        height: '700px'
+        height: '680px',
+        marginLeft: '100px',
+        marginTop: '40px'
       }}>
         {stories.map((story, index) => (
           <div

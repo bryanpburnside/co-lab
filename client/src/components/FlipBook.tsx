@@ -1,13 +1,45 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useContext, useRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 import STT from './STT';
 import '../styles.css';
-import { FaSave, FaTimesCircle, FaPlusCircle, FaVolumeUp, FaTools } from 'react-icons/fa';
+import { FaSave, FaTimesCircle, FaPlusCircle, FaVolumeUp } from 'react-icons/fa';
 import TooltipIcon from './TooltipIcons';
 import { TTSToggleContext } from './Stories';
 import Switch from "react-switch";
 import axios from "axios";
 import { GrammarlyEditorPlugin } from "@grammarly/editor-sdk-react";
+import styled from 'styled-components';
+
+const TitlePage: any = styled.div<{ backgroundImage: string }>`
+  data-density: hard;
+  background-image: url(${props => props.backgroundImage});
+  background-size: cover;
+  background-position: center;
+  height: 90%;
+  width: 500px;
+`;
+
+const PageContainer = styled.div`
+  width: 500px;
+  height: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Pages = styled.div`
+  font-family: 'Georgia', serif;
+  background: ivory;
+  color: black;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  line-height: 1.6;
+  font-size: 18px;
+  width: 500px;
+  height: 700px;
+  padding: 10px;
+  box-sizing: border-box;
+  text-align: center;
+`;
 
 
 interface Page {
@@ -76,7 +108,7 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
             maxLength={310}
             rows={10}
             cols={50}
-            style={{ width: '100%', height: '100%' }}
+            style={{ width: '100%', height: '550px' }}
           />
         </GrammarlyEditorPlugin>
         <FaTimesCircle
@@ -227,7 +259,7 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
       minWidth={300}
       maxWidth={500}
       minHeight={300}
-      maxHeight={500}
+      maxHeight={700}
       drawShadow={true}
       flippingTime={500}
       usePortrait={false}
@@ -240,7 +272,7 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
       showPageCorners={false}
       disableFlipByClick={true}
       width={500}
-      height={500}
+      height={700}
       className={'my-flipbook'}
       startPage={1}
       showCover={true}
@@ -251,31 +283,46 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
       //   }
       // }}
       style={{
-        backgroundColor: "#EADDCA",
-        border: "1px solid #ddd",
+        backgroundColor: '#fbf5df',
         boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
         overflow: "hidden",
-        borderRadius: "5px",
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: '100px'
+        marginTop: '100px',
       }}
     >
-      <div data-density="hard" className="title-page"
-        style={{
-          backgroundImage: `url(${story.coverImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          height: '500px',
-          width: '500px',
-      }}>
-        { story.title }
-      </div>
+      <TitlePage backgroundImage={ story.coverImage }>
+      <div style={{
+          backgroundColor: '#fbf5df',
+          height: '30px',
+          maxWidth: 'calc(100% - 80px)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: '0 10px',
+          marginTop: '10px',
+          color: 'black',
+          fontWeight: 'bolder',
+          textAlign: 'center',
+          margin: 'auto',
+        }}>
+          { story.title }
+        </div>
+      </TitlePage>
       {selectedStoryPages.map((page, index) => (
         <div key={index}>
-          <div data-density="hard" className="page-container" onClick={() => handlePageClick(page)} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <PageContainer
+          onClick={() => handlePageClick(page)}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            height: '90%',
+            margin: 'auto',
+            }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               { index === selectedStoryPages.length - 1 && (
                 <TooltipIcon
                   icon={ FaPlusCircle }
@@ -286,11 +333,11 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
                   }}
                   style={{
                     position: 'absolute',
-                    top: 0,
-                    right: 0,
                     color: '#3d3983',
                     backgroundColor: 'white',
                     borderRadius: '50%',
+                    marginTop: '10px',
+                    marginBottom: '15px'
                   }}
                 />
               )}
@@ -303,15 +350,18 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
                     color: '#3d3983',
                     backgroundColor: 'white',
                     borderRadius: '50%',
+                    marginBottom: '10px',
+                    marginTop: '10px'
                   }}
                   size={30}
                 />
               </div>
             </div>
-            <div className="pages" data-density="hard">
+            <Pages data-density="hard">
               { page.content }
-            </div>
-          </div>
+            </Pages>
+            <span style={{ color: 'black' }}>{ page.page_number }</span>
+          </PageContainer>
         </div>
       ))}
       </HTMLFlipBook>
