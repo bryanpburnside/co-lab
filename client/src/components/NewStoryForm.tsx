@@ -75,6 +75,7 @@ const NewStoryForm: React.FC<{ onCreateStory: (story: Story) => void, onCancel: 
       });
 
       const data = await response.json();
+      console.log(data);
       if (response.ok) {
         console.log('Story created successfully-client');
         //trying to grab the story id
@@ -151,9 +152,6 @@ const NewStoryForm: React.FC<{ onCreateStory: (story: Story) => void, onCancel: 
         onMouseLeave={() => handleLeave()}>
         Cancel
       </button>
-      <div>
-        {coverImageUrl && <img src={coverImageUrl} alt="Cover" />}
-      </div>
       {speakText && <TTS text={ speakText } />}
     </form>
   );

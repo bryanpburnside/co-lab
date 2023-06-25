@@ -85,36 +85,6 @@ app.post('/api/stories', async (req, res) => {
 });
 
 
-app.post('/api/grammar', async (req, res) => {
-  const { text } = req.body;
-
-  const encodedParams = new URLSearchParams({
-    text: text,
-  });
-
-  const options = {
-    method: 'POST',
-    url: 'https://api.textgears.com/check.php',
-    headers: {
-      'content-type': 'application/x-www-form-urlencoded',
-      'X-RapidAPI-Key': RapidAPI_KEY,
-      'X-RapidAPI-Host': RapidAPI_HOST,
-    },
-    data: encodedParams,
-  };
-
-  try {
-    const response = await axios.request(options);
-    res.status(200).json(response.data);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error: Could not check grammar');
-  }
-});
-
-const upload = multer({ dest: 'uploads/' });
-
-
 sequelize.authenticate()
   .then(() => console.info('Connected to the database'))
   .catch((err) => console.warn('Cannot connect to database:\n', err));
