@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Outlet, Link } from "react-router-dom";
-import LoginButton from "./LoginButton";
 import { useAuth0 } from "@auth0/auth0-react";
 import '../styles.css';
 import TTS from "./TTS";
@@ -37,6 +36,12 @@ const Navbar = () => {
         </li>
         <li className="navbar-item" onMouseEnter={() => handleHover('Profile')}>
           <Link to="/profile">Profile</Link>
+        </li>
+        <li className="navbar-item">
+          <Link to="/feed">Feed</Link>
+        </li>
+        <li className="navbar-item">
+          <Link to="/messages">Messages</Link>
         </li>
         <li
           className="navbar-item"
