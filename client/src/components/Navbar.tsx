@@ -1,6 +1,5 @@
 import React from "react";
 import { Outlet, Link } from "react-router-dom";
-import LoginButton from "./LoginButton";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const Navbar = () => {
@@ -25,9 +24,6 @@ const Navbar = () => {
         </li>
         <li className="navbar-item">
           <Link to="/messages">Messages</Link>
-        </li>
-        <li className="navbar-item">
-          <Link to="/messages-test">Test</Link>
         </li>
         <li
           className="navbar-item"
