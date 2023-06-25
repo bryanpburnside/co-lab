@@ -9,13 +9,16 @@ import { Server, Socket } from 'socket.io';
 import cors from 'cors';
 import { v2 as cloudinary } from 'cloudinary';
 dotenv.config({ path: path.resolve(dirname(fileURLToPath(import.meta.url)), '../.env') });
-const { PORT, CLOUD_NAME, CLOUD_API_KEY, CLOUD_SECRET } = process.env;
+const { PORT, CLOUD_NAME, CLOUD_API_KEY, CLOUD_SECRET, RapidAPI_KEY, RapidAPI_HOST } = process.env;
 import Users from './routes/users.js';
 import Messages from './routes/messages.js';
 import { Message } from './database/index.js';
 import VisualArtwork from './routes/visualartwork.js';
 import CreateStoryRouter from './routes/story.js';
 import pagesRouter from './routes/pages.js';
+import axios from 'axios';
+import multer from 'multer';
+
 
 cloudinary.config({
   cloud_name: CLOUD_NAME,
@@ -78,40 +81,6 @@ app.post('/api/stories', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send('Error: Could not create story-server');
-  }
-});
-
-app.post('/api/pages', async (req, res) => {
-  try {
-    const newPage = req.body;
-    const newSavePage = await Pages.create(newPage);
-    res.status(201).json(newPage);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error: Could not create page-server');
-  }
-});
-
-app.put('/api/pages/:id', async (req, res) => {
-  try {
-    const pageId = req.params.id;
-    const { content } = req.body;
-
-    //find the existing page by its id
-    const page: any = await Pages.findOne({ where: { id: pageId } });
-
-    if (page) {
-      //update the page
-      page.content = content;
-      await page.save();
-      res.status(200).json(page);
-    } else {
-      res.status(404).send('Error: Page not found');
-    }
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error: Could not update page-server');
   }
 });
 

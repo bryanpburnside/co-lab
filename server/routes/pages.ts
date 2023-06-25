@@ -15,32 +15,32 @@ pagesRouter.post('/', async (req, res) => {
     });
     res.status(201).json(page);
   } catch (error) {
-    console.error(error);
+    console.error('this is a router error', error);
     res.status(500).json({ message: 'Failed to create the page-router' });
   }
 });
 
-pagesRouter.put('/:pageId', async (req, res) => {
+pagesRouter.put('/:id', async (req, res) => {
   try {
-    const pageId = req.params.pageId;
+    const pageId = req.params.id;
     const { content } = req.body;
 
-    //find the existing page
-    const page: any = await Pages.findByPk(pageId);
+    const page: any = await Pages.findOne({ where: { id: pageId } });
 
     if (page) {
-      //update the page
       page.content = content;
       await page.save();
       res.status(200).json(page);
     } else {
+      console.error('Page not found:', pageId);
       res.status(404).json({ message: 'Page not found' });
     }
   } catch (error) {
-    console.error(error);
+    console.error('Failed to update the page-router:', error);
     res.status(500).json({ message: 'Failed to update the page-router' });
   }
 });
+
 
 pagesRouter.get('/', async (req, res) => {
   try {

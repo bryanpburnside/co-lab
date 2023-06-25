@@ -10,7 +10,7 @@ VisualArtwork.post('/', async (req, res) => {
     const artwork = await Artwork.create({ type: 'visual art' });
     const { id: artworkId } = artwork.dataValues;
     const newArt = await VisualArt.create({ artworkId, content: cloudURL });
-    console.log('new art', newArt);
+    // console.log('new art', newArt);
     res.sendStatus(201);
   } catch (err) {
     console.error('Failed to SAVE visual art to db:', err);
