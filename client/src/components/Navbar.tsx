@@ -23,6 +23,9 @@ const Navbar = () => {
           <Link to="/profile">Profile</Link>
         </li>
         <li className="navbar-item">
+          <Link to="/feed">Feed</Link>
+        </li>
+        <li className="navbar-item">
           <Link to="/messages">Messages</Link>
         </li>
         <li
@@ -31,9 +34,6 @@ const Navbar = () => {
           style={{ cursor: 'pointer' }}
         >
           Logout
-        </li>
-        <li className="navbar-item">
-          <Link to="/feed">Feed</Link>
         </li>
       </ul>
     </nav>
