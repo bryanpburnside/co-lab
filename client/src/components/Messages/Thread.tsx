@@ -80,7 +80,11 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
     socket.on('messageReceived', (newMessage) => {
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     });
-  }, [])
+
+    return () => {
+      socket.off('messageReceived');
+    };
+  });
 
   useEffect(() => {
     if (userId && receiverId) {
