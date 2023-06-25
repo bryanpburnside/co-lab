@@ -47,11 +47,11 @@ const Message = sequelize.define('messages', {
     autoIncrement: true,
   },
   senderId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   receiverId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   message: {
