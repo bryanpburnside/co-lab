@@ -26,6 +26,9 @@ const Navbar = () => {
         <li className="navbar-item" onMouseEnter={() => handleHover('Home')}>
           <Link to="/">Home</Link>
         </li>
+        <li className="navbar-item">
+          <Link to="/feed">Feed</Link>
+        </li>
         <li
           className="navbar-item"
           onClick={() => loginWithRedirect()}
@@ -38,9 +41,6 @@ const Navbar = () => {
           <Link to="/profile">Profile</Link>
         </li>
         <li className="navbar-item">
-          <Link to="/feed">Feed</Link>
-        </li>
-        <li className="navbar-item">
           <Link to="/messages">Messages</Link>
         </li>
         <li
@@ -50,9 +50,6 @@ const Navbar = () => {
           onMouseEnter={() => handleHover('Logout')}
         >
           Logout
-        </li>
-        <li className="navbar-item" onMouseEnter={() => handleHover('Feed')}>
-          <Link to="/feed">Feed</Link>
         </li>
       </ul>
       {/* {speakText && <TTS text={speakText} />} */}
