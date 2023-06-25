@@ -27,6 +27,7 @@ const App = () => {
         <Route path='/visualart/:roomId' element={<VisualArt />} />
         <Route path='/sculpture/:roomId' element={<Sculpture />} />
         <Route path='/messages' element={<Inbox />} />
+        <Route path='/feed' element={<Feed />} />
       </Routes>
     </Router>
   );
