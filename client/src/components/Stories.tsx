@@ -41,7 +41,7 @@ const StoryBook: React.FC = () => {
   const [selectedStory, setSelectedStory] = useState<Story | null>(null);
   const [showNewStoryForm, setShowNewStoryForm] = useState(false);
   const [speakText, setSpeakText] = useState('');
-  const [ttsOn, setTtsOn] = useState(true);
+  const [ttsOn, setTtsOn] = useState(false);
 
 
   useEffect(() => {
@@ -211,6 +211,8 @@ const StoryBook: React.FC = () => {
         border: '1px solid #ccc',
         borderRadius: '5px',
         padding: '10px',
+        overflow: 'auto',
+        height: '700px'
       }}>
         {stories.map((story, index) => (
           <div

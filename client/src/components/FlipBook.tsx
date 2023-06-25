@@ -8,7 +8,6 @@ import { TTSToggleContext } from './Stories';
 import Switch from "react-switch";
 import axios from "axios";
 import { GrammarlyEditorPlugin } from "@grammarly/editor-sdk-react";
-import TitlePage from "./TitlePage";
 
 
 interface Page {
@@ -263,7 +262,7 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
         marginTop: '100px'
       }}
     >
-      {/* <div data-density="hard" className="title-page"
+      <div data-density="hard" className="title-page"
         style={{
           backgroundImage: `url(${story.coverImage})`,
           backgroundSize: 'cover',
@@ -272,8 +271,7 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
           width: '500px',
       }}>
         { story.title }
-      </div> */}
-      <TitlePage coverImage={ story.coverImage } title={ story.title } />
+      </div>
       {selectedStoryPages.map((page, index) => (
         <div key={index}>
           <div data-density="hard" className="page-container" onClick={() => handlePageClick(page)} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
