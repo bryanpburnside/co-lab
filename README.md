@@ -82,7 +82,7 @@ Before integrating Auth0, make sure you have the following:
 
 <a id=paint></a>
 
-Collaborative Painting Experience:
+Collaborative Visual Art Experience:
 
 <a id=music></a>
 
