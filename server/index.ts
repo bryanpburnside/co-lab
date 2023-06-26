@@ -137,20 +137,20 @@ io.on('connection', socket => {
     console.log(`${userId} created room: ${roomId}`);
   });
 
-  // Handle join room event
+  // // Handle join room event
   socket.on('joinRoom', (userId, roomId) => {
     socket.join(roomId); // Join the room with the provided ID
     socket.to(roomId).emit('userJoined', userId); // Emit the userJoined event to the participants in the room
     console.log(`User ${userId} joined the room`);
   });
 
-  socket.on('logJoinUser', (userId) => {
-    console.log(`User ${userId} joined the room`);
-  });
+  // socket.on('logJoinUser', (userId) => {
+  //   console.log(`User ${userId} joined the room`);
+  // });
 
-  socket.on('disconnectUser', userId => {
-    console.log(`${userId} left the room`);
-  });
+  // socket.on('disconnectUser', userId => {
+  //   console.log(`${userId} left the room`);
+  // });
 
     // // Handle mouse movement event
     // socket.on('mouseMove', (data, roomId: string) => {
@@ -175,8 +175,8 @@ io.on('connection', socket => {
     //   socket.to(roomId).emit('keyPress', key);
     // });
 
-    socket.on('Drawing', data => {
-      socket.broadcast.emit('Drawing', data);
+    socket.on('drawing', data => {
+      socket.to(data.roomId).emit('drawing', data);
     })
 });
 
