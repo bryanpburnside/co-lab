@@ -26,7 +26,7 @@ const GenerativeArt = ( {roomId} ) => {
         p.background(61, 57, 131); // Set background color to #3d3983
         current = p.createVector(0, 0, 0);
         previous = p.createVector(0, 0, 0);
-        socket.on('Drawing', data => {
+        socket.on('drawing', data => {
           if (p.canvas) {
             if (data.painting) {
               current.x = data.x - p.width / 2
@@ -35,7 +35,7 @@ const GenerativeArt = ( {roomId} ) => {
               let force = p5.Vector.sub(current, previous);
               force.mult(0.05);
 
-              paths[paths.length - 1].add(current, force);
+              paths.at(-1).add(current, force);
 
               next = p.millis() + p.random(100);
 
@@ -65,7 +65,7 @@ const GenerativeArt = ( {roomId} ) => {
           previous.y = current.y;
           // previous.z = current.z;
 
-          socket.emit('Drawing', {
+          socket.emit('drawing', {
             x: p.mouseX,
             y: p.mouseY,
             // z: p.mouseZ,
@@ -162,25 +162,26 @@ const GenerativeArt = ( {roomId} ) => {
     // Create new p5 instance
     new p5(sketch);
 
-    socket.on('roomCreated', (userId, roomId) => {
-      console.log(`${userId} created room: ${roomId}`);
-    });
+    // socket.on('roomCreated', (userId, roomId) => {
+    //   console.log(`${userId} created room: ${roomId}`);
+    //   socket.emit('joinRoom', userId, roomId);
+    // });
 
-    socket.on('userJoined', (userId) => {
-      socket.emit('logJoinUser', userId);
-      console.log(`User ${userId} joined the room`);
-    });
+    // socket.on('userJoined', (userId) => {
+    //   socket.emit('logJoinUser', userId);
+    //   console.log(`User ${userId} joined the room`);
+    // });
 
     socket.on('userLeft', (userId) => {
       console.log(`User ${userId} left the room`);
     });
 
     return () => {
-      socket.emit('disconnectUser', user?.sub);
+      socket.emit('disconnectUser', user?.nickname);
       socket.disconnect();
     }
 
-  }, []);
+  }, [roomId]);
 
   const handleSave = () => {
     const canvas = canvasRef.current.querySelector('canvas');
