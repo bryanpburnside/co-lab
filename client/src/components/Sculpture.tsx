@@ -5,33 +5,78 @@ import { io, Socket } from 'socket.io-client';
 import GenerativeArt from "./GenerativeArt";
 // import { Canvas } from '@react-three/fiber';
 // import { PerspectiveCamera, PositionalAudio, Sphere, Plane, Box} from '@react-three/drei'
-import Peer from 'peerjs';
+import Peer, { MediaConnection } from 'peerjs';
 import p5 from 'p5';
+import {v4 as generatePeerId} from 'uuid';
+
 export const socket = io('/');
 export const SocketContext = createContext<Socket | null>(null)
 
 const Sculpture = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
+  const [peerId, setPeerId] = useState('')
   const { roomId } = useParams();
-  // const peer = new Peer(user?.nickname as string, {
-  //   host: '/',
-  //   port: 8001,
-  // })
-
-  navigator.mediaDevices.getUserMedia({
-    video: false,
-    audio: true
-  })
-
+  
   useEffect(() => {
-    // socket.on('roomCreated', (userId, roomId) => {
-    //   console.log(`${userId} created room: ${roomId}`);
-    // });
+    setPeerId(generatePeerId());
+    const peer = new Peer(peerId as string, {
+      host: '/',
+      port: 8001,
+    })
+  
+    const myAudio = document.createElement('audio')
+    myAudio.muted = true
+  
+    navigator.mediaDevices.getUserMedia({
+      video: false,
+      audio: true
+    }).then(stream => {
+      addAudioStream(myAudio, stream);
+  
+      peer.on('call', call => {
+        call.answer(stream);
+        const audio = document.createElement('audio')
+        call.on('stream', userStream => {
+          addAudioStream(audio, userStream)
+        })
+      })
+  
+      socket.on('userJoined', userId => {
+        connectToNewUser(userId, stream)
+      })
+    })
+  
+    function connectToNewUser(userId, stream) {
+      const call = peer.call(userId, stream);
+      const audio = document.createElement('audio')
+      call.on('stream', userStream => {
+        addAudioStream(audio, userStream);
+      });
+      call.on('close', () => {
+        audio.remove()
+      })
+    }
+  
+    function addAudioStream(audio, stream) {
+      audio.srcObject = stream;
+      audio.addEventListener('loadedmetadata', () => {
+        audio.play();
+      })
+    }
+    socket.emit('createRoom', peerId, roomId);
 
-    // socket.on('userJoined', (userId) => {
-    //   socket.emit('logJoinUser', userId);
-    //   console.log(`User ${userId} joined the room`);
-    // });
+    peer.on('open', (userId) => {
+      socket.emit('joinRoom', userId, roomId);
+    })
+
+    socket.on('roomCreated', (userId, roomId) => {
+      console.log(`${userId} created room: ${roomId}`);
+    });
+
+    socket.on('userJoined', (userId) => {
+      // socket.emit('logJoinUser', userId);
+      console.log(`User ${userId} joined the room`);
+    });
 
     // socket.on('userLeft', (userId) => {
     //   console.log(`User ${userId} left the room`);
@@ -70,14 +115,15 @@ const Sculpture = () => {
     // window.addEventListener('keypress', handleKeyPress);
 
     // Clean up event listeners
-    // return () => {
+    return () => {
       // window.removeEventListener('mousemove', handleMouseMove);
       // window.removeEventListener('mousedown', handleMousePress);
       // window.removeEventListener('mouseup', handleMouseRelease);
       // window.removeEventListener('keypress', handleKeyPress);
-      // socket.emit('disconnectUser', user?.sub);
-      // socket.disconnect();
-    // };
+      socket.emit('disconnectUser', peerId);
+      socket.disconnect();
+      peer.disconnect();
+    };
   }, []);
 
   return (
