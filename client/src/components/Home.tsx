@@ -7,7 +7,6 @@ import ear from '../assets/images/ear.png';
 import hand from '../assets/images/hand.png';
 import mouth from '../assets/images/mouth.png';
 import { io } from "socket.io-client";
-import '../styles.css';
 
 const Home = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
@@ -78,7 +77,7 @@ const Home = () => {
       >
         <img src={hand} alt="hand" />
       </div>
-      <Link to='/story' className='image-link'>
+      <Link to='/stories' className='image-link'>
         <div
           className='image-link'
           onClick={() => generateRoomId('stories')}
