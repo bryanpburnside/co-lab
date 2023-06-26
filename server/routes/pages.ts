@@ -58,16 +58,5 @@ pagesRouter.get('/', async (req, res) => {
   }
 });
 
-// New route to fetch all stories
-// pagesRouter.get('/stories', async (req, res) => {
-//   try {
-//     const stories = await Story.findAll();
-
-//     res.json(stories);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Failed to fetch stories' });
-//   }
-// });
 
 export default pagesRouter;
