@@ -18,10 +18,9 @@ const Home = () => {
   const generateRoomId = async (endpoint: any) => {
     try {
       if (user) {
-        const response = await axios.post('/api/rooms', { userId: user.sub });
+        const response = await axios.post('/api/rooms', { userId: user.nickname });
         const { userId, roomId } = response.data;
         setRoomId(roomId);
-        socket.emit('createRoom', userId, roomId);
         navigate(`/${endpoint}/${roomId}`);
       }
     } catch (err) {
