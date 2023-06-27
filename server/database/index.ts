@@ -183,6 +183,7 @@ const UserCollaboration = sequelize.define('usercollaborations', {
   },
 });
 
+Artwork.belongsTo(User, { foreignKey: 'userId' });
 VisualArt.belongsTo(Artwork, { foreignKey: 'artworkId' });
 Music.belongsTo(Artwork, { foreignKey: 'artworkId' });
 Story.belongsTo(Artwork, { foreignKey: 'artworkId' });
