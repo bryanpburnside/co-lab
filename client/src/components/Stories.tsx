@@ -6,7 +6,7 @@ import TranscriptLog from "./Transcript";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useParams } from 'react-router-dom'
 import { io } from 'socket.io-client';
-import { FaPlusCircle, FaTty, FaHeadphones, FaBookMedical } from 'react-icons/fa';
+import { FaPlusCircle, FaTty, FaHeadphones, FaBookMedical, FaTrash } from 'react-icons/fa';
 import TooltipIcon from './TooltipIcons';
 import TTS from "./TTS";
 
@@ -187,74 +187,134 @@ const StoryBook: React.FC = () => {
     }
   };
 
-  return (
-<TTSToggleContext.Provider value={{ ttsOn, setTtsOn }}>
-  <div style={{ display: 'flex', marginTop: '20px' }}>
-    {/* Column 1: Story List */}
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginRight: '20px' }}>
-      <div style={{ display: 'flex', marginBottom: '15px', marginTop: '20px' }}>
-        <TooltipIcon
-          icon={ FaBookMedical }
-          tooltipText="Create new story"
-          handleClick={ handleShowNewStoryForm }
-          style={{ marginRight: '20px'}}
-        />
-        <TooltipIcon
-          icon={ FaTty }
-          tooltipText={ttsOn ? "Turn TTS Off" : "Turn TTS On"}
-          handleClick={() => setTtsOn(!ttsOn)}
-        >
-          {ttsOn ? "Turn TTS Off" : "Turn TTS On"}
-        </TooltipIcon>
-      </div>
-      <div style={{
-        border: '1px solid #ccc',
-        borderRadius: '5px',
-        padding: '10px',
-        overflow: 'auto',
-        height: '680px',
-        marginLeft: '100px',
-        marginTop: '40px'
-      }}>
-        {stories.map((story, index) => (
-          <div
-            key={ index }
-            onClick={() => handleStoryClick(story)}
-            onMouseEnter={() => handleStoryHover(story)}
-            style={{
-              marginBottom: '20px',
-              backgroundColor: index % 2 === 0 ? '#f2f2f2' : '#ffffff',
-              padding: '10px',
-              borderRadius: '5px',
-              color: '#3d3983',
-              width: '200px'
-            }}>
-            { story.title }
-          </div>
-        ))}
-      </div>
-    </div>
-    {/* Column 2: FlipBook and PageEditor */}
-    <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '20px', height: '100%', width: '100%' }}>
-      {showNewStoryForm ? (
-        <NewStoryForm onCreateStory={ handleCreateStory } onCancel={ handleCancelCreateStory } />
-      ) : (
-        selectedStory &&
-        <FlipBook
-          story={ selectedStory }
-          selectedStoryPages={ pages }
-          onUpdatePage={ handleUpdatePage }
-          fetchPages={ fetchPages }
-          TooltipIcon={ TooltipIcon }
-          addNewPage={ addNewPage }
-        />
-      )}
-    </div>
-  </div>
-  {/* TTS */}
-  {speakText && <TTS text={speakText} />}
-</TTSToggleContext.Provider>
+  const deleteStory = async (storyId: number) => {
+    try {
+      const response = await fetch(`/api/stories/${storyId}`, {
+        method: 'DELETE',
+      });
 
+      if (response.ok) {
+        // remove the deleted story from the list in the UI
+        setStories(stories.filter(story => story.id !== storyId));
+      } else {
+        console.error('Failed to delete story');
+      }
+    } catch (error) {
+      console.error('Failed to delete story', error);
+    }
+  };
+
+  return (
+    <TTSToggleContext.Provider value={{ ttsOn, setTtsOn }}>
+      <div style={{ display: 'flex', marginTop: '20px' }}>
+        {/* Column 1: Story List */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginRight: '20px' }}>
+          <div style={{ display: 'flex', marginBottom: '15px', marginTop: '20px' }}>
+            <TooltipIcon
+              icon={ FaBookMedical }
+              tooltipText="Create new story"
+              handleClick={ handleShowNewStoryForm }
+              style={{ marginRight: '20px', marginLeft: '30px'}}
+            />
+            <TooltipIcon
+              icon={ FaTty }
+              tooltipText={ttsOn ? "Turn TTS Off" : "Turn TTS On"}
+              handleClick={() => setTtsOn(!ttsOn)}
+            >
+              {ttsOn ? "Turn TTS Off" : "Turn TTS On"}
+            </TooltipIcon>
+          </div>
+          <div style={{
+            border: '1px solid #ccc',
+            borderRadius: '5px',
+            padding: '10px',
+            overflow: 'auto',
+            height: '680px',
+            width: '200px',
+            marginLeft: '30px',
+            marginTop: '40px'
+          }}>
+            {stories.map((story, index) => (
+              <div
+                key={ index }
+                onClick={() => handleStoryClick(story)}
+                onMouseEnter={() => handleStoryHover(story)}
+                style={{
+                  marginBottom: '20px',
+                  color: '#3d3983',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer'
+                }}
+              >
+                <div style={{
+                  width: '80px',
+                  height: '100px',
+                  borderRadius: '5px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: story.coverImage ? 'transparent' : 'white'
+                }}>
+                  {story.coverImage ? (
+                    <img
+                      src={ story.coverImage }
+                      alt={ story.title }
+                      style={{
+                        width: '80px',
+                        height: '100px',
+                        objectFit: 'cover'
+                      }}
+                    />
+                    
+                  ) : (
+                    <div style={{ fontSize: '0.8em', color: 'black', textAlign: 'center' }}>
+                      No Image
+                    </div>
+                  )}
+                </div>
+                <div style={{ fontSize: '0.8em', color: 'white', textAlign: 'center' }}>
+                  {story.title}
+                </div>
+                <TooltipIcon
+                  icon={() => <FaTrash size={20} color="white" />}
+                  tooltipText="Delete story"
+                  handleClick={() => {
+                    if (window.confirm("Are you sure you want to delete this story?")) {
+                      deleteStory(story.id!);
+                      console.log('story deleted');
+                    }
+                  }}
+                  style={{
+                    marginTop: '7px'
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Column 2: FlipBook and PageEditor and NewStoryForm */}
+        <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '20px', height: '100%', width: '100%' }}>
+          {showNewStoryForm ? (
+            <NewStoryForm onCreateStory={ handleCreateStory } onCancel={ handleCancelCreateStory } />
+          ) : (
+            selectedStory &&
+            <FlipBook
+              story={ selectedStory }
+              selectedStoryPages={ pages }
+              onUpdatePage={ handleUpdatePage }
+              fetchPages={ fetchPages }
+              TooltipIcon={ TooltipIcon }
+              addNewPage={ addNewPage }
+            />
+          )}
+        </div>
+      </div>
+      {/* TTS */}
+      {speakText && <TTS text={speakText} />}
+    </TTSToggleContext.Provider>
   );
 };
 

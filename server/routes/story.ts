@@ -1,7 +1,6 @@
 import { Router } from 'express';
 const CreateStoryRouter = Router();
 import { Story } from '../database/index.js';
-import axios from 'axios';
 import multer from 'multer';
 import fs from 'fs';
 const upload = multer({ dest: 'uploads/' });
@@ -48,5 +47,25 @@ CreateStoryRouter.get('/', async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch stories-router' });
   }
 });
+
+CreateStoryRouter.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await Story.destroy({
+      where: { id: id }
+    });
+
+    if (result === 0) {
+      return res.status(404).json({ message: 'Story not found' });
+    }
+
+    res.status(200).json({ message: 'Story deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to delete story' });
+  }
+});
+
 
 export default CreateStoryRouter;

@@ -292,7 +292,7 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
         marginTop: '100px',
       }}
     >
-      <TitlePage backgroundImage={ story.coverImage }>
+    <TitlePage backgroundImage={ story.coverImage }>
       <div style={{
           backgroundColor: '#fbf5df',
           height: '30px',
@@ -307,9 +307,33 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
           textAlign: 'center',
           margin: 'auto',
         }}>
-          { story.title }
-        </div>
-      </TitlePage>
+        { story.title }
+      </div>
+      <div style={{
+        position: 'absolute',
+        left: '50%',
+        transform: 'translate(-50%, 0)',
+        bottom: '10px'
+      }}>
+      <TooltipIcon
+        icon={ FaPlusCircle }
+        tooltipText="Add New Page"
+        handleClick={(e: React.MouseEvent) => {
+          e.stopPropagation();
+          addNewPage();
+        }}
+        style={{
+          position: 'absolute',
+          color: '#3d3983',
+          backgroundColor: 'white',
+          borderRadius: '50%',
+          padding: '5px',
+          paddingBottom: '2px',
+          margin: '5px'
+        }}
+      />
+      </div>
+    </TitlePage>
       {selectedStoryPages.map((page, index) => (
         <div key={index}>
         <PageContainer

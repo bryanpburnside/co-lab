@@ -78,7 +78,6 @@ const NewStoryForm: React.FC<{ onCreateStory: (story: Story) => void, onCancel: 
       console.log(data);
       if (response.ok) {
         console.log('Story created successfully-client');
-        //trying to grab the story id
         onCreateStory(data);
       } else {
         console.error('Story not created-client');
