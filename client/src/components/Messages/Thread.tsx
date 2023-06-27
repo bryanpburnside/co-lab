@@ -12,6 +12,8 @@ import {
   SenderBubble,
   RecipientBubble,
   TextInput,
+  TextInputContainer,
+  STTButton,
   SendMessageContainer,
   SendButton
 } from '../../styled';
@@ -122,18 +124,23 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
           </div>
         ))}
       </ConversationContainer>
-      {receiverId ?
-        <SendMessageContainer>
-          <TextInput
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
-          <STT updateTranscript={updateContentWithTranscript} />
-          <SendButton type="submit" onClick={sendMessage}>Send</SendButton>
-        </SendMessageContainer>
-        : null
-      }
+      {receiverId ? (
+        <>
+          <SendMessageContainer>
+            <TextInputContainer>
+              <TextInput
+                type="text"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+              <STTButton>
+                <STT updateTranscript={updateContentWithTranscript} />
+              </STTButton>
+            </TextInputContainer>
+            <SendButton type="submit" onClick={sendMessage}>Send</SendButton>
+          </SendMessageContainer>
+        </>
+      ) : null}
     </>
   );
 };
