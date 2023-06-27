@@ -4,13 +4,12 @@ import { VisualArt, Artwork } from '../database/index.js';
 import { v2 as cloudinary } from 'cloudinary';
 
 VisualArtwork.post('/', async (req, res) => {
-  const { art, user } = req.body;
+  const { art, userId } = req.body;
   try {
     const cloudURL = (await uploadDataUrlToCloudinary(art)).secure_url;
-    const artwork = await Artwork.create({ type: 'visual art' });
+    const artwork = await Artwork.create({ type: 'visual art', userId });
     const { id: artworkId } = artwork.dataValues;
     const newArt = await VisualArt.create({ artworkId, content: cloudURL });
-    // console.log('new art', newArt);
     res.sendStatus(201);
   } catch (err) {
     console.error('Failed to SAVE visual art to db:', err);
