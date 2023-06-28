@@ -20,7 +20,6 @@ VisualArtwork.post('/', async (req, res) => {
 VisualArtwork.get('/', async (req, res) => {
   try {
     const art = await VisualArt.findAll();
-    console.log('Retrieved art:', art);
     res.json(art);
   } catch (err) {
     console.error('Failed to get art:', err);
