@@ -59,8 +59,6 @@ const Feed: React.FC = () => {
           return Object.assign({}, entry, userObj);
         }));
 
-        console.log('user data', feedWithUserData);
-
         setFeedData(feedWithUserData);
 
         // Making a request for each story ID
