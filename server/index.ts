@@ -14,6 +14,7 @@ import Users from './routes/users.js';
 import Messages from './routes/messages.js';
 import { Message } from './database/index.js';
 import VisualArtwork from './routes/visualartwork.js';
+import sculptureRouter from './routes/sculpture.js';
 import CreateStoryRouter from './routes/story.js';
 import pagesRouter from './routes/pages.js';
 import axios from 'axios';
@@ -33,7 +34,7 @@ app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:8000',
+    origin: ['http://localhost:8000', 'http://ec2-18-222-210-148.us-east-2.compute.amazonaws.com:8000/', '18.222.210.148:8000'],
     methods: ['GET', 'POST'],
     credentials: true
   }
@@ -52,9 +53,8 @@ app.use('/messages', Messages);
 app.use('/visualart', VisualArtwork);
 app.use('/api/stories', CreateStoryRouter);
 app.use('/api/pages', pagesRouter);
-// app.use('/peerjs', require('peer').ExpressPeerServer(server, {
-//   debug: true
-// }));
+app.use('/sculpture', sculptureRouter);
+
 app.use(express.static(staticFilesPath));
 
 app.get('*', (req, res) => {
