@@ -114,11 +114,13 @@ io.on('connection', socket => {
     socket.join(roomId); // Join the room with the provided ID
     socket.to(roomId).emit('userJoined', userId); // Emit the userJoined event to the participants in the room
     console.log(`User ${userId} joined the room`);
+    
+    socket.on('disconnect', () => {
+      socket.to(roomId).emit('disconnectUser', userId)
+      console.log(`${userId} left the room`);
+    });
   });
 
-  // socket.on('logJoinUser', (userId) => {
-  //   console.log(`User ${userId} joined the room`);
-  // });
   socket.on('directMessage', async ({ senderId, receiverId, message }) => {
     const sortedIds = [senderId, receiverId].sort(); // Sort the user IDs
     const room = `user-${sortedIds[0]}-${sortedIds[1]}`; // Concatenate the sorted IDs
@@ -150,26 +152,6 @@ io.on('connection', socket => {
     console.log(`${userId} left the message thread`);
   });
 
-  // socket.on('disconnectUser', userId => {
-  //   console.log(`${userId} left the room`);
-  // });
-
-    // // Handle mouse movement event
-    // socket.on('mouseMove', (data, roomId: string) => {
-    //   // Broadcast the mouse movement to all participants in the same room
-    //   socket.to(roomId).emit('mouseMove', data);
-    // });
-
-    // // Handle mouse click event
-    // socket.on('mousePress', (data, roomId: string) => {
-    //   // Broadcast the mouse click to all participants in the same room
-    //   socket.to(roomId).emit('mousePress', data);
-    // });
-
-    // socket.on('mouseRelease', (data, roomId: string) => {
-    //   // Broadcast the mouse click to all participants in the same room
-    //   socket.to(roomId).emit('mouseRelease', data);
-    // });
 
     // // Handle key press event
     // socket.on('keyPress', (key: string, roomId: string) => {
