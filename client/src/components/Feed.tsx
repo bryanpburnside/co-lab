@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Outlet, Link } from 'react-router-dom';
@@ -30,6 +31,21 @@ const Feed: React.FC = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const [feedData, setFeedData] = useState<FeedItem[] | null>(null);
   const [pageData, setPageData] = useState<{ [key: number]: PageItem[] }>({});
+  const [feedUser, setFeedUser] = useState<Object>({});
+
+  const getUserData = async (artworkId: number) => {
+    try {
+      // make artwork route
+      // on backend, grab relevant user id based on artwork entry
+      // respond with user info
+      // pass that into renderpost return (arg = item.artworkId)
+      const response = await axios.get(`/artwork/${artworkId}`);
+      const userData = response.data;
+      setFeedUser(userData);
+    } catch (err) {
+      console.error('Failed to GET user data at client:', err);
+    }
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,6 +59,7 @@ const Feed: React.FC = () => {
         );
 
         setFeedData(sortedData);
+        console.log(sortedData);
 
         // Making a request for each story ID
         const pagePromises = storyData.map((story: any) => fetch(`http://localhost:8000/api/pages?storyId=${story.id}`));
@@ -85,7 +102,19 @@ const Feed: React.FC = () => {
     const isVisualArt = 'url' in item;
     const isPageStory = 'coverImage' in item;
     const pages = pageData[item.id] || [];
-  
+    const userObj = feedUser && feedUser[item.artworkId];
+
+
+    // if (!userObj) {
+    //   return null;
+    // }
+
+    // getUserData(item.artworkId);
+    // const userObj = getUserData(item.artworkId);
+    // if (userObj) {
+    //   setFeedUser(userObj);
+    // }
+
     return (
       <div className="post" key={index}>
         <div className="post-header">
@@ -119,14 +148,18 @@ const Feed: React.FC = () => {
         </div>
       </div>
     );
+
+    // console.log('userObj', userObj);
+
+
   };
-  
+
   return (
     <div className="post-container">
       {feedData && feedData.map(renderPost)}
     </div>
   );
-  
+
 };
 
 export default Feed;
