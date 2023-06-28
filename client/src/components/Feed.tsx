@@ -31,17 +31,12 @@ const Feed: React.FC = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const [feedData, setFeedData] = useState<FeedItem[] | null>(null);
   const [pageData, setPageData] = useState<{ [key: number]: PageItem[] }>({});
-  const [feedUser, setFeedUser] = useState<Object>({});
 
   const getUserData = async (artworkId: number) => {
     try {
-      // make artwork route
-      // on backend, grab relevant user id based on artwork entry
-      // respond with user info
-      // pass that into renderpost return (arg = item.artworkId)
       const response = await axios.get(`/artwork/${artworkId}`);
       const userData = response.data;
-      setFeedUser(userData);
+      return userData;
     } catch (err) {
       console.error('Failed to GET user data at client:', err);
     }
@@ -57,9 +52,12 @@ const Feed: React.FC = () => {
         const sortedData = combinedData.sort(
           (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
+        const feedWithUserData = await Promise.all(sortedData.map(async (entry) => {
+          const userObj = await getUserData(entry.id);
+          return Object.assign({}, entry, userObj);
+        }));
 
-        setFeedData(sortedData);
-        console.log(sortedData);
+        setFeedData(feedWithUserData);
 
         // Making a request for each story ID
         const pagePromises = storyData.map((story: any) => fetch(`http://localhost:8000/api/pages?storyId=${story.id}`));
@@ -102,25 +100,13 @@ const Feed: React.FC = () => {
     const isVisualArt = 'url' in item;
     const isPageStory = 'coverImage' in item;
     const pages = pageData[item.id] || [];
-    const userObj = feedUser && feedUser[item.artworkId];
-
-
-    // if (!userObj) {
-    //   return null;
-    // }
-
-    // getUserData(item.artworkId);
-    // const userObj = getUserData(item.artworkId);
-    // if (userObj) {
-    //   setFeedUser(userObj);
-    // }
 
     return (
       <div className="post" key={index}>
         <div className="post-header">
-          <img src={user.picture} alt={user.name} className="user-pfp" />
+          <img src={item.picture} alt={item.name} className="user-pfp" />
           <a href={/* make this go to correct users prof */} className="username">
-            {user.name}
+            {item.name}
           </a>
           <p className="creation-time">{formatTimeDifference(item.createdAt)}</p>
         </div>
@@ -148,10 +134,6 @@ const Feed: React.FC = () => {
         </div>
       </div>
     );
-
-    // console.log('userObj', userObj);
-
-
   };
 
   return (
