@@ -12,6 +12,8 @@ import {v4 as generatePeerId} from 'uuid';
 export const socket = io('/');
 export const SocketContext = createContext<Socket | null>(null)
 
+const peers = {};
+
 const Sculpture = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const [peerId, setPeerId] = useState('')
@@ -53,8 +55,9 @@ const Sculpture = () => {
         addAudioStream(audio, userStream);
       });
       call.on('close', () => {
-        audio.remove()
+        audio.remove();
       })
+      peers[userId] = call;
     }
   
     function addAudioStream(audio, stream) {
@@ -74,33 +77,14 @@ const Sculpture = () => {
     });
 
     socket.on('userJoined', (userId) => {
-      // socket.emit('logJoinUser', userId);
       console.log(`User ${userId} joined the room`);
     });
 
-    // socket.on('userLeft', (userId) => {
-    //   console.log(`User ${userId} left the room`);
-    // });
-
-    // // Emit mouse movement event
-    // const handleMouseMove = (event: MouseEvent) => {
-    //   const { clientX, clientY } = event;
-    //   const data = { x: clientX, y: clientY }
-    //   socket.emit('mouseMove', data, roomId);
-    // };
-
-    // // Emit mouse click event
-    // const handleMousePress = (event: MouseEvent) => {
-    //   const { clientX, clientY } = event;
-    //   const data = { x: clientX, y: clientY }
-    //   socket.emit('mousePress', data, roomId);
-    // };
-
-    // const handleMouseRelease = (event: MouseEvent) => {
-    //   const { clientX, clientY } = event;
-    //   const data = { x: clientX, y: clientY }
-    //   socket.emit('mouseRelease', data, roomId);
-    // };
+    socket.on('disconnectUser', userId => {
+      if (peers[userId]) {
+        peers[userId].close();
+      }
+    })
 
     // // Emit key press event
     // const handleKeyPress = (event: KeyboardEvent) => {
@@ -109,18 +93,12 @@ const Sculpture = () => {
     // };
 
     // Add event listeners
-    // window.addEventListener('mousemove', handleMouseMove);
-    // window.addEventListener('mousedown', handleMousePress);
-    // window.addEventListener('mouseup', handleMouseRelease);
     // window.addEventListener('keypress', handleKeyPress);
 
     // Clean up event listeners
     return () => {
-      // window.removeEventListener('mousemove', handleMouseMove);
-      // window.removeEventListener('mousedown', handleMousePress);
-      // window.removeEventListener('mouseup', handleMouseRelease);
       // window.removeEventListener('keypress', handleKeyPress);
-      socket.emit('disconnectUser', peerId);
+      socket.emit('disconnectUser', peerId, roomId);
       socket.disconnect();
       peer.disconnect();
     };
