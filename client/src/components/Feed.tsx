@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { formatDistanceToNow } from 'date-fns';
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, useNavigate } from 'react-router-dom';
 
 import '../styles.css';
 
@@ -14,6 +14,7 @@ interface ArtItem {
   createdAt: string;
   updatedAt: string;
   artworkId: number;
+  name: string;
 }
 
 interface PageItem {
@@ -29,6 +30,7 @@ type FeedItem = ArtItem | PageItem;
 
 const Feed: React.FC = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
+  const navigate = useNavigate();
   const [feedData, setFeedData] = useState<FeedItem[] | null>(null);
   const [pageData, setPageData] = useState<{ [key: number]: PageItem[] }>({});
 
@@ -56,6 +58,8 @@ const Feed: React.FC = () => {
           const userObj = await getUserData(entry.id);
           return Object.assign({}, entry, userObj);
         }));
+
+        console.log('user data', feedWithUserData);
 
         setFeedData(feedWithUserData);
 
@@ -105,34 +109,39 @@ const Feed: React.FC = () => {
       <div className="post" key={index}>
         <div className="post-header">
           <img src={item.picture} alt={item.name} className="user-pfp" />
-          <a href={/* make this go to correct users prof */} className="username">
+          <div className="username"
+            onClick={() => navigate(`/profile/${item.id}`)}>
             {item.name}
-          </a>
+          </div>
           <p className="creation-time">{formatTimeDifference(item.createdAt)}</p>
         </div>
-        {isVisualArt && (
-          <>
-            <img src={item.content} alt={item.title} className="cloud-img" />
-          </>
-        )}
-        {isPageStory && (
-          <div className="story" key={index}>
-            <h1>
-              {item.coverImage} {item.title}
-            </h1>
-            {pages.map((page: PageItem) => (
-              <p className="story-content" key={page.id}>
-                {page.content}
-              </p>
-            ))}
-          </div>
-        )}
+        {
+          isVisualArt && (
+            <>
+              <img src={item.content} alt={item.title} className="cloud-img" />
+            </>
+          )
+        }
+        {
+          isPageStory && (
+            <div className="story" key={index}>
+              <h1>
+                {item.coverImage} {item.title}
+              </h1>
+              {pages.map((page: PageItem) => (
+                <p className="story-content" key={page.id}>
+                  {page.content}
+                </p>
+              ))}
+            </div>
+          )
+        }
         <div className="post-footer">
           <h1 className="add-to-colab">
             <a href={/* make this do something */}>Add to this Colab</a>
           </h1>
         </div>
-      </div>
+      </div >
     );
   };
 
