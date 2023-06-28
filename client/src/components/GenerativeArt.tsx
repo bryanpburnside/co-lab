@@ -163,22 +163,7 @@ const GenerativeArt = ( {roomId} ) => {
     // Create new p5 instance
     new p5(sketch);
 
-    // socket.on('roomCreated', (userId, roomId) => {
-    //   console.log(`${userId} created room: ${roomId}`);
-    //   socket.emit('joinRoom', userId, roomId);
-    // });
-
-    // socket.on('userJoined', (userId) => {
-    //   socket.emit('logJoinUser', userId);
-    //   console.log(`User ${userId} joined the room`);
-    // });
-
-    socket.on('userLeft', (userId) => {
-      console.log(`User ${userId} left the room`);
-    });
-
     return () => {
-      socket.emit('disconnectUser', user?.nickname);
       socket.disconnect();
     }
 
