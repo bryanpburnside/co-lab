@@ -1,5 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import React, { useState, useEffect, useRef, useContext } from 'react';
+import axios from 'axios';
 import { Socket } from 'socket.io-client';
 import { SocketContext } from './Sculpture';
 import p5 from 'p5';
@@ -183,13 +184,17 @@ const GenerativeArt = ( {roomId} ) => {
 
   }, [roomId]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const canvas = canvasRef.current.querySelector('canvas');
-    if (canvas) {
-      const link = document.createElement('a');
-      link.href = canvas.toDataURL();
-      link.download = 'generative_art.png';
-      link.click();
+    try {
+      if (canvas && user) {
+        await axios.post('/sculpture', { canvas: canvas.toDataURL(), userId: user?.sub });
+        // const link = document.createElement('a');
+        // link.download = 'generative_art.png';
+        // link.click();
+      }
+    } catch (err) {
+      console.error('Unable to POST artwork to DB at client', err);
     }
   };
 
