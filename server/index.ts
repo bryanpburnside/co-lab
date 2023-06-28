@@ -13,6 +13,7 @@ const { PORT, CLOUD_NAME, CLOUD_API_KEY, CLOUD_SECRET, RapidAPI_KEY, RapidAPI_HO
 import Users from './routes/users.js';
 import Messages from './routes/messages.js';
 import { Message } from './database/index.js';
+import artworkRouter from './routes/artwork.js';
 import VisualArtwork from './routes/visualartwork.js';
 import CreateStoryRouter from './routes/story.js';
 import pagesRouter from './routes/pages.js';
@@ -49,6 +50,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use('/api/rooms', Rooms);
 app.use('/users', Users);
 app.use('/messages', Messages);
+app.use('/artwork', artworkRouter);
 app.use('/visualart', VisualArtwork);
 app.use('/api/stories', CreateStoryRouter);
 app.use('/api/pages', pagesRouter);
