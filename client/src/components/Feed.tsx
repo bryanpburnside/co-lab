@@ -7,7 +7,7 @@ import { Outlet, Link, useNavigate } from 'react-router-dom';
 import '../styles.css';
 
 interface ArtItem {
-  id: number;
+  id: string;
   title: string | null;
   content: string;
   url: string | null;
@@ -108,7 +108,7 @@ const Feed: React.FC = () => {
         <div className="post-header">
           <img src={item.picture} alt={item.name} className="user-pfp" />
           <div className="username"
-            onClick={() => navigate(`/profile/${item.id}`)}>
+            onClick={() => item.id === user?.sub ? navigate(`/profile`) : navigate(`/profile/${item.id}`)}>
             {item.name}
           </div>
           <p className="creation-time">{formatTimeDifference(item.createdAt)}</p>
