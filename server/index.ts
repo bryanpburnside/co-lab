@@ -34,7 +34,7 @@ app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:8000', 'http://ec2-18-222-210-148.us-east-2.compute.amazonaws.com:8000/', '18.222.210.148:8000'],
+    origin: ['http://co-lab.group', 'http://www.co-lab.group', 'https://co-lab.group', 'https://www.co-lab.group', 'http://localhost:8000', 'http://ec2-18-222-210-148.us-east-2.compute.amazonaws.com:8000/', '18.222.210.148:8000'],
     methods: ['GET', 'POST'],
     credentials: true
   }
