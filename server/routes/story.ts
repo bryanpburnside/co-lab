@@ -49,23 +49,24 @@ CreateStoryRouter.get('/', async (req, res) => {
 });
 
 CreateStoryRouter.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+  console.log('id', id);
   try {
-    const { id } = req.params;
+    const story = await Story.findOne({ where: { id } });
 
-    const result = await Story.destroy({
-      where: { id: id }
-    });
-
-    if (result === 0) {
-      return res.status(404).json({ message: 'Story not found' });
+    if (!story) {
+      return res.status(404).json({ message: 'Story not found-router' });
     }
 
-    res.status(200).json({ message: 'Story deleted successfully' });
+    await story.destroy();
+
+    res.status(200).json({ message: 'Story deleted successfully-router' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Failed to delete story' });
+    res.status(500).json({ message: 'Failed to delete story-router' });
   }
 });
+
 
 
 export default CreateStoryRouter;

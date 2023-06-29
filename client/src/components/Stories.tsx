@@ -197,10 +197,10 @@ const StoryBook: React.FC = () => {
         // remove the deleted story from the list in the UI
         setStories(stories.filter(story => story.id !== storyId));
       } else {
-        console.error('Failed to delete story');
+        console.error('Failed to delete story-client');
       }
     } catch (error) {
-      console.error('Failed to delete story', error);
+      console.error('Failed to delete story-client', error);
     }
   };
 

@@ -2,7 +2,7 @@ import React, { useState, useContext, useRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 import STT from './STT';
 import '../styles.css';
-import { FaSave, FaTimesCircle, FaPlusCircle, FaVolumeUp } from 'react-icons/fa';
+import { FaSave, FaTimesCircle, FaPlusCircle, FaVolumeUp, FaEraser, FaArrowRight } from 'react-icons/fa';
 import TooltipIcon from './TooltipIcons';
 import { TTSToggleContext } from './Stories';
 import Switch from "react-switch";
@@ -97,6 +97,9 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
     }
   };
 
+  const handleClearContent = () => {
+    setContent('');
+  };
 
   return (
     <div>
@@ -136,6 +139,12 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
           handleClick={ handleSave }
           style={{ top: '15px'}}
         />
+          <TooltipIcon
+            icon={ FaEraser }
+            tooltipText="Clear"
+            handleClick={ handleClearContent }
+            style={{ top: '15px'}}
+          />
         <TooltipIcon
           icon={ FaVolumeUp }
           tooltipText="TTY"
@@ -162,6 +171,7 @@ interface FlipBookProps {
 const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdatePage, fetchPages, addNewPage, TooltipIcon }) => {
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
   const [isAutoReading, setIsAutoReading] = useState(false);
+
 
   const flipBookRef = useRef<any>(null);
 
@@ -223,6 +233,7 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
       console.error('Cannot read the page');
     }
   };
+
 
   // const handleToggleAutoRead = () => {
   //   setIsAutoReading(!isAutoReading);
