@@ -6,9 +6,9 @@ import { SendButton } from '../styled';
 import { StyleSheetManager } from 'styled-components';
 
 interface Friend {
-  id: string,
-  name: string,
-  picture: string
+  id: string;
+  name: string;
+  picture: string;
 }
 
 const Profile: React.FC = () => {
@@ -19,12 +19,10 @@ const Profile: React.FC = () => {
   const [friends, setFriends] = useState<Friend[]>([]);
 
   useEffect(() => {
-    if (userId) {
+    if (user) {
       getUserInfo();
-    } else {
-      setProfileUser(user);
     }
-  }, [user, userId])
+  }, [user, userId]);
 
   useEffect(() => {
     if (friendIds.length) {
@@ -32,62 +30,69 @@ const Profile: React.FC = () => {
     }
   }, [friendIds]);
 
+  const getUserInfo = async () => {
+    try {
+      let userData;
+      let result;
+      if (!userId || userId === user?.sub) {
+        result = await axios.get(`/users/${user?.sub}`);
+        userData = result.data;
+      } else {
+        result = await axios.get(`/users/${userId}`);
+        userData = result.data;
+      }
+      setProfileUser(userData);
+      setFriendIds(userData.friends || []);
+    } catch (err) {
+      console.error('Failed to GET user info at client:', err);
+    }
+  };
+
   const getFriends = async () => {
     try {
-      const friendDataPromises = friendIds.map(async (friendId) => {
+      const friendPromises = friendIds.map(async (friendId) => {
         const result = await axios.get(`/users/${friendId}`);
         return result.data;
-      })
-      const friendData = await Promise.all(friendDataPromises);
+      });
+      const friendData = await Promise.all(friendPromises);
       setFriends(friendData);
     } catch (err) {
       console.error('Failed to GET friend data at client:', err);
     }
-  }
-
-  const getUserInfo = async () => {
-    try {
-      const result = await axios.get(`/users/${userId}`);
-      const userData = result.data;
-      setProfileUser(userData);
-      setFriendIds(userData.friends);
-    } catch (err) {
-      console.error('Failed to GET user info at client:', err);
-    }
-  }
+  };
 
   const addFriend = (userId: string, friendId: string) => {
     try {
       axios.post('/users/add-friend', {
         userId,
         friendId
-      })
+      });
     } catch (err) {
       console.error('Failed to POST new friend at client:', err);
     }
-  }
+  };
 
   if (isLoading) {
-    return <div className='loading-container'>Loading ...</div>;
+    return <div className="loading-container">Loading ...</div>;
   }
 
   return (
     isAuthenticated ? (
       <StyleSheetManager shouldForwardProp={(prop) => prop !== 'theme'}>
-        <div className='profile-container'>
+        <div className="profile-container">
           {profileUser ? (
             <>
               <img src={profileUser.picture} alt={profileUser.name} />
               <h2>{profileUser.name}</h2>
               <p>{profileUser.email}</p>
-              {userId && (
+              {userId && userId !== user.sub && (
                 <SendButton style={{ width: '15%', margin: '5px' }} onClick={() => addFriend(user.sub, profileUser.id)}>
                   Add Friend
                 </SendButton>
               )}
-              <h3>Friends</h3>
+              {friends.length ? (<h3>Friends</h3>) : null}
               {friends &&
-                friends.map(friend => (
+                friends.map((friend) => (
                   <div key={friend.id}>
                     <Link to={`/profile/${friend.id}`}>
                       <img src={friend.picture} alt={friend.name} />
@@ -100,7 +105,7 @@ const Profile: React.FC = () => {
             <p>Loading profile...</p>
           )}
         </div>
-      </StyleSheetManager >
+      </StyleSheetManager>
     ) : (
       <p>You are not logged in</p>
     )
