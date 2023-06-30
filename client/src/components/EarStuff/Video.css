@@ -90,3 +90,14 @@ video {
 .video-wrapper {
   position: relative;
 }
+
+.overlay-image {
+  position: absolute;
+  top: 20%; /* Adjust this value as needed */
+  left: 84%;
+  transform: translate(-50%, -50%);
+  width: 200px; /* Adjust the width as needed */
+  height: auto; /* Adjust the height as needed */
+  z-index: 1;
+}
+
