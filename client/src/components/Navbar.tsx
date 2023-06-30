@@ -5,8 +5,7 @@ import '../styles.css';
 import TTS from "./TTS";
 
 const Navbar = () => {
-  const { logout } = useAuth0();
-  const { loginWithRedirect } = useAuth0();
+  const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
   const [speakText, setSpeakText] = useState('');
   const hoverTimeout = React.useRef<any>(null);
 
@@ -24,33 +23,40 @@ const Navbar = () => {
     <nav className="navbar">
       <ul className="navbar-links">
         <li className="navbar-item" onMouseEnter={() => handleHover('Home')}>
-          <Link to="/">Home</Link>
+          <Link to="/">
+            <img id="logo" src="https://res.cloudinary.com/dtnq6yr17/image/upload/v1688141524/Logo_van9la.png" alt="Home" />
+          </Link>
         </li>
-        <li className="navbar-item">
+      </ul>
+      <ul className="navbar-links-right">
+        <li className="navbar-item-right">
           <Link to="/feed">Feed</Link>
         </li>
-        <li
-          className="navbar-item"
-          onClick={() => loginWithRedirect()}
-          style={{ cursor: 'pointer' }}
-          onMouseEnter={() => handleHover('Login')}
-        >
-          Login
-        </li>
-        <li className="navbar-item" onMouseEnter={() => handleHover('Profile')}>
+        <li className="navbar-item-right" onMouseEnter={() => handleHover('Profile')}>
           <Link to="/profile">Profile</Link>
         </li>
-        <li className="navbar-item">
+        <li className="navbar-item-right">
           <Link to="/messages">Messages</Link>
         </li>
+        {!isAuthenticated ?
         <li
-          className="navbar-item"
-          onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
-          style={{ cursor: 'pointer' }}
-          onMouseEnter={() => handleHover('Logout')}
-        >
-          Logout
+            className="navbar-item-right"
+            onClick={() => loginWithRedirect()}
+            style={{ cursor: 'pointer' }}
+            onMouseEnter={() => handleHover('Login')}
+          >
+            Login
         </li>
+        :
+        <li
+            className="navbar-item-right"
+            onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+            style={{ cursor: 'pointer' }}
+            onMouseEnter={() => handleHover('Logout')}
+          >
+            Logout
+        </li>
+        }
       </ul>
       {/* {speakText && <TTS text={speakText} />} */}
     </nav>
