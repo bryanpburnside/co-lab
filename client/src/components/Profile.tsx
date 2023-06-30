@@ -26,6 +26,7 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     if (friendIds.length) {
+      console.log('friendIds', friendIds)
       getFriends();
     }
   }, [friendIds]);
@@ -85,8 +86,8 @@ const Profile: React.FC = () => {
               <img src={profileUser.picture} alt={profileUser.name} />
               <h2>{profileUser.name}</h2>
               <p>{profileUser.email}</p>
-              {userId && userId !== user.sub && (
-                <SendButton style={{ width: '15%', margin: '5px' }} onClick={() => addFriend(user.sub, profileUser.id)}>
+              {userId && userId !== user?.sub && !friendIds.includes(user?.sub) && (
+                < SendButton style={{ width: '15%', margin: '5px' }} onClick={() => addFriend(user?.sub, profileUser.id)}>
                   Add Friend
                 </SendButton>
               )}
@@ -105,7 +106,7 @@ const Profile: React.FC = () => {
             <p>Loading profile...</p>
           )}
         </div>
-      </StyleSheetManager>
+      </StyleSheetManager >
     ) : (
       <p>You are not logged in</p>
     )
