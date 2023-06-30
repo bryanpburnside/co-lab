@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useAuth0, User } from '@auth0/auth0-react';
 import axios from 'axios';
 import { SendButton } from '../styled';
@@ -89,7 +89,10 @@ const Profile: React.FC = () => {
               {friends &&
                 friends.map(friend => (
                   <div key={friend.id}>
-                    <p>{friend.name}</p>
+                    <Link to={`/profile/${friend.id}`}>
+                      <img src={friend.picture} alt={friend.name} />
+                      {friend.name}
+                    </Link>
                   </div>
                 ))}
             </>
