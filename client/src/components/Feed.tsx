@@ -36,7 +36,7 @@ const Feed: React.FC = () => {
 
   const getUserData = async (artworkId: number) => {
     try {
-      const response = await axios.get(`/artwork/${artworkId}`);
+      const response = await axios.get(`/artwork/byId/${artworkId}`);
       const userData = response.data;
       return userData;
     } catch (err) {
