@@ -6,6 +6,8 @@ import TooltipIcon from '../TooltipIcons';
 import { FaVolumeUp } from 'react-icons/fa';
 import { Socket } from 'socket.io-client';
 import { SocketContext } from './Inbox';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import {
   ConversationContainer,
   BubbleContainer,
@@ -137,7 +139,9 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
                 <STT updateTranscript={updateContentWithTranscript} />
               </STTButton>
             </TextInputContainer>
-            <SendButton type="submit" onClick={sendMessage}>Send</SendButton>
+            <SendButton type="submit" onClick={sendMessage}>
+              <FontAwesomeIcon icon={faPaperPlane} />
+            </SendButton>
           </SendMessageContainer>
         </>
       ) : null}
