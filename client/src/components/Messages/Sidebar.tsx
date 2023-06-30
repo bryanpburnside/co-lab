@@ -42,6 +42,10 @@ const ConfigButton = styled.button`
   cursor: pointer;
 `;
 
+const ClickableName = styled.li`
+  cursor: pointer;
+`;
+
 const Sidebar = () => {
   const socket = useContext(SocketContext) as Socket;
 
@@ -80,9 +84,9 @@ const Sidebar = () => {
         <ul>
           {userList.map((user) => {
             if (user.id !== userId) {
-              return (<li key={user.id} onClick={() => handleRecipientClick(user.id)}>
+              return (<ClickableName key={user.id} onClick={() => handleRecipientClick(user.id)}>
                 {user.name}
-              </li>)
+              </ClickableName>)
             }
           })}
         </ul>
