@@ -38,6 +38,7 @@ const Profile: React.FC = () => {
       const id = userId || user?.sub;
       const art = await axios.get(`/artwork/byUserId/${id}`);
       console.log('artwork', art.data);
+      setArtwork(art.data);
     } catch (err) {
       console.error('Failed to GET artwork at client:', err);
     }
@@ -103,6 +104,16 @@ const Profile: React.FC = () => {
                   Add Friend
                 </SendButton>
               )}
+              {artwork &&
+                artwork.map(art => {
+                  if (art.type === 'visual art') {
+                    return (
+                      <div key={art.id}>
+                        <img src={art.visualart.content} />
+                      </div>
+                    )
+                  }
+                })}
               {friends.length ? (<h3>Friends</h3>) : null}
               {friends &&
                 friends.map((friend) => (
