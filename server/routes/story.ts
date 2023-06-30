@@ -50,10 +50,14 @@ CreateStoryRouter.get('/', async (req, res) => {
 
 CreateStoryRouter.delete('/:id', async (req, res) => {
   const { id } = req.params;
-  console.log('id', id);
+  console.log(req.body);
   try {
     const story = await Story.findOne({ where: { id } });
+    console.log('story', story);
+    //conditional to check that user matches
+    // if (req.body.id !== story.originalCreatorId) {
 
+    // }
     if (!story) {
       return res.status(404).json({ message: 'Story not found-router' });
     }

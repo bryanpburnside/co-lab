@@ -69,7 +69,6 @@ const NewStoryForm: React.FC<{ onCreateStory: (story: Story) => void, onCancel: 
       return;
     }
 
-
     const story: Story = {
       title,
       coverImage: coverImageUrl,

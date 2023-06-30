@@ -10,6 +10,7 @@ import { FaPlusCircle, FaTty, FaHeadphones, FaBookMedical, FaTrash } from 'react
 import TooltipIcon from './TooltipIcons';
 import TTS from "./TTS";
 
+
 interface Page {
   id?: number;
   page_number: number;
@@ -42,7 +43,6 @@ const StoryBook: React.FC = () => {
   const [showNewStoryForm, setShowNewStoryForm] = useState(false);
   const [speakText, setSpeakText] = useState('');
   const [ttsOn, setTtsOn] = useState(false);
-
 
   useEffect(() => {
     socket.on('roomCreated', (userId, roomId) => {
@@ -194,8 +194,10 @@ const StoryBook: React.FC = () => {
       });
 
       if (response.ok) {
-        // remove the deleted story from the list in the UI
+        // remove the deleted story from the list
         setStories(stories.filter(story => story.id !== storyId));
+      } else if (response.status === 403) {
+        console.error('Unauthorized deletion attempt');
       } else {
         console.error('Failed to delete story-client');
       }

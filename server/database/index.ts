@@ -197,9 +197,12 @@ Pages.belongsTo(Story, { foreignKey: 'storyId' })
 
 const initialize = async () => {
   try {
-    await sequelize.sync({ force: true });
-    await createSeedData();
-    console.log('Tables successfully created!');
+    const seedStories = await Story.findAll();
+    if (seedStories.length === 0) {
+      await createSeedData();
+    }
+      await sequelize.sync({ alter: true });
+      console.log('Tables successfully created!');
   } catch (error) {
     console.error('Error creating tables :(', error);
   }
