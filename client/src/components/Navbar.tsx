@@ -1,6 +1,10 @@
-import React, { useState } from "react";
-import { Outlet, Link } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
+import React, { useState } from 'react';
+import { Outlet, Link } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleUser, faNewspaper, faMessage } from '@fortawesome/free-regular-svg-icons';
+import { faArrowRightToBracket, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+
 import '../styles.css';
 import TTS from "./TTS";
 
@@ -30,32 +34,38 @@ const Navbar = () => {
       </ul>
       <ul className="navbar-links-right">
         <li className="navbar-item-right">
-          <Link to="/feed">Feed</Link>
+          <Link to="/feed">
+            <FontAwesomeIcon icon={faNewspaper} size='lg' />
+          </Link>
         </li>
         <li className="navbar-item-right" onMouseEnter={() => handleHover('Profile')}>
-          <Link to="/profile">Profile</Link>
+          <Link to="/profile">
+            <FontAwesomeIcon icon={faCircleUser} size='lg' />
+          </Link>
         </li>
         <li className="navbar-item-right">
-          <Link to="/messages">Messages</Link>
+          <Link to="/messages">
+            <FontAwesomeIcon icon={faMessage} size='lg' />
+          </Link>
         </li>
         {!isAuthenticated ?
-        <li
+          <li
             className="navbar-item-right"
             onClick={() => loginWithRedirect()}
             style={{ cursor: 'pointer' }}
             onMouseEnter={() => handleHover('Login')}
           >
-            Login
-        </li>
-        :
-        <li
+            <FontAwesomeIcon icon={faArrowRightToBracket} size='lg' />
+          </li>
+          :
+          <li
             className="navbar-item-right"
             onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
             style={{ cursor: 'pointer' }}
             onMouseEnter={() => handleHover('Logout')}
           >
-            Logout
-        </li>
+            <FontAwesomeIcon icon={faArrowRightFromBracket} size='lg' />
+          </li>
         }
       </ul>
       {/* {speakText && <TTS text={speakText} />} */}
