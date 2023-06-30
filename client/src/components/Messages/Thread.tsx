@@ -140,7 +140,7 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
               </STTButton>
             </TextInputContainer>
             <SendButton type="submit" onClick={sendMessage}>
-              <FontAwesomeIcon icon={faPaperPlane} />
+              <FontAwesomeIcon icon={faPaperPlane} size='lg' />
             </SendButton>
           </SendMessageContainer>
         </>
