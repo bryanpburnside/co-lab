@@ -62,6 +62,12 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
     setMessage('');
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      sendMessage(e);
+    }
+  };
+
   const updateContentWithTranscript = (transcript: string) => {
     setMessage((prevMessage) => prevMessage + ' ' + transcript);
   };
@@ -134,6 +140,7 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
                 type="text"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
               />
               <STTButton>
                 <STT updateTranscript={updateContentWithTranscript} />
