@@ -5,7 +5,7 @@ import { Socket } from 'socket.io-client';
 import { SocketContext } from './Inbox';
 import Thread from './Thread';
 import styled from 'styled-components';
-import { FaCogs } from 'react-icons/fa';
+// import { FaCogs } from 'react-icons/fa';
 
 const SidebarContainer = styled.div`
   display: flex;
@@ -86,9 +86,6 @@ const Sidebar = () => {
             }
           })}
         </ul>
-        <ConfigButton>
-          <FaCogs />
-        </ConfigButton>
       </MessageList>
       <ThreadContainer>
         <Thread userId={userId} receiverId={recipient} userList={userList} setUserList={setUserList} />
