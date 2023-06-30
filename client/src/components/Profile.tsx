@@ -17,10 +17,12 @@ const Profile: React.FC = () => {
   const [profileUser, setProfileUser] = useState<User | undefined>(undefined);
   const [friendIds, setFriendIds] = useState<string[]>([]);
   const [friends, setFriends] = useState<Friend[]>([]);
+  const [artwork, setArtwork] = useState<string[]>([]);
 
   useEffect(() => {
     if (user) {
       getUserInfo();
+      getArtwork();
     }
   }, [user, userId]);
 
@@ -30,6 +32,16 @@ const Profile: React.FC = () => {
       getFriends();
     }
   }, [friendIds]);
+
+  const getArtwork = async () => {
+    try {
+      const id = userId || user?.sub;
+      const art = await axios.get(`/artwork/byUserId/${id}`);
+      console.log('artwork', art.data);
+    } catch (err) {
+      console.error('Failed to GET artwork at client:', err);
+    }
+  }
 
   const getUserInfo = async () => {
     try {
