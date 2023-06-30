@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Artwork, User } from '../database/index.js';
+import { Artwork, User, VisualArt, Story, Sculpture, Music } from '../database/index.js';
 const artworkRouter = Router();
 
 artworkRouter.get('/byId/:artworkId', async (req, res) => {
@@ -20,9 +20,10 @@ artworkRouter.get('/byId/:artworkId', async (req, res) => {
 artworkRouter.get('/byUserId/:userId', async (req, res) => {
   const { userId } = req.params;
   try {
-    const artwork = await Artwork.findAll({ where: { userId } });
-    const artworkIds = artwork.map((art: any) => art.id);
-    console.log(artworkIds);
+    const artwork = await Artwork.findAll({
+      where: { userId },
+      include: [VisualArt, Music, Story, Sculpture]
+    });
     res.send(artwork).status(200);
   } catch (err) {
     console.error('Failed to GET artwork BY USER ID:', err);
