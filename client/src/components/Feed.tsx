@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { formatDistanceToNow } from 'date-fns';
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, useNavigate } from 'react-router-dom';
 
 import '../styles.css';
 
 interface ArtItem {
-  id: number;
+  id: string;
   title: string | null;
   content: string;
   url: string | null;
   createdAt: string;
   updatedAt: string;
   artworkId: number;
+  name: string;
 }
 
 interface PageItem {
@@ -28,8 +30,19 @@ type FeedItem = ArtItem | PageItem;
 
 const Feed: React.FC = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
+  const navigate = useNavigate();
   const [feedData, setFeedData] = useState<FeedItem[] | null>(null);
   const [pageData, setPageData] = useState<{ [key: number]: PageItem[] }>({});
+
+  const getUserData = async (artworkId: number) => {
+    try {
+      const response = await axios.get(`/artwork/${artworkId}`);
+      const userData = response.data;
+      return userData;
+    } catch (err) {
+      console.error('Failed to GET user data at client:', err);
+    }
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,8 +54,12 @@ const Feed: React.FC = () => {
         const sortedData = combinedData.sort(
           (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
+        const feedWithUserData = await Promise.all(sortedData.map(async (entry) => {
+          const userObj = await getUserData(entry.id);
+          return Object.assign({}, entry, userObj);
+        }));
 
-        setFeedData(sortedData);
+        setFeedData(feedWithUserData);
 
         // Making a request for each story ID
         const pagePromises = storyData.map((story: any) => fetch(`http://localhost:8000/api/pages?storyId=${story.id}`));
@@ -85,48 +102,53 @@ const Feed: React.FC = () => {
     const isVisualArt = 'url' in item;
     const isPageStory = 'coverImage' in item;
     const pages = pageData[item.id] || [];
-  
+
     return (
       <div className="post" key={index}>
         <div className="post-header">
-          <img src={user.picture} alt={user.name} className="user-pfp" />
-          <a href={/* make this go to correct users prof */} className="username">
-            {user.name}
-          </a>
+          <img src={item.picture} alt={item.name} className="user-pfp" />
+          <div className="username"
+            onClick={() => item.id === user?.sub ? navigate(`/profile`) : navigate(`/profile/${item.id}`)}>
+            {item.name}
+          </div>
           <p className="creation-time">{formatTimeDifference(item.createdAt)}</p>
         </div>
-        {isVisualArt && (
-          <>
-            <img src={item.content} alt={item.title} className="cloud-img" />
-          </>
-        )}
-        {isPageStory && (
-          <div className="story" key={index}>
-            <h1>
-              {item.coverImage} {item.title}
-            </h1>
-            {pages.map((page: PageItem) => (
-              <p className="story-content" key={page.id}>
-                {page.content}
-              </p>
-            ))}
-          </div>
-        )}
+        {
+          isVisualArt && (
+            <>
+              <img src={item.content} alt={item.title} className="cloud-img" />
+            </>
+          )
+        }
+        {
+          isPageStory && (
+            <div className="story" key={index}>
+              <h1>
+                {item.coverImage} {item.title}
+              </h1>
+              {pages.map((page: PageItem) => (
+                <p className="story-content" key={page.id}>
+                  {page.content}
+                </p>
+              ))}
+            </div>
+          )
+        }
         <div className="post-footer">
           <h1 className="add-to-colab">
             <a href={/* make this do something */}>Add to this Colab</a>
           </h1>
         </div>
-      </div>
+      </div >
     );
   };
-  
+
   return (
     <div className="post-container">
       {feedData && feedData.map(renderPost)}
     </div>
   );
-  
+
 };
 
 export default Feed;

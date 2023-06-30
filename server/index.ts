@@ -13,7 +13,9 @@ const { PORT, CLOUD_NAME, CLOUD_API_KEY, CLOUD_SECRET, RapidAPI_KEY, RapidAPI_HO
 import Users from './routes/users.js';
 import Messages from './routes/messages.js';
 import { Message } from './database/index.js';
+import artworkRouter from './routes/artwork.js';
 import VisualArtwork from './routes/visualartwork.js';
+import sculptureRouter from './routes/sculpture.js';
 import CreateStoryRouter from './routes/story.js';
 import pagesRouter from './routes/pages.js';
 import axios from 'axios';
@@ -32,7 +34,7 @@ app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: '/',
+    origin: ['http://co-lab.group', 'http://www.co-lab.group', 'https://co-lab.group', 'https://www.co-lab.group', 'http://localhost:8000', 'http://ec2-18-222-210-148.us-east-2.compute.amazonaws.com:8000/', '18.222.210.148:8000'],
     methods: ['GET', 'POST'],
     credentials: true
   }
@@ -48,9 +50,12 @@ app.use(express.json({ limit: '10mb' }));
 app.use('/api/rooms', Rooms);
 app.use('/users', Users);
 app.use('/messages', Messages);
+app.use('/artwork', artworkRouter);
 app.use('/visualart', VisualArtwork);
 app.use('/api/stories', CreateStoryRouter);
 app.use('/api/pages', pagesRouter);
+app.use('/sculpture', sculptureRouter);
+
 app.use(express.static(staticFilesPath));
 
 app.get('*', (req, res) => {
@@ -132,11 +137,16 @@ io.on('connection', socket => {
     console.log(`${userId} created room: ${roomId}`);
   });
 
-  // Handle join room event
+  // // Handle join room event
   socket.on('joinRoom', (userId, roomId) => {
     socket.join(roomId); // Join the room with the provided ID
     socket.to(roomId).emit('userJoined', userId); // Emit the userJoined event to the participants in the room
     console.log(`User ${userId} joined the room`);
+    
+    socket.on('disconnect', () => {
+      socket.to(roomId).emit('disconnectUser', userId)
+      console.log(`${userId} left the room`);
+    });
   });
 
   socket.on('directMessage', async ({ senderId, receiverId, message }) => {
@@ -170,9 +180,16 @@ io.on('connection', socket => {
     console.log(`${userId} left the message thread`);
   });
 
-  socket.on('disconnectUser', userId => {
-    console.log(`${userId} left the room`);
-  });
+
+    // // Handle key press event
+    // socket.on('keyPress', (key: string, roomId: string) => {
+    //   // Broadcast the key press to all participants in the same room
+    //   socket.to(roomId).emit('keyPress', key);
+    // });
+
+    socket.on('drawing', data => {
+      socket.to(data.roomId).emit('drawing', data);
+    })
 });
 
 server.listen(PORT, () => {
