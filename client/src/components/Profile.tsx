@@ -104,6 +104,7 @@ const Profile: React.FC = () => {
                   Add Friend
                 </SendButton>
               )}
+              {artwork.length ? (<h3>Artwork</h3>) : null}
               {artwork &&
                 artwork.map(art => {
                   if (art.type === 'visual art') {
@@ -120,7 +121,6 @@ const Profile: React.FC = () => {
                   <div key={friend.id}>
                     <Link to={`/profile/${friend.id}`}>
                       <img src={friend.picture} alt={friend.name} />
-                      {friend.name}
                     </Link>
                   </div>
                 ))}
