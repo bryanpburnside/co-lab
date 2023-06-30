@@ -5,10 +5,18 @@ import axios from 'axios';
 import { SendButton } from '../styled';
 import { StyleSheetManager } from 'styled-components';
 
+interface Friend {
+  id: string,
+  name: string,
+  picture: string
+}
+
 const Profile: React.FC = () => {
-  let { userId } = useParams();
+  const { userId } = useParams();
   const { user, isAuthenticated, isLoading } = useAuth0();
   const [profileUser, setProfileUser] = useState<User | undefined>(undefined);
+  const [friendIds, setFriendIds] = useState<string[]>([]);
+  const [friends, setFriends] = useState<Friend[]>([]);
 
   useEffect(() => {
     if (userId) {
@@ -18,10 +26,31 @@ const Profile: React.FC = () => {
     }
   }, [user, userId])
 
+  useEffect(() => {
+    if (friendIds.length) {
+      getFriends();
+    }
+  }, [friendIds]);
+
+  const getFriends = async () => {
+    try {
+      const friendDataPromises = friendIds.map(async (friendId) => {
+        const result = await axios.get(`/users/${friendId}`);
+        return result.data;
+      })
+      const friendData = await Promise.all(friendDataPromises);
+      setFriends(friendData);
+    } catch (err) {
+      console.error('Failed to GET friend data at client:', err);
+    }
+  }
+
   const getUserInfo = async () => {
     try {
       const result = await axios.get(`/users/${userId}`);
-      setProfileUser(result.data);
+      const userData = result.data;
+      setProfileUser(userData);
+      setFriendIds(userData.friends);
     } catch (err) {
       console.error('Failed to GET user info at client:', err);
     }
@@ -56,6 +85,13 @@ const Profile: React.FC = () => {
                   Add Friend
                 </SendButton>
               )}
+              <h3>Friends</h3>
+              {friends &&
+                friends.map(friend => (
+                  <div key={friend.id}>
+                    <p>{friend.name}</p>
+                  </div>
+                ))}
             </>
           ) : (
             <p>Loading profile...</p>
