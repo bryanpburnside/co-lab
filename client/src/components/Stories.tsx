@@ -189,7 +189,7 @@ const StoryBook: React.FC = () => {
 
   const deleteStory = async (storyId: number) => {
     try {
-      const response = await fetch(`/api/stories/${storyId}`, {
+      const response = await fetch(`/api/stories/${storyId}?userId=${user?.sub}`, {
         method: 'DELETE',
       });
 
