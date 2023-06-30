@@ -24,7 +24,16 @@ interface PageItem {
   storyId: number;
 }
 
-type FeedItem = ArtItem | PageItem;
+interface Music {
+  id: number; 
+  songTitle: string,
+  content: null,
+  createdAt: string,
+  updatedAt: string,
+  artworkId: number;
+}
+
+type FeedItem = ArtItem | PageItem | Music;
 
 const Feed: React.FC = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
@@ -34,10 +43,10 @@ const Feed: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [artResponse, storyResponse] = await Promise.all([fetch('/visualart'), fetch('/api/stories')]);
-        const [artData, storyData] = await Promise.all([artResponse.json(), storyResponse.json()]);
+        const [artResponse, storyResponse, musicResponse] = await Promise.all([fetch('/visualart'), fetch('/api/stories'), fetch('/music')]);
+        const [artData, storyData, musicData] = await Promise.all([artResponse.json(), storyResponse.json(), musicResponse.json()]);
 
-        const combinedData: FeedItem[] = [...artData, ...storyData];
+        const combinedData: FeedItem[] = [...artData, ...storyData, ...musicData];
         const sortedData = combinedData.sort(
           (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
@@ -84,6 +93,7 @@ const Feed: React.FC = () => {
   const renderPost = (item: FeedItem, index: number) => {
     const isVisualArt = 'url' in item;
     const isPageStory = 'coverImage' in item;
+    const isMusic = 'songTitle' in item;
     const pages = pageData[item.id] || [];
   
     return (
@@ -111,6 +121,14 @@ const Feed: React.FC = () => {
               </p>
             ))}
           </div>
+        )}
+        {isMusic && (
+          <><h1>{item.songTitle}</h1><div className="music-player">
+            <audio controls>
+              <source src={item.url} type="audio/mp3" />
+              Your browser does not support the audio tag.
+            </audio>
+          </div></>
         )}
         <div className="post-footer">
           <h1 className="add-to-colab">
