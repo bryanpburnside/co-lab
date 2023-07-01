@@ -51,9 +51,7 @@ html {
   display: flex;
   flex-direction: column;
   width: 80vw;
-  /* Adjust the width as desired */
   margin: 0 auto;
-  /* Center the container horizontally */
   height: 60vh;
 }
 
@@ -185,7 +183,7 @@ html {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  
+
 }
 
 .user-pfp {
@@ -209,7 +207,7 @@ html {
 .cloud-img {
   width: 100%;
   height: auto;
-  
+
 }
 
 .page {
@@ -311,7 +309,7 @@ html {
 }
 
 /* show the tooltip text when hovering */
-div:hover > .tooltip-text {
+div:hover>.tooltip-text {
   display: block;
 }
 
