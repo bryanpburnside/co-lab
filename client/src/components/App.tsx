@@ -11,6 +11,7 @@ import Sculpture from './Sculpture'
 import VisualArt from './Eye/VisualArt';
 import Inbox from './Messages/Inbox';
 import Feed from './Feed';
+import Trimmer from './EarStuff/Trimmer'
 import '../styles.css';
 
 const App = () => {
@@ -28,6 +29,8 @@ const App = () => {
         <Route path='/sculpture/:roomId' element={<Sculpture />} />
         <Route path='/messages' element={<Inbox />} />
         <Route path='/feed' element={<Feed />} />
+        <Route path='/trimmer' element={<Trimmer />} />
+
       </Routes>
     </Router>
   );

@@ -26,10 +26,10 @@ interface PageItem {
 
 interface Music {
   id: number; 
-  songTitle: string,
-  content: null,
-  createdAt: string,
-  updatedAt: string,
+  songTitle: string;
+  content: null;
+  createdAt: string;
+  updatedAt: string;
   artworkId: number;
 }
 
@@ -53,10 +53,10 @@ const Feed: React.FC = () => {
 
         setFeedData(sortedData);
 
-        // Making a request for each story ID
+       
         const pagePromises = storyData.map((story: any) => fetch(`http://localhost:8000/api/pages?storyId=${story.id}`));
 
-        // Fetching the page data for each story
+        
         const pageResponses = await Promise.all(pagePromises);
         const pageData = await Promise.all(pageResponses.map(response => response.json()));
 
@@ -86,31 +86,43 @@ const Feed: React.FC = () => {
     return formatDistanceToNow(created, { addSuffix: true });
   };
 
-  if (isLoading) {
-    return <div className="loading-container">Loading ...</div>;
-  }
+  const renderVisualArt = (item: ArtItem, index: number) => {
+    return (
+      <div className="post" key={index}>
+        <div className="post-header">
+          <img src={user.picture} alt={user.name} className="user-pfp" />
+          {/* These just link back to feed but make them go to the correct user */}
+          <a href={"feed"} className="username">
+            {user.name}
+          </a>
+          <p className="creation-time">{formatTimeDifference(item.createdAt)}</p>
+        </div>
+        <div className="post-body">
+          <img src={item.content} alt={item.title} className="cloud-img" />
+        </div>
+        <div className="post-footer">
+          <h1 className="add-to-colab">
+            <Link to="">Add to this Colab</Link>
+          </h1>
+        </div>
+      </div>
+    );
+  };
 
-  const renderPost = (item: FeedItem, index: number) => {
-    const isVisualArt = 'url' in item;
-    const isPageStory = 'coverImage' in item;
-    const isMusic = 'songTitle' in item;
+  const renderPageStory = (item: PageItem, index: number) => {
     const pages = pageData[item.id] || [];
   
     return (
       <div className="post" key={index}>
         <div className="post-header">
           <img src={user.picture} alt={user.name} className="user-pfp" />
-          <a href={/* make this go to correct users prof */} className="username">
+          {/* These just link back to feed but make them go to the correct user */}
+          <a href={"feed"} className="username">
             {user.name}
           </a>
           <p className="creation-time">{formatTimeDifference(item.createdAt)}</p>
         </div>
-        {isVisualArt && (
-          <>
-            <img src={item.content} alt={item.title} className="cloud-img" />
-          </>
-        )}
-        {isPageStory && (
+        <div className="post-body">
           <div className="story" key={index}>
             <h1>
               {item.coverImage} {item.title}
@@ -121,30 +133,63 @@ const Feed: React.FC = () => {
               </p>
             ))}
           </div>
-        )}
-        {isMusic && (
-          <><h1>{item.songTitle}</h1><div className="music-player">
-            <audio controls>
-              <source src={item.url} type="audio/mp3" />
-              Your browser does not support the audio tag.
-            </audio>
-          </div></>
-        )}
+        </div>
         <div className="post-footer">
           <h1 className="add-to-colab">
-            <a href={/* make this do something */}>Add to this Colab</a>
+            <Link to="">Add to this Colab</Link>
           </h1>
         </div>
       </div>
     );
   };
-  
+
+  const renderMusic = (item: Music, index: number) => {
+    return (
+      <div className="post" key={index}>
+        <div className="post-header">
+          <img src={user.picture} alt={user.name} className="user-pfp" />
+          {/* These just link back to feed but make them go to the correct user */}
+          <a href={"feed"} className="username">
+            {user.name}
+          </a>
+          <p className="creation-time">{formatTimeDifference(item.createdAt)}</p>
+        </div>
+        <div className="post-body">
+          <h1>{item.songTitle}</h1>
+          <div className="music-player">
+            <audio controls>
+              <source src={item.url} type="audio/mp3" />
+              Your browser does not support the audio tag.
+            </audio>
+          </div>
+        </div>
+        <div className="post-footer">
+          <h1 className="add-to-colab">
+            <Link to="/trimmer">Add to this Colab</Link>
+          </h1>
+        </div>
+      </div>
+    );
+  };
+
+  if (isLoading) {
+    return <div className="loading-container">Loading ...</div>;
+  }
+
   return (
     <div className="post-container">
-      {feedData && feedData.map(renderPost)}
+      {feedData && feedData.map((item, index) => {
+         if ('coverImage' in item) {
+          return renderPageStory(item as PageItem, index);
+        } else if ('songTitle' in item) {
+          return renderMusic(item as Music, index);
+        } else if ('url' in item) {
+          return renderVisualArt(item as ArtItem, index);
+        }
+        return null;
+      })}
     </div>
   );
-  
 };
 
 export default Feed;

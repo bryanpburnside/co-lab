@@ -11,10 +11,6 @@ import cChord from '../../../../assests/sfx/c-chord.mp3';
 import eChord from '../../../../assests/sfx/e-chord.mp3';
 import blueNoteImage from '/Users/mm/senior/co-lab/assests/pics/bluee-note.png';
 import redNoteImage from '/Users/mm/senior/co-lab/assests/pics/red-note.png'
-
-
-
-import snare from '../../../../assests/pics/snare.jpeg';
 import './Video.css';
 import axios from 'axios';
 
@@ -126,14 +122,14 @@ const Instrument = () => {
           const audioPublicURL = response.data.secure_url;
           console.log('Audio uploaded:', audioPublicURL);
   
-          // Send the audio URL and title to the server for saving to the database
+         
           const requestBody = {
-            songTitle: musicTitle, // Use the musicTitle state as the title
+            songTitle: musicTitle, 
             url: audioPublicURL,
           };
   
           axios
-            .post('/music', requestBody) // Assuming the server is running on the same host
+            .post('/music', requestBody)
             .then((serverResponse) => {
               console.log('Music saved to the database:', serverResponse.data);
             })
@@ -164,7 +160,7 @@ const Instrument = () => {
 
   const saveRecording = async () => {
     try {
-      const recordedChunks = []; // Define the recordedChunks array here
+      const recordedChunks = []; 
   
       const handleDataAvailable = (event) => {
         if (event.data.size > 0) {
@@ -177,23 +173,23 @@ const Instrument = () => {
       mediaRecorderRef.current.addEventListener('stop', () => {
         const formData = new FormData();
         formData.append('file', new Blob(recordedChunks), { type: 'audio/wav' });
-        formData.append('upload_preset', 'e9ynzrtp'); // Replace with your Cloudinary upload preset
+        formData.append('upload_preset', 'e9ynzrtp'); 
   
         axios.post(
-          'https://api.cloudinary.com/v1_1/dkw6ksyvn/upload', // Replace with your Cloudinary cloud name
+          'https://api.cloudinary.com/v1_1/dkw6ksyvn/upload', 
           formData
         )
           .then((response) => {
             const audioPublicURL = response.data.secure_url;
             console.log('Audio uploaded:', audioPublicURL);
   
-            // Send the audio URL and title to the server for saving to the database
+            
             const requestBody = {
-              songTitle: musicTitle, // Use the musicTitle state as the title
+              songTitle: musicTitle, 
               url: audioPublicURL,
             };
   
-            axios.post('/music', requestBody) // Assuming the server is running on the same host
+            axios.post('/music', requestBody) 
               .then((serverResponse) => {
                 console.log('Music saved to the database:', serverResponse.data);
               })
@@ -325,7 +321,7 @@ export default Instrument;
 
 
 
-
+//this was playing around with mediapipe instead
 
 
 
@@ -431,7 +427,7 @@ export default Instrument;
 //     audio.current!.pause();
   
 //     mediaRecorderRef.current = new MediaRecorder(mediaStreamDestinationRef.current.stream);
-//     const recordedChunks = []; // Add this line
+//     const recordedChunks = []; 
   
 //     mediaRecorderRef.current.addEventListener('dataavailable', (event) => {
 //       if (event.data.size > 0) {
@@ -442,7 +438,7 @@ export default Instrument;
 //     mediaRecorderRef.current.addEventListener('stop', () => {
 //       const formData = new FormData();
 //       formData.append('file', new Blob(recordedChunks), { type: 'audio/wav' });
-//       formData.append('upload_preset', 'e9ynzrtp'); // Replace with your Cloudinary upload preset
+//       formData.append('upload_preset', 'e9ynzrtp'); 
   
 //       axios
 //         .post('https://api.cloudinary.com/v1_1/dkw6ksyvn/upload', formData)
@@ -450,14 +446,14 @@ export default Instrument;
 //           const audioPublicURL = response.data.secure_url;
 //           console.log('Audio uploaded:', audioPublicURL);
   
-//           // Send the audio URL and title to the server for saving to the database
+//          
 //           const requestBody = {
-//             songTitle: musicTitle, // Use the musicTitle state as the title
+//             songTitle: musicTitle, 
 //             url: audioPublicURL,
 //           };
   
 //           axios
-//             .post('/music', requestBody) // Assuming the server is running on the same host
+//             .post('/music', requestBody) 
 //             .then((serverResponse) => {
 //               console.log('Music saved to the database:', serverResponse.data);
 //             })
@@ -488,7 +484,7 @@ export default Instrument;
 
 //   const saveRecording = async () => {
 //     try {
-//       const recordedChunks = []; // Define the recordedChunks array here
+//       const recordedChunks = [];
   
 //       const handleDataAvailable = (event) => {
 //         if (event.data.size > 0) {
@@ -501,10 +497,10 @@ export default Instrument;
 //       mediaRecorderRef.current.addEventListener('stop', () => {
 //         const formData = new FormData();
 //         formData.append('file', new Blob(recordedChunks), { type: 'audio/wav' });
-//         formData.append('upload_preset', 'e9ynzrtp'); // Replace with your Cloudinary upload preset
+//         formData.append('upload_preset', 'e9ynzrtp'); 
   
 //         axios.post(
-//           'https://api.cloudinary.com/v1_1/dkw6ksyvn/upload', // Replace with your Cloudinary cloud name
+//           'https://api.cloudinary.com/v1_1/dkw6ksyvn/upload',
 //           formData
 //         )
 //           .then((response) => {
@@ -513,11 +509,11 @@ export default Instrument;
   
 //             // Send the audio URL and title to the server for saving to the database
 //             const requestBody = {
-//               songTitle: musicTitle, // Use the musicTitle state as the title
+//               songTitle: musicTitle, 
 //               url: audioPublicURL,
 //             };
   
-//             axios.post('/music', requestBody) // Assuming the server is running on the same host
+//             axios.post('/music', requestBody) 
 //               .then((serverResponse) => {
 //                 console.log('Music saved to the database:', serverResponse.data);
 //               })
