@@ -23,10 +23,10 @@ const ProfileContainer = styled.div`
 
 const ProfilePic = styled.img`
   width: 100%;
+  height: 20vw;
   margin-top: 20px;
   object-fit: cover;
-  image-rendering: auto;
-  overflow: hidden;
+  object-position: center;
 `;
 
 const LeftContainer = styled.div`
@@ -44,17 +44,32 @@ const UserInfoContainer = styled.div`
 const FriendListContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-gap: 10px;
+  width: 100%;
+`;
+
+const FriendLink = styled(Link)`
+  display: flex;
+  width: 100%;
+  height: 100%;
+`;
+
+const FriendImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 `;
 
 const ArtworkContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-gap: 10px;
 
-  img {
-    width: 100%;
-    height: 100%;
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
   }
 `;
 
@@ -163,8 +178,7 @@ const Profile: React.FC = () => {
           <UserInfoContainer>
             <ProfilePic src={profilePic || profileUser.picture} alt={profileUser.name} />
             <input type="file" accept="image/*" onChange={handlePicChange} />
-            <h2>{profileUser.name}</h2>
-            <p>{profileUser.email}</p>
+            <h1>{profileUser.name}</h1>
             {userId && userId !== user?.sub && !friendIds.includes(user?.sub) && (
               <SendButton style={{ width: '100%', margin: '5px' }} onClick={() => addFriend(user?.sub, profileUser.id)}>
                 Add Friend
@@ -178,9 +192,9 @@ const Profile: React.FC = () => {
           {friends &&
             friends.slice(0, 9).map((friend) => (
               <div key={friend.id}>
-                <Link to={`/profile/${friend.id}`}>
-                  <img src={friend.picture} alt={friend.name} />
-                </Link>
+                <FriendLink to={`/profile/${friend.id}`}>
+                  <FriendImage src={friend.picture} alt={friend.name} />
+                </FriendLink>
               </div>
             ))}
         </FriendListContainer>
