@@ -167,17 +167,14 @@ io.on('connection', socket => {
 
 
   socket.on('startDrawing', (data) => {
-    // Broadcast the start of a drawing event to all connected clients
     socket.to(data.roomId).emit('startDrawing', data);
   });
 
   socket.on('draw', (data) => {
-    // Broadcast the drawing data to all connected clients
     socket.to(data.roomId).emit('draw', data);
   });
 
   socket.on('endDrawing', (data) => {
-    // Broadcast the end of a drawing event to all connected clients
     socket.to(data.roomId).emit('endDrawing');
   });
 });
