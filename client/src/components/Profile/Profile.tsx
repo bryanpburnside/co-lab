@@ -35,6 +35,8 @@ const LeftContainer = styled.div`
 
 const RightContainer = styled.div`
   width: 66%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const UserInfoContainer = styled.div`
@@ -63,6 +65,7 @@ const FriendImage = styled.img`
 const ArtworkContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  margin-top: 20px;
 
   @media (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
