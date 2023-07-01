@@ -5,10 +5,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as hand from 'handtrackjs';
 import { Model } from 'handtrackjs';
-import aChord from '../../../../assests/sfx/a-chord.mp3';
-import bChord from '../../../../assests/sfx/b-chord.mp3';
-import cChord from '../../../../assests/sfx/c-chord.mp3';
-import eChord from '../../../../assests/sfx/e-chord.mp3';
+
 import blueNoteImage from '/Users/mm/senior/co-lab/assests/pics/bluee-note.png';
 import redNoteImage from '/Users/mm/senior/co-lab/assests/pics/red-note.png'
 import './Video.css';
@@ -276,7 +273,7 @@ const Instrument = () => {
         <div className="overlay-eChord-text">E Chord</div>
       </div>
       <audio id="audio" ref={audio}>
-        <source src={aChord} />
+        {/* <source src={aChord} /> */}
       </audio>
     </div>
   );
