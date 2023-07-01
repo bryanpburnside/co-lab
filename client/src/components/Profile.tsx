@@ -114,6 +114,13 @@ const Profile: React.FC = () => {
                       </div>
                     )
                   }
+                  if (art.type === 'sculpture') {
+                    return (
+                      <div key={art.id}>
+                        <img src={art.sculpture.content} />
+                      </div>
+                    )
+                  }
                 })}
               {friends.length ? (<h3>Friends</h3>) : null}
               {friends &&
