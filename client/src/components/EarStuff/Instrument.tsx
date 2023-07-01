@@ -96,6 +96,26 @@ const Instrument = () => {
     mediaStreamDestinationRef.current = audioContextRef.current.createMediaStreamDestination();
   }, []);
 
+  useEffect(() => {
+    const handlePlay = () => {
+      if (noteColor === 'blue') {
+        setNoteColor('red');
+      } else if (noteColor === 'red') {
+        setNoteColor('blue');
+      }
+    };
+
+    if (audio.current) {
+      audio.current.addEventListener('play', handlePlay);
+    }
+
+    return () => {
+      if (audio.current) {
+        audio.current.removeEventListener('play', handlePlay);
+      }
+    };
+  }, [noteColor]);
+
   const startRecording = () => {
     audio.current!.pause();
   
@@ -207,8 +227,6 @@ const Instrument = () => {
       console.error('Error saving audio:', error);
     }
   };
-  
-
 
   const connectVirtualSource = () => {
     virtualSourceRef.current = audioContextRef.current.createMediaElementSource(audio.current!);
@@ -222,7 +240,6 @@ const Instrument = () => {
       virtualSourceRef.current.disconnect(audioContextRef.current.destination);
     }
   };
-  
 
   useEffect(() => {
     if (recording) {
@@ -258,7 +275,7 @@ const Instrument = () => {
       <div className="video-wrapper">
         <video id="video" ref={video} className="resized-video" />
 
-        <img className="overlay-image" src={blueNoteImage} alt="Blue Note" />
+        <img className="overlay-image" src={noteColor === 'blue' ? blueNoteImage : redNoteImage} alt="Note" />
 
         <div className="overlay-aChord-box" />
         <div className="overlay-aChord-text">A Chord</div>
@@ -280,6 +297,7 @@ const Instrument = () => {
 };
 
 export default Instrument;
+
 
 
 
