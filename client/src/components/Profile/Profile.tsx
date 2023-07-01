@@ -180,7 +180,7 @@ const Profile: React.FC = () => {
         {profileUser ? (
           <UserInfoContainer>
             <ProfilePic src={profilePic || profileUser.picture} alt={profileUser.name} />
-            <input type="file" accept="image/*" onChange={handlePicChange} />
+            {!userId && <input type="file" accept="image/*" onChange={handlePicChange} />}
             <h1>{profileUser.name}</h1>
             {userId && userId !== user?.sub && !friendIds.includes(user?.sub) && (
               <SendButton style={{ width: '100%', margin: '5px' }} onClick={() => addFriend(user?.sub, profileUser.id)}>
