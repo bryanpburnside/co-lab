@@ -18,8 +18,10 @@ import VisualArtwork from './routes/visualartwork.js';
 import sculptureRouter from './routes/sculpture.js';
 import CreateStoryRouter from './routes/story.js';
 import pagesRouter from './routes/pages.js';
+import Ear from './routes/ear.js'
 import axios from 'axios';
 import multer from 'multer';
+
 
 
 cloudinary.config({
@@ -57,6 +59,7 @@ app.use('/api/stories', CreateStoryRouter);
 app.use('/api/pages', pagesRouter);
 app.use('/sculpture', sculptureRouter);
 
+app.use('/music', Ear)
 app.use(express.static(staticFilesPath));
 
 app.get('*', (req, res) => {

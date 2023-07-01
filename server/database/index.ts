@@ -98,13 +98,15 @@ const Music = sequelize.define('music', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
     allowNull: false,
   },
-  title: {
+  songTitle: {
     type: DataTypes.STRING,
   },
   content: {
     type: DataTypes.TEXT,
+    allowNull: true
   },
   url: {
     type: DataTypes.TEXT,
