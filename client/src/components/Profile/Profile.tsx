@@ -27,6 +27,7 @@ const ProfilePic = styled.img`
   margin-top: 20px;
   object-fit: cover;
   object-position: center;
+  border-radius: 10px;
 `;
 
 const LeftContainer = styled.div`
