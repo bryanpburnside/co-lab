@@ -22,11 +22,11 @@ const ProfileContainer = styled.div`
 `;
 
 const ProfilePic = styled.img`
-  height: auto;
   width: 100%;
   margin-top: 20px;
   object-fit: cover;
   image-rendering: auto;
+  overflow: hidden;
 `;
 
 const LeftContainer = styled.div`
@@ -62,6 +62,7 @@ const Profile: React.FC = () => {
   const { userId } = useParams();
   const { user, isAuthenticated, isLoading } = useAuth0();
   const [profileUser, setProfileUser] = useState<User | undefined>(undefined);
+  const [profilePic, setProfilePic] = useState<File | undefined>(undefined);
   const [friendIds, setFriendIds] = useState<string[]>([]);
   const [friends, setFriends] = useState<Friend[]>([]);
   const [artwork, setArtwork] = useState<string[]>([]);
@@ -133,6 +134,24 @@ const Profile: React.FC = () => {
     }
   };
 
+  const handlePicChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length) {
+      const file = event.target.files[0];
+      try {
+        const formData = new FormData();
+        formData.append('picture', file);
+        const result = await axios.patch(`/users/${user?.sub}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        setProfilePic(result.data);
+      } catch (err) {
+        console.error('Failed to upload profile picture:', err);
+      }
+    }
+  };
+
   if (isLoading) {
     return <div className="loading-container">Loading ...</div>;
   }
@@ -142,7 +161,8 @@ const Profile: React.FC = () => {
       <LeftContainer>
         {profileUser ? (
           <UserInfoContainer>
-            <ProfilePic src={profileUser.picture} alt={profileUser.name} />
+            <ProfilePic src={profilePic || profileUser.picture} alt={profileUser.name} />
+            <input type="file" accept="image/*" onChange={handlePicChange} />
             <h2>{profileUser.name}</h2>
             <p>{profileUser.email}</p>
             {userId && userId !== user?.sub && !friendIds.includes(user?.sub) && (
