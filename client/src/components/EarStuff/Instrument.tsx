@@ -171,6 +171,7 @@ const Instrument = () => {
       mediaRecorderRef.current.addEventListener('dataavailable', handleDataAvailable);
   
       mediaRecorderRef.current.addEventListener('stop', () => {
+        audio.crossOrigin = "anonymous";
         const formData = new FormData();
         formData.append('file', new Blob(recordedChunks), { type: 'audio/wav' });
         formData.append('upload_preset', 'e9ynzrtp'); 
