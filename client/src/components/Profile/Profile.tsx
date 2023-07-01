@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth0, User } from '@auth0/auth0-react';
 import axios from 'axios';
-import { SendButton } from '../styled';
+import ArtItem from './ArtItem';
+import { SendButton } from '../../styled';
 import { StyleSheetManager } from 'styled-components';
 
 interface Friend {
@@ -106,21 +107,18 @@ const Profile: React.FC = () => {
               )}
               {artwork.length ? (<h3>Artwork</h3>) : null}
               {artwork &&
-                artwork.map(art => {
-                  if (art.type === 'visual art') {
+                artwork.map((art) => {
+                  if (art.type === 'visual art' || art.type === 'sculpture') {
                     return (
-                      <div key={art.id}>
-                        <img src={art.visualart.content} />
-                      </div>
-                    )
+                      <ArtItem
+                        key={art.id}
+                        id={art.id}
+                        type={art.type}
+                        content={art.type === 'visual art' ? art.visualart.content : art.sculpture.content}
+                      />
+                    );
                   }
-                  if (art.type === 'sculpture') {
-                    return (
-                      <div key={art.id}>
-                        <img src={art.sculpture.content} />
-                      </div>
-                    )
-                  }
+                  return null;
                 })}
               {friends.length ? (<h3>Friends</h3>) : null}
               {friends &&
