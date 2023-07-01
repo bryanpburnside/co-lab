@@ -151,6 +151,7 @@ const Sculpture = sequelize.define('sculptures', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     allowNull: false,
+    autoIncrement: true,
   },
   title: {
     type: DataTypes.STRING,
@@ -185,6 +186,11 @@ const UserCollaboration = sequelize.define('usercollaborations', {
   },
 });
 
+Artwork.belongsTo(User, { foreignKey: 'userId' });
+Artwork.hasOne(VisualArt, { foreignKey: 'artworkId' });
+Artwork.hasOne(Sculpture, { foreignKey: 'artworkId' });
+Artwork.hasOne(Music, { foreignKey: 'artworkId' });
+Artwork.hasOne(Story, { foreignKey: 'artworkId' });
 VisualArt.belongsTo(Artwork, { foreignKey: 'artworkId' });
 Music.belongsTo(Artwork, { foreignKey: 'artworkId' });
 Story.belongsTo(Artwork, { foreignKey: 'artworkId' });
