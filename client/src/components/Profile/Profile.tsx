@@ -112,8 +112,8 @@ const FriendLink = styled(Link)`
 `;
 
 const FriendImage = styled.img`
-  width: 85%;
-  height: 85%;
+  width: 75px;
+  height: 75px;
   object-fit: cover;
   object-position: center;
   clip-path: circle();
