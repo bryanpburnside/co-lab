@@ -187,9 +187,14 @@ io.on('connection', socket => {
     //   socket.to(roomId).emit('keyPress', key);
     // });
 
-    socket.on('drawing', data => {
+    socket.on('drawing', (data: any) => {
       socket.to(data.roomId).emit('drawing', data);
     })
+
+    //for the storybook page editor text area
+    socket.on('typing', ({roomId, content}) => {
+      socket.to(roomId).emit('typing', content);
+    });
 });
 
 server.listen(PORT, () => {

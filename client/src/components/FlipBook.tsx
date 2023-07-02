@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from "react";
+import React, { useState, useContext, useRef, createContext, useEffect } from "react";
 import HTMLFlipBook from "react-pageflip";
 import STT from './STT';
 import '../styles.css';
@@ -9,6 +9,14 @@ import Switch from "react-switch";
 import axios from "axios";
 import { GrammarlyEditorPlugin } from "@grammarly/editor-sdk-react";
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom'
+import Peer, { MediaConnection } from 'peerjs';
+import { io, Socket } from 'socket.io-client';
+import {v4 as generatePeerId} from 'uuid';
+export const socket = io('/');
+export const SocketContext = createContext<Socket | null>(null)
+
+const peers = {};
 
 const TitlePage: any = styled.div<{ backgroundImage: string }>`
   data-density: hard;
@@ -61,17 +69,42 @@ interface PageEditorProps {
   onSave: (content: string) => void;
   onCancel: () => void;
   TooltipIcon: typeof TooltipIcon;
+  roomId: string | undefined;
 }
 
 //PageEditor component
-const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, TooltipIcon }) => {
+const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, TooltipIcon, roomId }) => {
   const [content, setContent] = useState(page.content);
 
   const { ttsOn } = useContext(TTSToggleContext);
+  // const { id: roomId } = useParams<{ id: string }>();
 
   const handleContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    console.log('typing');
     setContent(event.target.value);
+    if(socket) {
+      socket.emit('typing', {roomId, content: event.target.value});
+      console.log('typing', content);
+      console.log(roomId);
+    }
   };
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('typing', content => {
+        setContent(content);
+      });
+
+      return () => {
+        //cleanup from typing
+        socket.off('typing');
+      };
+    }
+  }, [content]);
+
+  useEffect(() => {
+    console.log('Content changed:', content);
+  }, [content]);
 
   const handleSave = () => {
     onSave(content);
@@ -100,6 +133,7 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
   const handleClearContent = () => {
     setContent('');
   };
+
 
   return (
     <div>
@@ -166,9 +200,10 @@ interface FlipBookProps {
   fetchPages: () => void;
   addNewPage: () => void;
   TooltipIcon: typeof TooltipIcon;
+  roomId: string | undefined;
 }
 
-const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdatePage, fetchPages, addNewPage, TooltipIcon }) => {
+const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdatePage, fetchPages, addNewPage, TooltipIcon, roomId }) => {
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
   const [isAutoReading, setIsAutoReading] = useState(false);
 
@@ -406,6 +441,7 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
           onSave={ handleSavePage }
           onCancel={ handleCancelEdit }
           TooltipIcon={ TooltipIcon }
+          roomId={ roomId }
         />
       )}
       </div>

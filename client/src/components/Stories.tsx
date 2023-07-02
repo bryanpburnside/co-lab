@@ -5,11 +5,14 @@ import STT from  './STT';
 import TranscriptLog from "./Transcript";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useParams } from 'react-router-dom'
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import { FaPlusCircle, FaTty, FaHeadphones, FaBookMedical, FaTrash } from 'react-icons/fa';
 import TooltipIcon from './TooltipIcons';
 import TTS from "./TTS";
-
+import {v4 as generatePeerId} from 'uuid';
+import Peer, { MediaConnection } from 'peerjs';
+export const socket = io('/');
+export const SocketContext = createContext<Socket | null>(null);
 
 interface Page {
   id?: number;
@@ -33,6 +36,10 @@ export const TTSToggleContext = createContext<{
   setTtsOn: () => {},
 });
 
+const peers: Record<string, MediaConnection> = {};
+
+
+
 const StoryBook: React.FC = () => {
   const { user } = useAuth0();
   const { roomId } = useParams();
@@ -43,27 +50,116 @@ const StoryBook: React.FC = () => {
   const [showNewStoryForm, setShowNewStoryForm] = useState(false);
   const [speakText, setSpeakText] = useState('');
   const [ttsOn, setTtsOn] = useState(false);
+  const [peerId, setPeerId] = useState('');
+  const [muted, setMuted] = useState(true);
+
+  const userStream = useRef<MediaStream | null>(null);
+  const peerConnections = useRef<Record<string, MediaConnection>>({});
+  const audioElements = useRef<Map<string, HTMLAudioElement>>(new Map());
+
+  // for muting capabilities
+  const handleToggleMute = () => {
+    setMuted(prevMuted => {
+      // Update the track itself
+      if (userStream.current) {
+        userStream.current.getAudioTracks().forEach((track) => {
+          track.enabled = prevMuted;
+        });
+      }
+
+      return !prevMuted;
+    });
+};
+
+
 
   useEffect(() => {
+    setPeerId(generatePeerId());
+    const peer = new Peer(peerId as string, {
+      host: '/',
+      port: 8001,
+    })
+
+    const myAudio = document.createElement('audio')
+    myAudio.muted = true
+
+    navigator.mediaDevices.getUserMedia({
+      video: false,
+      audio: true
+    }).then(stream => {
+      userStream.current = stream;
+      addAudioStream(peerId, myAudio, stream);
+
+      peer.on('call', call => {
+        call.answer(stream);
+        call.on('stream', (userStream) => {
+          const audio = document.createElement('audio');
+          addAudioStream(call.peer, audio, userStream);
+        })
+      })
+
+      socket.on('userJoined', userId => {
+        connectToNewUser(userId, stream)
+      })
+    })
+
+    const connectToNewUser = (userId: string, stream: MediaStream) => {
+      const call = peer.call(userId, stream);
+      const audio = document.createElement('audio');
+      call.on('stream', (userStream) => {
+        addAudioStream(userId, audio, userStream);
+      });
+      call.on('close', () => {
+        audio.remove();
+      });
+      peers[userId] = call;
+    };
+
+
+    const addAudioStream = (userId: string, audio: HTMLAudioElement, stream: MediaStream) => {
+      audio.srcObject = stream;
+      audio.addEventListener('loadedmetadata', () => {
+        audio.play();
+      });
+      audioElements.current.set(userId, audio);
+    };
+
+    socket.emit('createRoom', peerId, roomId);
+
+    peer.on('open', (userId) => {
+      socket.emit('joinRoom', userId, roomId);
+    })
+
     socket.on('roomCreated', (userId, roomId) => {
       console.log(`${userId} created room: ${roomId}`);
     });
 
     socket.on('userJoined', (userId) => {
-      socket.emit('logJoinUser', userId);
       console.log(`User ${userId} joined the room`);
     });
 
-    socket.on('userLeft', (userId) => {
-      console.log(`User ${userId} left the room`);
-    });
+    socket.on('disconnectUser', userId => {
+      if (peers[userId]) {
+        peers[userId].close();
+      }
+    })
 
-    //clean up the socket.io connection when the component unmounts
+    // Clean up event listeners
     return () => {
-      socket.emit('disconnectUser', user?.sub);
+      // window.removeEventListener('keypress', handleKeyPress);
+      socket.emit('disconnectUser', peerId, roomId);
       socket.disconnect();
+      peer.disconnect();
     };
-  }, [roomId]);
+  }, []);
+
+  useEffect(() => {
+    console.log(`Muted: ${muted}`);
+    audioElements.current.forEach((audio, userId) => {
+      audio.muted = muted;
+      console.log(`User ${userId}, Muted: ${audio.muted}`);
+    });
+  }, [muted]);
 
 
   //fetch stories from the server
@@ -222,9 +318,15 @@ const StoryBook: React.FC = () => {
               icon={ FaTty }
               tooltipText={ttsOn ? "Turn TTS Off" : "Turn TTS On"}
               handleClick={() => setTtsOn(!ttsOn)}
+              style={{ marginRight: '20px' }}
             >
               {ttsOn ? "Turn TTS Off" : "Turn TTS On"}
             </TooltipIcon>
+            <TooltipIcon
+              icon={ FaHeadphones }
+              tooltipText={muted ? "Unmute" : "Mute"}
+              handleClick={ handleToggleMute }
+            />
           </div>
           <div style={{
             border: '1px solid #ccc',
@@ -310,6 +412,7 @@ const StoryBook: React.FC = () => {
               fetchPages={ fetchPages }
               TooltipIcon={ TooltipIcon }
               addNewPage={ addNewPage }
+              roomId={ roomId }
             />
           )}
         </div>
