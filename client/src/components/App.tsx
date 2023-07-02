@@ -17,7 +17,7 @@ import Navbar from './Navbar';
 const Home = lazy(() => import ('./Home'));
 const LoginButton = lazy(() => import ('./LoginButton'));
 const LogoutButton = lazy(() => import ('./LogoutButton'));
-const Profile = lazy(() => import ('./Profile'));
+const Profile = lazy(() => import ('./Profile/Profile'));
 const StoryBook = lazy(() => import ('./Stories'));
 const Ear = lazy(() => import ('./EarStuff/Instrument'));
 const Sculpture = lazy(() => import ('./Sculpture'));
