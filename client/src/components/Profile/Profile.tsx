@@ -31,13 +31,12 @@ const ProfilePicContainer = styled.div`
   margin-top: 10px;
   object-fit: cover;
   object-position: center;
-  clip-path: circle();
 `;
 
 const PencilIcon = styled.div`
   position: absolute;
-  top: 60%;
-  left: 30%;
+  top: 90%;
+  left: 75%;
   transform: translate(-50%, -50%);
   display: flex;
   justify-content: center;
@@ -61,6 +60,7 @@ const Name = styled.div`
 `
 
 const ProfilePic = styled.img`
+  display: block;
   width: 100%;
   height: 20vw;
   margin-top: 10px;
@@ -247,11 +247,11 @@ const Profile: React.FC = () => {
             <Name>{profileUser.name}</Name>
             <ProfilePicContainer>
               <ProfilePic src={profilePic || profileUser.picture} alt={profileUser.name} />
+              <PencilIcon onClick={handlePicClick}>
+                <FontAwesomeIcon icon={faPencil} size="lg" />
+                <input type="file" accept="image/*" id="fileInput" onChange={handlePicChange} style={{ display: 'none' }} />
+              </PencilIcon>
             </ProfilePicContainer>
-            <PencilIcon onClick={handlePicClick}>
-              <FontAwesomeIcon icon={faPencil} size="lg" />
-              <input type="file" accept="image/*" id="fileInput" onChange={handlePicChange} style={{ display: 'none' }} />
-            </PencilIcon>
             {userId && userId !== user?.sub && !friendIds.includes(user?.sub) && (
               <SendButton style={{ width: '100%', margin: '5px' }} onClick={() => addFriend(user?.sub, profileUser.id)}>
                 Add Friend
