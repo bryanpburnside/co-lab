@@ -23,8 +23,10 @@ Users.get('/:userId', async (req, res) => {
 
 Users.post('/', async (req, res) => {
   const { id, name, email, picture } = req.body;
+  console.log('req.body', req.body);
   try {
     const existingUser = await User.findByPk(id);
+
     if (!existingUser) {
       await User.create({ id, name, email, picture, friends: [] });
       res.sendStatus(201);

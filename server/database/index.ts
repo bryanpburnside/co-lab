@@ -1,5 +1,6 @@
 import { Sequelize, DataTypes, Model } from 'sequelize';
 const { DB_NAME, DB_USER, DB_PW } = process.env;
+import createSeedData from '../seeds/storySeeds.js';
 
 const sequelize = new Sequelize(DB_NAME || 'colab', DB_USER as string, DB_PW as string, {
   host: 'localhost',
@@ -204,8 +205,12 @@ Pages.belongsTo(Story, { foreignKey: 'storyId' })
 
 const initialize = async () => {
   try {
-    await sequelize.sync({ alter: true });
-    console.log('Tables successfully created!');
+    const seedStories = await Story.findAll();
+    if (seedStories.length === 0) {
+      await createSeedData();
+    }
+      await sequelize.sync({ alter: true });
+      console.log('Tables successfully created!');
   } catch (error) {
     console.error('Error creating tables :(', error);
   }

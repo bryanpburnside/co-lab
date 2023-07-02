@@ -20,7 +20,6 @@ import CreateStoryRouter from './routes/story.js';
 import pagesRouter from './routes/pages.js';
 import Ear from './routes/ear.js'
 import axios from 'axios';
-import multer from 'multer';
 
 
 
@@ -85,6 +84,7 @@ app.post('/api/stories', async (req, res) => {
   try {
     const newStoryData = req.body;
     const newStory = await Story.create(newStoryData);
+    console.log(newStory);
     res.status(201).json(newStory);
   } catch (error) {
     console.error(error);
@@ -92,6 +92,32 @@ app.post('/api/stories', async (req, res) => {
   }
 });
 
+app.post('/api/grammar', async (req, res) => {
+  const { text } = req.body;
+
+  const encodedParams = new URLSearchParams({
+    text: text,
+  });
+
+  const options = {
+    method: 'POST',
+    url: 'https://api.textgears.com/check.php',
+    headers: {
+      'content-type': 'application/x-www-form-urlencoded',
+      'X-RapidAPI-Key': RapidAPI_KEY,
+      'X-RapidAPI-Host': RapidAPI_HOST,
+    },
+    data: encodedParams,
+  };
+
+  try {
+    const response = await axios.request(options);
+    res.status(200).json(response.data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error: Could not check grammar');
+  }
+});
 
 sequelize.authenticate()
   .then(() => console.info('Connected to the database'))
@@ -164,11 +190,17 @@ io.on('connection', socket => {
     //   socket.to(roomId).emit('keyPress', key);
     // });
 
-    socket.on('drawing', data => {
+    socket.on('drawing', (data: any) => {
       socket.to(data.roomId).emit('drawing', data);
     })
+
+    //for the storybook page editor text area
+    socket.on('typing', ({roomId, content}) => {
+      socket.to(roomId).emit('typing', content);
+    });
 });
 
 server.listen(PORT, () => {
   console.log(`Server listening on http://127.0.0.1:${PORT}`);
+  console.log(process.env.DB_USER, process.env.DB_PW);
 });

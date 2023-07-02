@@ -6,8 +6,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as hand from 'handtrackjs';
 import { Model } from 'handtrackjs';
 
-import blueNoteImage from '/Users/mm/senior/co-lab/assests/pics/bluee-note.png';
-import redNoteImage from '/Users/mm/senior/co-lab/assests/pics/red-note.png'
+// import blueNoteImage from './blue-note.png';
+// import redNoteImage from '/Users/mm/senior/co-lab/assests/pics/red-note.png'
 import './Video.css';
 import axios from 'axios';
 
