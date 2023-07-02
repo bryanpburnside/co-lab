@@ -8,8 +8,8 @@ interface ArtItemProps {
 }
 
 const ImageContainer = styled.div`
-  width: 150px;
-  height: 150px;
+  width: 200px;
+  height: 200px;
   overflow: hidden;
 `;
 
@@ -17,6 +17,7 @@ const ArtImage = styled.img`
   width: 90%;
   height: 90%;
   object-fit: cover;
+  border-radius: 10px;
 `;
 
 const ArtItem: React.FC<ArtItemProps> = ({ id, type, content }) => {

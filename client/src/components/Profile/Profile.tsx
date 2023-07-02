@@ -277,22 +277,26 @@ const Profile: React.FC = () => {
         </FriendContainer>
       </LeftContainer>
       <RightContainer>
-        <ArtworkContainer>
-          {artwork &&
-            artwork.map((art) => {
-              if (art.type === 'visual art' || art.type === 'sculpture') {
-                return (
-                  <ArtItem
-                    key={art.id}
-                    id={art.id}
-                    type={art.type}
-                    content={art.type === 'visual art' ? art.visualart.content : art.sculpture.content}
-                  />
-                );
-              }
-              return null;
-            })}
-        </ArtworkContainer>
+        <div>
+          <Name>Artwork
+            <ArtworkContainer>
+              {artwork &&
+                artwork.map((art) => {
+                  if (art.type === 'visual art' || art.type === 'sculpture') {
+                    return (
+                      <ArtItem
+                        key={art.id}
+                        id={art.id}
+                        type={art.type}
+                        content={art.type === 'visual art' ? art.visualart.content : art.sculpture.content}
+                      />
+                    );
+                  }
+                  return null;
+                })}
+            </ArtworkContainer>
+          </Name>
+        </div>
       </RightContainer>
     </ProfileContainer >
   ) : (
