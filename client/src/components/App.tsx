@@ -11,6 +11,7 @@ import Navbar from './Navbar';
 // import VisualArt from './Eye/VisualArt';
 // import Inbox from './Messages/Inbox';
 // import Feed from './Feed';
+// import Trimmer from './EarStuff/Trimmer'
 // import '../styles.css';
 
 const Home = lazy(() => import ('./Home'));
@@ -23,6 +24,7 @@ const Sculpture = lazy(() => import ('./Sculpture'));
 const VisualArt = lazy(() => import ('./Eye/VisualArt'));
 const Inbox = lazy(() => import ('./Messages/Inbox'));
 const Feed = lazy(() => import ('./Feed'));
+const Trimmer = lazy(() => import ('./EarStuff/Trimmer'));
 
 const App = () => {
   return (
@@ -41,6 +43,7 @@ const App = () => {
           <Route path='/sculpture/:roomId' element={<Sculpture />} />
           <Route path='/messages' element={<Inbox />} />
           <Route path='/feed' element={<Feed />} />
+          <Route path='/trimmer' element={<Trimmer />} />
         </Routes>
       </Suspense>
     </Router>
