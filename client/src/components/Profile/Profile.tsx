@@ -14,15 +14,6 @@ interface Friend {
   picture: string;
 }
 
-const PencilIcon = styled(FontAwesomeIcon)`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  color: white;
-  font-size: 20px;
-  cursor: pointer;
-`;
-
 const ProfileContainer = styled.div`
   background-color: #3d3983;
   padding-top: 20px;
@@ -41,6 +32,24 @@ const ProfilePicContainer = styled.div`
   object-fit: cover;
   object-position: center;
   clip-path: circle();
+`;
+
+const PencilIcon = styled.div`
+  position: relative;
+  bottom: 55px;
+  right: 0;
+  left: 310px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 1;
+  width: 50px;
+  height: 50px;
+  clip-path: circle();
+  background-color: #3d3983;
 `;
 
 const Name = styled.div`
@@ -129,7 +138,6 @@ const Profile: React.FC = () => {
   const [friendIds, setFriendIds] = useState<string[]>([]);
   const [friends, setFriends] = useState<Friend[]>([]);
   const [artwork, setArtwork] = useState<string[]>([]);
-  const [displayFileInput, setDisplayFileInput] = useState<Boolean>(false);
 
   useEffect(() => {
     if (user) {
@@ -198,6 +206,13 @@ const Profile: React.FC = () => {
     }
   };
 
+  const handlePicClick = () => {
+    const fileInput = document.getElementById('fileInput');
+    if (fileInput) {
+      fileInput.click();
+    }
+  };
+
   const handlePicChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length) {
       const file = event.target.files[0];
@@ -228,9 +243,11 @@ const Profile: React.FC = () => {
             <Name>{profileUser.name}</Name>
             <ProfilePicContainer>
               <ProfilePic src={profilePic || profileUser.picture} alt={profileUser.name} />
-              <PencilIcon onClick={() => setDisplayFileInput(!displayFileInput)} />
-              {displayFileInput && <input type="file" accept="image/*" onChange={handlePicChange} />}
             </ProfilePicContainer>
+            <PencilIcon onClick={handlePicClick}>
+              <FontAwesomeIcon icon={faPencil} size="lg" />
+              <input type="file" accept="image/*" id="fileInput" onChange={handlePicChange} style={{ display: 'none' }} />
+            </PencilIcon>
             {userId && userId !== user?.sub && !friendIds.includes(user?.sub) && (
               <SendButton style={{ width: '100%', margin: '5px' }} onClick={() => addFriend(user?.sub, profileUser.id)}>
                 Add Friend
