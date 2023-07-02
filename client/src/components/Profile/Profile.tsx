@@ -35,17 +35,17 @@ const ProfilePicContainer = styled.div`
 `;
 
 const PencilIcon = styled.div`
-  position: relative;
-  bottom: 55px;
-  right: 0;
-  left: 310px;
+  position: absolute;
+  top: 60%;
+  left: 30%;
+  transform: translate(-50%, -50%);
   display: flex;
   justify-content: center;
   align-items: center;
   color: white;
   font-size: 20px;
   cursor: pointer;
-  z-index: 1;
+  z-index: 2;
   width: 50px;
   height: 50px;
   clip-path: circle();
@@ -84,7 +84,7 @@ const RightContainer = styled.div`
 `;
 
 const UserInfoContainer = styled.div`
-  margin-bottom: 25px;
+  margin-bottom: 75px;
 `;
 
 const FriendListContainer = styled.div`
