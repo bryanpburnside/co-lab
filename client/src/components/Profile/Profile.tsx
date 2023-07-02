@@ -55,7 +55,7 @@ const PencilIcon = styled.div`
 const Name = styled.div`
   text-align: center;
   font-size: 32px;
-  margin-top: 35px;
+  margin-top: 20px;
   background-color: #F06b80;
   border-radius: 10px;
 `
@@ -84,7 +84,7 @@ const RightContainer = styled.div`
 `;
 
 const UserInfoContainer = styled.div`
-  margin-bottom: 60px;
+  margin-bottom: 25px;
 `;
 
 const FriendListContainer = styled.div`
@@ -93,7 +93,6 @@ const FriendListContainer = styled.div`
   width: 100%;
   background-color: #F06b80;
   border-radius: 10px;
-  margin-top: 10px;
   padding-bottom: 10px;
   justify-content: space-evenly;
   justify-items: center;
