@@ -22,6 +22,12 @@ html {
   background-color: #3d3983;
 }
 
+#logo {
+  width: 150px;
+  cursor: pointer;
+  margin-top: 3px;
+}
+
 .body-container {
   background-color: #3d3983;
   display: flex;
@@ -97,7 +103,7 @@ html {
   height: 4rem;
   /* Adjust the height as desired */
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   width: 80vw;
   /* Adjust the width as desired */
   margin: 0 auto;
@@ -122,11 +128,31 @@ html {
   margin-right: 10px;
 }
 
+.navbar-links-right {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  margin-left: auto;
+}
+
+.navbar-item-right {
+  margin-right: 10px;
+}
+
 .navbar-item:last-child {
   margin-right: 0;
 }
 
 .navbar-item>a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.navbar-item-right>a {
   color: #fff;
   text-decoration: none;
 }
