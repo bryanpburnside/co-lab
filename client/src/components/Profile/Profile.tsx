@@ -75,7 +75,7 @@ const RightContainer = styled.div`
 `;
 
 const UserInfoContainer = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 60px;
 `;
 
 const FriendListContainer = styled.div`
