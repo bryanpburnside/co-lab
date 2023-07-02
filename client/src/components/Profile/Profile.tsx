@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom';
 import { useAuth0, User } from '@auth0/auth0-react';
 import axios from 'axios';
 import ArtItem from './ArtItem';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPencil } from '@fortawesome/free-solid-svg-icons';
 import { SendButton } from '../../styled';
 import styled from 'styled-components';
 
@@ -12,8 +14,18 @@ interface Friend {
   picture: string;
 }
 
+const PencilIcon = styled(FontAwesomeIcon)`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+`;
+
 const ProfileContainer = styled.div`
   background-color: #3d3983;
+  padding-top: 20px;
   display: flex;
   justify-content: space-between;
   width: 80vw;
@@ -21,23 +33,45 @@ const ProfileContainer = styled.div`
   height: 60vh;
 `;
 
+const ProfilePicContainer = styled.div`
+  position: relative;
+  width: 100%;
+  height: 20vw;
+  margin-top: 10px;
+  object-fit: cover;
+  object-position: center;
+  clip-path: circle();
+`;
+
+const Name = styled.div`
+  text-align: center;
+  font-size: 32px;
+  margin-top: 35px;
+  background-color: #F06b80;
+  border-radius: 10px;
+`
+
 const ProfilePic = styled.img`
   width: 100%;
   height: 20vw;
-  margin-top: 20px;
+  margin-top: 10px;
   object-fit: cover;
   object-position: center;
-  border-radius: 10px;
+  clip-path: circle();
 `;
 
 const LeftContainer = styled.div`
   width: 33%;
+  background-color: #F06b80;
+  border-radius: 10px;
 `;
 
 const RightContainer = styled.div`
   width: 66%;
   display: flex;
   flex-direction: column;
+  background-color: #F06b80;
+  border-radius: 10px;
 `;
 
 const UserInfoContainer = styled.div`
@@ -48,6 +82,14 @@ const FriendListContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   width: 100%;
+  background-color: #F06b80;
+  border-radius: 10px;
+  margin-top: 10px;
+  padding-bottom: 10px;
+  justify-content: space-evenly;
+  justify-items: center;
+  align-content: space-evenly;
+  align-items: center;
 `;
 
 const FriendLink = styled(Link)`
@@ -57,16 +99,18 @@ const FriendLink = styled(Link)`
 `;
 
 const FriendImage = styled.img`
-  width: 100%;
-  height: 100%;
+  width: 85%;
+  height: 85%;
   object-fit: cover;
   object-position: center;
+  clip-path: circle();
 `;
 
 const ArtworkContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   margin-top: 20px;
+  place-items: center;
 
   @media (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
@@ -85,6 +129,7 @@ const Profile: React.FC = () => {
   const [friendIds, setFriendIds] = useState<string[]>([]);
   const [friends, setFriends] = useState<Friend[]>([]);
   const [artwork, setArtwork] = useState<string[]>([]);
+  const [displayFileInput, setDisplayFileInput] = useState<Boolean>(false);
 
   useEffect(() => {
     if (user) {
@@ -180,9 +225,12 @@ const Profile: React.FC = () => {
       <LeftContainer>
         {profileUser ? (
           <UserInfoContainer>
-            <ProfilePic src={profilePic || profileUser.picture} alt={profileUser.name} />
-            {!userId && <input type="file" accept="image/*" onChange={handlePicChange} />}
-            <h1>{profileUser.name}</h1>
+            <Name>{profileUser.name}</Name>
+            <ProfilePicContainer>
+              <ProfilePic src={profilePic || profileUser.picture} alt={profileUser.name} />
+              <PencilIcon onClick={() => setDisplayFileInput(!displayFileInput)} />
+              {displayFileInput && <input type="file" accept="image/*" onChange={handlePicChange} />}
+            </ProfilePicContainer>
             {userId && userId !== user?.sub && !friendIds.includes(user?.sub) && (
               <SendButton style={{ width: '100%', margin: '5px' }} onClick={() => addFriend(user?.sub, profileUser.id)}>
                 Add Friend
@@ -192,16 +240,18 @@ const Profile: React.FC = () => {
         ) : (
           <p>Loading profile...</p>
         )}
-        <FriendListContainer>
-          {friends &&
-            friends.slice(0, 9).map((friend) => (
-              <div key={friend.id}>
-                <FriendLink to={`/profile/${friend.id}`}>
-                  <FriendImage src={friend.picture} alt={friend.name} />
-                </FriendLink>
-              </div>
-            ))}
-        </FriendListContainer>
+        <Name>Friends
+          <FriendListContainer>
+            {friends &&
+              friends.slice(0, 9).map((friend) => (
+                <div key={friend.id}>
+                  <FriendLink to={`/profile/${friend.id}`}>
+                    <FriendImage src={friend.picture} alt={friend.name} />
+                  </FriendLink>
+                </div>
+              ))}
+          </FriendListContainer>
+        </Name>
       </LeftContainer>
       <RightContainer>
         <ArtworkContainer>

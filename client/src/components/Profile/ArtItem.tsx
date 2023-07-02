@@ -8,14 +8,14 @@ interface ArtItemProps {
 }
 
 const ImageContainer = styled.div`
-  width: 250px;
-  height: 250px;
+  width: 150px;
+  height: 150px;
   overflow: hidden;
 `;
 
 const ArtImage = styled.img`
-  width: 100%;
-  height: 100%;
+  width: 90%;
+  height: 90%;
   object-fit: cover;
 `;
 
