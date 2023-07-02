@@ -87,10 +87,15 @@ const UserInfoContainer = styled.div`
   margin-bottom: 75px;
 `;
 
+const FriendContainer = styled.div`
+  margin-top: 10px;
+`;
+
 const FriendListContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   width: 100%;
+  margin-top: 10px;
   background-color: #F06b80;
   border-radius: 10px;
   padding-bottom: 10px;
@@ -256,18 +261,20 @@ const Profile: React.FC = () => {
         ) : (
           <p>Loading profile...</p>
         )}
-        <Name>Friends
-          <FriendListContainer>
-            {friends &&
-              friends.slice(0, 9).map((friend) => (
-                <div key={friend.id}>
-                  <FriendLink to={`/profile/${friend.id}`}>
-                    <FriendImage src={friend.picture} alt={friend.name} />
-                  </FriendLink>
-                </div>
-              ))}
-          </FriendListContainer>
-        </Name>
+        <FriendContainer>
+          <Name>Friends
+            <FriendListContainer>
+              {friends &&
+                friends.slice(0, 9).map((friend) => (
+                  <div key={friend.id}>
+                    <FriendLink to={`/profile/${friend.id}`}>
+                      <FriendImage src={friend.picture} alt={friend.name} />
+                    </FriendLink>
+                  </div>
+                ))}
+            </FriendListContainer>
+          </Name>
+        </FriendContainer>
       </LeftContainer>
       <RightContainer>
         <ArtworkContainer>
@@ -287,7 +294,7 @@ const Profile: React.FC = () => {
             })}
         </ArtworkContainer>
       </RightContainer>
-    </ProfileContainer>
+    </ProfileContainer >
   ) : (
     <p>You are not logged in</p>
   );
