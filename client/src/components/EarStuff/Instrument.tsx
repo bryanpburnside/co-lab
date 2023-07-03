@@ -14,6 +14,12 @@ import redNote from '/Users/mm/senior/co-lab/assests/pics/red-note.png'
 import greenNote from '/Users/mm/senior/co-lab/assests/pics/green-note.png'
 import goldNote from '/Users/mm/senior/co-lab/assests/pics/gold-note.png'
 import pinkNote from '/Users/mm/senior/co-lab/assests/pics/pink-note.png'
+import aChord from '/Users/mm/senior/co-lab/assests/sfx/a-chord.mp3'
+import bChord from '/Users/mm/senior/co-lab/assests/sfx/b-chord.mp3'
+import cChord from '/Users/mm/senior/co-lab/assests/sfx/c-chord.mp3'
+import eChord from '/Users/mm/senior/co-lab/assests/sfx/e-chord.mp3'
+
+
 
 import './Video.css';
 import axios from 'axios';
@@ -54,21 +60,25 @@ const Instrument = () => {
           if (y > 230) {
             //bottom left
             if (x > 415) {
-              audio.current!.src = 'https://res.cloudinary.com/dtnq6yr17/video/upload/v1688069976/assets/a-chord_zxfqv2.mp3';
+              audio.current!.src = aChord;
+              //audio.current!.src = 'https://res.cloudinary.com/dtnq6yr17/video/upload/v1688069976/assets/a-chord_zxfqv2.mp3';
               audio.current!.play();
               //bottom right
             } else if (x < 55) {
-              audio.current!.src = 'https://res.cloudinary.com/dtnq6yr17/video/upload/v1688069977/assets/c-chord_c1wnjv.mp3';
+              //audio.current!.src = 'https://res.cloudinary.com/dtnq6yr17/video/upload/v1688069977/assets/c-chord_c1wnjv.mp3';
+              audio.current!.src = cChord;
               audio.current!.play();
             }
           } else if (y < 105) {
             //top left
             if (x > 400) {
-              audio.current!.src = 'https://res.cloudinary.com/dtnq6yr17/video/upload/v1688069977/assets/b-chord_alydx3.mp3';
+              //audio.current!.src = 'https://res.cloudinary.com/dtnq6yr17/video/upload/v1688069977/assets/b-chord_alydx3.mp3';
+              audio.current!.src = bChord;
               audio.current!.play();
               //top right
             } else if (x < 65) {
-              audio.current!.src = 'https://res.cloudinary.com/dtnq6yr17/video/upload/v1688069977/assets/e-chord_schvpp.mp3';
+              //audio.current!.src = 'https://res.cloudinary.com/dtnq6yr17/video/upload/v1688069977/assets/e-chord_schvpp.mp3';
+              audio.current!.src = eChord;
               audio.current!.play();
             }
           }
