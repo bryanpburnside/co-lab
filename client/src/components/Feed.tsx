@@ -3,9 +3,12 @@ import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+// import '../styles.css';
 
-import '../styles.css';
-
+const StoryContainer = styled.div`
+  text-align: center;
+`;
 interface ArtItem {
   id: string;
   title: string | null;
@@ -125,7 +128,7 @@ const Feed: React.FC = () => {
           isPageStory && (
             <div className="story" key={index}>
               <h1>
-                {item.coverImage} {item.title}
+                <StoryContainer><img src={item.coverImage} width={'50%'} /> <p>{item.title}</p> </StoryContainer>
               </h1>
               {pages.map((page: PageItem) => (
                 <p className="story-content" key={page.id}>
