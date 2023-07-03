@@ -252,7 +252,6 @@ const Instrument = () => {
   return (
     <div className="instrument-container">
       <input
-        type="text"
         value={musicTitle}
         onChange={(e) => setMusicTitle(e.target.value)}
         placeholder="Enter music title"
