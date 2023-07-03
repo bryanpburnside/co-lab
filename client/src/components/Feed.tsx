@@ -226,6 +226,7 @@ const Feed: React.FC = () => {
 
         const feedWithUserData = await Promise.all(sortedData.map(async (entry) => {
           const userObj = await getUserData(entry.id);
+          delete userObj.createdAt;
           return Object.assign({}, entry, userObj);
         }));
 

@@ -38,14 +38,14 @@ const Navbar = () => {
             <FontAwesomeIcon icon={faNewspaper} size='lg' />
           </Link>
         </li>
-        <li className="navbar-item-right" onMouseEnter={() => handleHover('Profile')}>
-          <Link to="/profile">
-            <FontAwesomeIcon icon={faCircleUser} size='lg' />
-          </Link>
-        </li>
         <li className="navbar-item-right">
           <Link to="/messages">
             <FontAwesomeIcon icon={faMessage} size='lg' />
+          </Link>
+        </li>
+        <li className="navbar-item-right" onMouseEnter={() => handleHover('Profile')}>
+          <Link to="/profile">
+            <FontAwesomeIcon icon={faCircleUser} size='lg' />
           </Link>
         </li>
         {!isAuthenticated ?

@@ -6,6 +6,7 @@ import { io } from "socket.io-client";
 
 const Home = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
+  const picture = 'https://res.cloudinary.com/dtnq6yr17/image/upload/v1688235884/default_img_yx8pje.png';
   const navigate = useNavigate();
   const [roomId, setRoomId] = useState('');
   const socket = io('/');
@@ -26,7 +27,7 @@ const Home = () => {
   const saveUser = async () => {
     try {
       if (user) {
-        const { sub: id, name, email, picture } = user;
+        const { sub: id, name, email } = user;
         await axios.post('/users', {
           id,
           name,
