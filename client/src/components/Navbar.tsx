@@ -28,7 +28,7 @@ const Navbar = () => {
       <ul className="navbar-links">
         <li className="navbar-item" onMouseEnter={() => handleHover('Home')}>
           <Link to="/">
-            <img id="logo" src="https://res.cloudinary.com/dtnq6yr17/image/upload/v1688141524/Logo_van9la.png" alt="Home" />
+            <img id="logo" src="https://res.cloudinary.com/dtnq6yr17/image/upload/v1688346963/co-lab_logo_no_BG_600X200_pagctf.png" alt="Home" />
           </Link>
         </li>
       </ul>
