@@ -164,9 +164,12 @@ import React, { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+// import '../styles.css';
 
-import '../styles.css';
-
+const StoryContainer = styled.div`
+  text-align: center;
+`;
 interface ArtItem {
   id: number;
   title: string | null;
@@ -301,47 +304,27 @@ const Feed: React.FC = () => {
           </a>
           <p className="creation-time">{formatTimeDifference(item.createdAt)}</p>
         </div>
-        <div className="post-body">
-          <div className="story" key={index}>
-            <h1>
-              {item.coverImage} {item.title}
-            </h1>
-            {pages.map((page: PageItem) => (
-              <p className="story-content" key={page.id}>
-                {page.content}
-              </p>
-            ))}
-          </div>
-        </div>
-        <div className="post-footer">
-          <h1 className="add-to-colab">
-            <Link to="">Add to this Colab</Link>
-          </h1>
-        </div>
-      </div>
-    );
-  };
-
-  const renderMusic = (item: Music, index: number) => {
-    return (
-      <div className="post" key={index}>
-        <div className="post-header">
-          <img src={item.picture} alt={item.name} className="user-pfp" />
-          {/* These just link back to feed but make them go to the correct user */}
-          <a href={"feed"} className="username">
-            {user.name}
-          </a>
-          <p className="creation-time">{formatTimeDifference(item.createdAt)}</p>
-        </div>
-        <div className="post-body">
-          <h1>{item.songTitle}</h1>
-          <div className="music-player">
-            <audio controls>
-              <source src={item.url} type="audio/mp3" />
-              Your browser does not support the audio tag.
-            </audio>
-          </div>
-        </div>
+        {
+          isVisualArt && (
+            <>
+              <img src={item.content} alt={item.title} className="cloud-img" />
+            </>
+          )
+        }
+        {
+          isPageStory && (
+            <div className="story" key={index}>
+              <h1>
+                <StoryContainer><img src={item.coverImage} width={'50%'} /> <p>{item.title}</p> </StoryContainer>
+              </h1>
+              {pages.map((page: PageItem) => (
+                <p className="story-content" key={page.id}>
+                  {page.content}
+                </p>
+              ))}
+            </div>
+          )
+        }
         <div className="post-footer">
           <h1 className="add-to-colab">
             <Link to="/trimmer">Add to this Colab</Link>
