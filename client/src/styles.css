@@ -92,24 +92,18 @@ html {
   display: flex;
   width: 80vw;
   margin: 0 auto;
-  /* Center the container horizontally */
 }
 
 .navbar {
   font-size: 36px;
   background-color: #3d3983;
-  height: 10rem;
-  /* Adjust the height as desired */
   display: flex;
   align-items: center;
   width: 80vw;
-  /* Adjust the width as desired */
   margin: 0 auto;
-  /* Center the navbar horizontally */
   margin-top: 25px;
   padding: 20px;
   border-radius: 10px;
-  /* margin-bottom: 100px; */
 }
 
 .navbar-links {
