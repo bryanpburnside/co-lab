@@ -6,6 +6,7 @@ import { faPalette } from '@fortawesome/free-solid-svg-icons';
 interface PatternProps {
   backgroundColor: string,
   handleBackgroundColorChange: (color: string) => void;
+  roomId: string | undefined;
 }
 
 const useRandomPattern = (colorRange) => {

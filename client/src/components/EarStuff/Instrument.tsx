@@ -9,15 +9,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faCircleStop, faPlayCircle } from '@fortawesome/free-solid-svg-icons';
 
 
-import blueNote from '/Users/mm/senior/co-lab/assests/pics/bluee-note.png';
-import redNote from '/Users/mm/senior/co-lab/assests/pics/red-note.png'
-import greenNote from '/Users/mm/senior/co-lab/assests/pics/green-note.png'
-import goldNote from '/Users/mm/senior/co-lab/assests/pics/gold-note.png'
-import pinkNote from '/Users/mm/senior/co-lab/assests/pics/pink-note.png'
-import aChord from '/Users/mm/senior/co-lab/assests/sfx/a-chord.mp3'
-import bChord from '/Users/mm/senior/co-lab/assests/sfx/b-chord.mp3'
-import cChord from '/Users/mm/senior/co-lab/assests/sfx/c-chord.mp3'
-import eChord from '/Users/mm/senior/co-lab/assests/sfx/e-chord.mp3'
+import blueNote from '../../assets/images/bluee-note.png';
+import redNote from '../../assets/images/red-note.png'
+import greenNote from '../../assets/images/green-note.png'
+import goldNote from '../../assets/images/gold-note.png'
+import pinkNote from '../../assets/images/pink-note.png'
+import aChord from '../../assets/sfx/a-chord.mp3'
+import bChord from '../../assets/sfx/b-chord.mp3'
+import cChord from '../../assets/sfx/c-chord.mp3'
+import eChord from '../../assets/sfx/e-chord.mp3'
 
 
 

@@ -251,10 +251,10 @@ const Profile: React.FC = () => {
             <Name>{profileUser.name}</Name>
             <ProfilePicContainer>
               <ProfilePic src={profilePic || profileUser.picture} alt={profileUser.name} />
-              <PencilIcon onClick={handlePicClick}>
+              {userId === user?.sub || !userId && <PencilIcon onClick={handlePicClick}>
                 <FontAwesomeIcon icon={faPencil} size="lg" />
                 <input type="file" accept="image/*" id="fileInput" onChange={handlePicChange} style={{ display: 'none' }} />
-              </PencilIcon>
+              </PencilIcon>}
             </ProfilePicContainer>
             {userId && userId !== user?.sub && !friendIds.includes(user?.sub) && (
               <SendButton style={{ width: '100%', margin: '5px' }} onClick={() => addFriend(user?.sub, profileUser.id)}>
