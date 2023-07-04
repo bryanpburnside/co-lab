@@ -9,7 +9,9 @@ import Peer, { MediaConnection } from 'peerjs';
 import p5 from 'p5';
 import {v4 as generatePeerId} from 'uuid';
 
-export const socket = io('/');
+export const socket = io('/', {
+  withCredentials: true
+});
 export const SocketContext = createContext<Socket | null>(null)
 
 const peers = {};
