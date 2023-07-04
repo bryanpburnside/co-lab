@@ -18,9 +18,8 @@ export const SocketContext = createContext<Socket | null>(null)
 
 const peers = {};
 
-const TitlePage: any = styled.div<{ backgroundImage: string }>`
+const TitlePage: any = styled.div`
   data-density: hard;
-  background-image: url(${props => props.backgroundImage});
   background-size: cover;
   background-position: center;
   height: 90%;
@@ -80,12 +79,9 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
   // const { id: roomId } = useParams<{ id: string }>();
 
   const handleContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    console.log('typing');
     setContent(event.target.value);
     if(socket) {
       socket.emit('typing', {roomId, content: event.target.value});
-      console.log('typing', content);
-      console.log(roomId);
     }
   };
 
@@ -100,10 +96,6 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
         socket.off('typing');
       };
     }
-  }, [content]);
-
-  useEffect(() => {
-    console.log('Content changed:', content);
   }, [content]);
 
   const handleSave = () => {
@@ -338,7 +330,15 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
         marginTop: '100px',
       }}
     >
-    <TitlePage backgroundImage={ story.coverImage }>
+    <TitlePage>
+      <div
+        style={{
+          backgroundImage: `url(${story.coverImage})`,
+          height: '700px', width: '500px',
+          backgroundSize: '100% 100%',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
+        }}>
       <div style={{
           backgroundColor: '#fbf5df',
           height: '30px',
@@ -378,6 +378,7 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
           margin: '5px'
         }}
       />
+      </div>
       </div>
     </TitlePage>
       {selectedStoryPages.map((page, index) => (

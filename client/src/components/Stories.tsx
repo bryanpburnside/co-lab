@@ -154,10 +154,8 @@ const StoryBook: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log(`Muted: ${muted}`);
     audioElements.current.forEach((audio, userId) => {
       audio.muted = muted;
-      console.log(`User ${userId}, Muted: ${audio.muted}`);
     });
   }, [muted]);
 

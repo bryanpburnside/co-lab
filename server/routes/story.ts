@@ -24,8 +24,10 @@ CreateStoryRouter.post('/upload', upload.single('coverImage'), async (req, res) 
   }
 
   try {
+    //set quality to low
     const response = await cloudinary.uploader.upload(file.path, {
       upload_preset: 'bebdyn7b',
+      quality: 'auto:low',
     });
     return res.json({ imageUrl: response.secure_url });
   } catch (err) {
