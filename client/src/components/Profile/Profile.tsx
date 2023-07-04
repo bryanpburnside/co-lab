@@ -221,20 +221,78 @@ const Profile: React.FC = () => {
     }
   };
 
+  const compressFile = (file: File): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 800;
+          const MAX_HEIGHT = 600;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const compressedFile = new File([blob], file.name, { type: file.type });
+              resolve(compressedFile);
+            } else {
+              reject(new Error('Failed to compress file'));
+            }
+          }, file.type);
+        };
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const uploadFile = async (file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append('picture', file);
+      const result = await axios.patch(`/users/${user?.sub}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      setProfilePic(result.data);
+    } catch (err) {
+      console.error('Failed to upload profile picture:', err);
+    }
+  };
+
   const handlePicChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length) {
       const file = event.target.files[0];
-      try {
-        const formData = new FormData();
-        formData.append('picture', file);
-        const result = await axios.patch(`/users/${user?.sub}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        setProfilePic(result.data);
-      } catch (err) {
-        console.error('Failed to upload profile picture:', err);
+      if (file.size > 1 * 1024 * 1024) {
+        try {
+          const compressedFile = await compressFile(file);
+          uploadFile(compressedFile);
+        } catch (error) {
+          console.error('Failed to compress file:', error);
+        }
+      } else {
+        uploadFile(file);
       }
     }
   };
