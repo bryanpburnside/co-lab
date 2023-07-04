@@ -145,7 +145,7 @@ io.on('connection', socket => {
     socket.join(roomId); // Join the room with the provided ID
     socket.to(roomId).emit('userJoined', userId); // Emit the userJoined event to the participants in the room
     console.log(`User ${userId} joined the room`);
-    
+
     socket.on('disconnect', () => {
       socket.to(roomId).emit('disconnectUser', userId)
       console.log(`${userId} left the room`);
@@ -184,20 +184,32 @@ io.on('connection', socket => {
   });
 
 
-    // // Handle key press event
-    // socket.on('keyPress', (key: string, roomId: string) => {
-    //   // Broadcast the key press to all participants in the same room
-    //   socket.to(roomId).emit('keyPress', key);
-    // });
+  // // Handle key press event
+  // socket.on('keyPress', (key: string, roomId: string) => {
+  //   // Broadcast the key press to all participants in the same room
+  //   socket.to(roomId).emit('keyPress', key);
+  // });
 
-    socket.on('drawing', (data: any) => {
-      socket.to(data.roomId).emit('drawing', data);
-    })
+  socket.on('drawing', (data: any) => {
+    socket.to(data.roomId).emit('drawing', data);
+  })
 
-    //for the storybook page editor text area
-    socket.on('typing', ({roomId, content}) => {
-      socket.to(roomId).emit('typing', content);
-    });
+  //for the storybook page editor text area
+  socket.on('typing', ({ roomId, content }) => {
+    socket.to(roomId).emit('typing', content);
+  });
+
+  socket.on('startDrawing', (data) => {
+    socket.to(data.roomId).emit('startDrawing', data);
+  });
+
+  socket.on('draw', (data) => {
+    socket.to(data.roomId).emit('draw', data);
+  });
+
+  socket.on('endDrawing', (data) => {
+    socket.to(data.roomId).emit('endDrawing');
+  });
 });
 
 server.listen(PORT, () => {
