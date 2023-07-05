@@ -7,10 +7,6 @@ import styled from 'styled-components';
 
 import '../styles.css';
 
-const StoryContainer = styled.div`
-  text-align: center;
-`
-
 interface ArtItem {
   id: string;
   title: string | null;
@@ -42,6 +38,45 @@ interface Music {
 }
 
 type FeedItem = ArtItem | PageItem | Music;
+
+const PostContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  .music {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+
+const MusicHeader = styled.h1`
+  margin: 10px;
+
+  .button-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+`;
+
+const CollabButton = styled.button`
+  background-color: #F06b80;
+  color: #ffffff;
+  margin-left: 10px;
+  border: 2px solid white;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 20px;
+  cursor: pointer;
+`;
+
 
 const Feed: React.FC = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
@@ -113,13 +148,13 @@ const Feed: React.FC = () => {
   };
 
   const renderPost = (item: FeedItem, index: number) => {
-    const isPageStory = 'content' in item;
+    const isPageStory = 'coverImage' in item;
     const isVisualArt = 'title' in item;
     const isMusic = 'songTitle' in item;
     const pages = pageData[item.id] || [];
 
     return (
-      <div className="post" key={index}>
+      <PostContainer className="post" key={index}>
         <div className="post-header">
           <img src={item.picture} alt={item.name} className="user-pfp" />
           <div className="username" onClick={() => item.id === user?.sub ? navigate(`/profile`) : navigate(`/profile/${item.id}`)}>
@@ -135,7 +170,7 @@ const Feed: React.FC = () => {
         {isPageStory && (
           <div className="story" key={index}>
             <h1>
-              <StoryContainer><img src={item.coverImage} width={'50%'} /><p>{item.title}</p></StoryContainer>
+              <img src={item.coverImage} width={'50%'} /><p>{item.title}</p>
             </h1>
             {pages.map((page: PageItem) => (
               <p className="story-content" key={page.id}>
@@ -146,21 +181,17 @@ const Feed: React.FC = () => {
         )}
         {isMusic && (
           <div className="music" key={index + 42}>
-            <h1>{item.songTitle}</h1>
-            <div className="music-player">
-              <audio controls>
-                <source src={item.url} type="audio/mp3" />
-                Your browser does not support the audio tag.
-              </audio>
-            </div>
-            <div className="post-footer">
-              <h1 className="add-to-colab">
-                <button onClick={() => { navigate('/trimmer') }}>Add to this Colab</button>
-              </h1>
-            </div>
+            <MusicHeader>{item.songTitle}</MusicHeader>
+            <audio controls>
+              <source src={item.url} type="audio/mp3" />
+              Your browser does not support the audio tag.
+            </audio>
+            <MusicHeader className="add-to-colab">
+              <CollabButton onClick={() => { navigate('/trimmer') }}>Collaborate</CollabButton>
+            </MusicHeader>
           </div>
         )}
-      </div>
+      </PostContainer>
     );
   };
 
