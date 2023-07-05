@@ -43,7 +43,6 @@ const Home = () => {
   const getUserInfo = async () => {
     try {
       if (user) {
-        console.log(user);
         await saveUser();
       }
     } catch (err) {

@@ -165,7 +165,6 @@ const Profile: React.FC = () => {
     try {
       const id = userId || user?.sub;
       const art = await axios.get(`/artwork/byUserId/${id}`);
-      console.log('artwork', art.data);
       setArtwork(art.data);
     } catch (err) {
       console.error('Failed to GET artwork at client:', err);
