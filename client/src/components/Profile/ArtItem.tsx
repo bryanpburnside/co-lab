@@ -5,7 +5,6 @@ interface ArtItemProps {
   id: string;
   type: string;
   content: any;
-  coverImage: string | undefined;
 }
 
 const ImageContainer = styled.div`
@@ -22,7 +21,7 @@ const ArtImage = styled.img`
   border: 4px solid white;
 `;
 
-const ArtItem: React.FC<ArtItemProps> = ({ id, type, content, coverImage }) => {
+const ArtItem: React.FC<ArtItemProps> = ({ id, type, content }) => {
 
   return (
     <>

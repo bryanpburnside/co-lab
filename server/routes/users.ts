@@ -83,12 +83,12 @@ Users.patch('/unfriend', async (req, res) => {
       return res.sendStatus(400);
     }
 
-    const updatedUserFriendIds = userFriends.filter(id => id !== friendId);
-    const updatedFriendFriendIds = friendFriends.filter(id => id !== userId);
+    const updatedUserFriends = userFriends.filter(id => id !== friendId);
+    const updatedFriendFriends = friendFriends.filter(id => id !== userId);
 
     await Promise.all([
-      user.update({ friends: updatedUserFriendIds }),
-      friend.update({ friends: updatedFriendFriendIds })
+      user.update({ friends: updatedUserFriends }),
+      friend.update({ friends: updatedFriendFriends })
     ]);
 
     res.sendStatus(200);
