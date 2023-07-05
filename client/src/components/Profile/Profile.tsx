@@ -165,6 +165,7 @@ const Profile: React.FC = () => {
     try {
       const id = userId || user?.sub;
       const art = await axios.get(`/artwork/byUserId/${id}`);
+      console.log(art.data);
       setArtwork(art.data);
     } catch (err) {
       console.error('Failed to GET artwork at client:', err);
@@ -342,7 +343,7 @@ const Profile: React.FC = () => {
           <Name>Artwork
             <ArtworkContainer>
               {artwork &&
-                artwork.slice(0, 8).map((art) => {
+                artwork.slice(0, 9).map((art) => {
                   if (art.type === 'visual art' || art.type === 'sculpture') {
                     return (
                       <ArtItem
@@ -352,6 +353,16 @@ const Profile: React.FC = () => {
                         content={art.type === 'visual art' ? art.visualart.content : art.sculpture.content}
                       />
                     );
+                  }
+                  if (art.type === 'story') {
+                    return (
+                      <ArtItem
+                        key={art.id}
+                        id={art.id}
+                        type={art.type}
+                        content={art.story.coverImage}
+                      />
+                    )
                   }
                   return null;
                 })}
