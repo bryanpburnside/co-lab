@@ -27,7 +27,7 @@ const ProfileContainer = styled.div`
 const ProfilePicContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 20vw;
+  height: 15vw;
   margin-top: 10px;
   object-fit: cover;
   object-position: center;
@@ -35,8 +35,8 @@ const ProfilePicContainer = styled.div`
 
 const PencilIcon = styled.div`
   position: absolute;
-  top: 65%;
-  left: 70%;
+  top: 90%;
+  left: 65%;
   transform: translate(-50%, -50%);
   display: flex;
   justify-content: center;
@@ -84,7 +84,7 @@ const RightContainer = styled.div`
 `;
 
 const UserInfoContainer = styled.div`
-  margin-bottom: 75px;
+  // margin-bottom: 75px;
 `;
 
 const FriendContainer = styled.div`
@@ -342,7 +342,7 @@ const Profile: React.FC = () => {
           <Name>Artwork
             <ArtworkContainer>
               {artwork &&
-                artwork.map((art) => {
+                artwork.slice(0, 8).map((art) => {
                   if (art.type === 'visual art' || art.type === 'sculpture') {
                     return (
                       <ArtItem
