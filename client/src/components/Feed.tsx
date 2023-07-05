@@ -52,10 +52,10 @@ const Feed: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [artResponse, storyResponse] = await Promise.all([fetch('/visualart'), fetch('/api/stories')]);
-        const [artData, storyData] = await Promise.all([artResponse.json(), storyResponse.json()]);
+        const [artResponse, sculptureResponse, storyResponse] = await Promise.all([fetch('/visualart'), fetch('/sculpture'), fetch('/api/stories')]);
+        const [artData, sculptureData, storyData] = await Promise.all([artResponse.json(), sculptureResponse.json(), storyResponse.json()]);
 
-        const combinedData: FeedItem[] = [...artData, ...storyData];
+        const combinedData: FeedItem[] = [...artData, ...sculptureData, ...storyData];
         const sortedData = combinedData.sort(
           (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
@@ -105,8 +105,8 @@ const Feed: React.FC = () => {
   }
 
   const renderPost = (item: FeedItem, index: number) => {
-    const isVisualArt = 'url' in item;
     const isPageStory = 'coverImage' in item;
+    const isVisualArt = 'content' in item;
     const pages = pageData[item.id] || [];
 
     return (
@@ -122,7 +122,7 @@ const Feed: React.FC = () => {
         {
           isVisualArt && (
             <>
-              <img src={item.content} alt={item.title} className="cloud-img" />
+              <img src={item.content} className="cloud-img" />
             </>
           )
         }
