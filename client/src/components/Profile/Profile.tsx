@@ -199,8 +199,8 @@ const Profile: React.FC = () => {
   const getArtwork = async () => {
     try {
       const id = userId || user?.sub;
-      const art = await axios.get(`/artwork/byUserId/${id}`);
-      setArtwork(art.data);
+      const { data } = await axios.get(`/artwork/byUserId/${id}`);
+      setArtwork(data);
     } catch (err) {
       console.error('Failed to GET artwork at client:', err);
     }
@@ -227,8 +227,8 @@ const Profile: React.FC = () => {
   const getFriends = async () => {
     try {
       const friendPromises = friendIds.map(async (friendId) => {
-        const result = await axios.get(`/users/${friendId}`);
-        return result.data;
+        const { data } = await axios.get(`/users/${friendId}`);
+        return data;
       });
       const friendData = await Promise.all(friendPromises);
       setFriends(friendData);
@@ -315,12 +315,12 @@ const Profile: React.FC = () => {
     try {
       const formData = new FormData();
       formData.append('picture', file);
-      const result = await axios.patch(`/users/${user?.sub}`, formData, {
+      const { data } = await axios.patch(`/users/${user?.sub}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      setProfilePic(result.data);
+      setProfilePic(data);
     } catch (err) {
       console.error('Failed to upload profile picture:', err);
     }
