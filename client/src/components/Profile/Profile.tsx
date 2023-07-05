@@ -315,7 +315,7 @@ const Profile: React.FC = () => {
               </PencilIcon>}
             </ProfilePicContainer>
             {userId && userId !== user?.sub && !friendIds.includes(user?.sub) && (
-              <SendButton style={{ width: '100%', margin: '5px' }} onClick={() => addFriend(user?.sub, profileUser.id)}>
+              <SendButton style={{ width: '20%', margin: '5px', background: '#3d3983' }} onClick={() => addFriend(user?.sub, profileUser.id)}>
                 Add Friend
               </SendButton>
             )}
