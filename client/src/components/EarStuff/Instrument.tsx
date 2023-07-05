@@ -3,6 +3,7 @@
 
 
 import React, { useEffect, useRef, useState } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import * as hand from 'handtrackjs';
 import { Model } from 'handtrackjs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -33,6 +34,7 @@ const Instrument = () => {
     scoreThreshold: 0.2,
   };
 
+  const { user } = useAuth0();
   const video = useRef<HTMLVideoElement>(null);
   const audio = useRef<HTMLAudioElement>(null);
   const [overlayText, setOverlayText] = useState('Snare');
@@ -140,6 +142,7 @@ const Instrument = () => {
           const requestBody = {
             songTitle: musicTitle, 
             url: audioPublicURL,
+            userId: user?.sub
           };
   
           axios

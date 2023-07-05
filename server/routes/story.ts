@@ -32,7 +32,7 @@ CreateStoryRouter.post('/upload', upload.single('coverImage'), async (req, res) 
     return res.status(500).send('Error uploading image.');
   } finally {
     //delete the temporary file
-    fs.unlink(file.path, () => {});
+    fs.unlink(file.path, () => { });
   }
 });
 

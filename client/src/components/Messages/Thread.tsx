@@ -41,7 +41,6 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
     try {
       const response = await axios.get(`/messages/${userId}/${receiverId}`);
       const newMessages = response.data;
-      console.log(newMessages);
       setMessages(newMessages);
     } catch (err) {
       console.error('Failed to GET messages:', err);

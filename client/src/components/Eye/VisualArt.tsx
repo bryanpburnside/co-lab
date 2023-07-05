@@ -1,7 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import React, { useState, useEffect, createContext } from 'react';
 import Draw from './Sketch';
-import RandomPattern from './RandomPattern';
 import { useParams } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import Peer, { MediaConnection } from 'peerjs';
@@ -11,17 +10,10 @@ export const socket = io('/');
 export const SocketContext = createContext<Socket | null>(null);
 const peers = {};
 
-const ActiveComponent = {
-  DrawMode: 0,
-  PatternMode: 1
-};
-
 const VisualArt: React.FC = () => {
   const { user } = useAuth0();
   const { roomId } = useParams<string>();
   const [peerId, setPeerId] = useState('');
-  const { DrawMode, PatternMode } = ActiveComponent;
-  const [mode, setMode] = useState(DrawMode);
   const [backgroundColor, setBackgroundColor] = useState('#3d3983');
 
   useEffect(() => {
@@ -103,56 +95,11 @@ const VisualArt: React.FC = () => {
     setBackgroundColor(value);
   };
 
-  const renderComponent = () => {
-    switch (mode) {
-      case PatternMode:
-        return <SocketContext.Provider value={socket}><RandomPattern backgroundColor={backgroundColor} handleBackgroundColorChange={handleBackgroundColorChange} roomId={roomId} /></SocketContext.Provider>;
-      case DrawMode:
-        return <SocketContext.Provider value={socket}><Draw backgroundColor={backgroundColor} handleBackgroundColorChange={handleBackgroundColorChange} roomId={roomId} /></SocketContext.Provider>;
-    }
-  };
-
   return (
     <>
-      <div style={{ marginTop: '2rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <div style={{ width: '100%' }}>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <button
-                style={{
-                  margin: '0 5px 5px',
-                  background: mode === DrawMode ? '#3273dc' : '#e4e4e4',
-                  color: mode === DrawMode ? '#fff' : '#333',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '10px 20px',
-                  fontSize: '18px',
-                  cursor: 'pointer'
-                }}
-                onClick={() => setMode(DrawMode)}
-              >
-                sketch
-              </button>
-              <button
-                style={{
-                  margin: '0 5px 5px',
-                  background: mode === PatternMode ? '#3273dc' : '#e4e4e4',
-                  color: mode === PatternMode ? '#fff' : '#333',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '10px 20px',
-                  fontSize: '18px',
-                  cursor: 'pointer'
-                }}
-                onClick={() => setMode(PatternMode)}
-              >
-                random pattern
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div>{renderComponent()}</div>
+      <SocketContext.Provider value={socket}>
+        <Draw backgroundColor={backgroundColor} handleBackgroundColorChange={handleBackgroundColorChange} roomId={roomId} />
+      </SocketContext.Provider>
     </>
   )
 }
