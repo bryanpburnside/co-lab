@@ -1,3 +1,165 @@
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useAuth0 } from '@auth0/auth0-react';
+import { formatDistanceToNow } from 'date-fns';
+import { Outlet, Link, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+
+import '../styles.css';
+
+const StoryContainer = styled.div`
+text-align: center;
+`
+
+interface ArtItem {
+  id: string;
+  title: string | null;
+  content: string;
+  url: string | null;
+  createdAt: string;
+  updatedAt: string;
+  artworkId: number;
+  name: string;
+}
+
+interface PageItem {
+  id: number;
+  page_number: number;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  storyId: number;
+}
+
+type FeedItem = ArtItem | PageItem;
+
+const Feed: React.FC = () => {
+  const { user, isAuthenticated, isLoading } = useAuth0();
+  const navigate = useNavigate();
+  const [feedData, setFeedData] = useState<FeedItem[] | null>(null);
+  const [pageData, setPageData] = useState<{ [key: number]: PageItem[] }>({});
+
+  const getUserData = async (artworkId: number) => {
+    try {
+      const response = await axios.get(`/artwork/byId/${artworkId}`);
+      const userData = response.data;
+      return userData;
+    } catch (err) {
+      console.error('Failed to GET user data at client:', err);
+    }
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [artResponse, sculptureResponse, storyResponse] = await Promise.all([fetch('/visualart'), fetch('/sculpture'), fetch('/api/stories')]);
+        const [artData, sculptureData, storyData] = await Promise.all([artResponse.json(), sculptureResponse.json(), storyResponse.json()]);
+
+        const combinedData: FeedItem[] = [...artData, ...sculptureData, ...storyData];
+        const sortedData = combinedData.sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        const feedWithUserData = await Promise.all(sortedData.map(async (entry) => {
+          const userObj = await getUserData(entry.id);
+          delete userObj.createdAt;
+          return Object.assign({}, entry, userObj);
+        }));
+
+        setFeedData(feedWithUserData);
+
+        // Making a request for each story ID
+        const pagePromises = storyData.map((story: any) => fetch(`http://localhost:8000/api/pages?storyId=${story.id}`));
+
+        // Fetching the page data for each story
+        const pageResponses = await Promise.all(pagePromises);
+        const pageData = await Promise.all(pageResponses.map(response => response.json()));
+
+        const formattedPageData: { [key: number]: PageItem[] } = {};
+
+        pageData.forEach((pages: PageItem[]) => {
+          const storyId = pages[0]?.storyId;
+          if (storyId) {
+            formattedPageData[storyId] = pages.sort(
+              (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+          }
+        });
+
+        setPageData(formattedPageData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const formatTimeDifference = (createdAt: string): string => {
+    const now = new Date();
+    const created = new Date(createdAt);
+    return formatDistanceToNow(created, { addSuffix: true });
+  };
+
+  if (isLoading) {
+    return <div className="loading-container">Loading ...</div>;
+  }
+
+  const renderPost = (item: FeedItem, index: number) => {
+    const isPageStory = 'coverImage' in item;
+    const isVisualArt = 'content' in item;
+    const pages = pageData[item.id] || [];
+
+    return (
+      <div className="post" key={index}>
+        <div className="post-header">
+          <img src={item.picture} alt={item.name} className="user-pfp" />
+          <div className="username"
+            onClick={() => item.id === user?.sub ? navigate(`/profile`) : navigate(`/profile/${item.id}`)}>
+            {item.name}
+          </div>
+          <p className="creation-time">{formatTimeDifference(item.createdAt)}</p>
+        </div>
+        {
+          isVisualArt && (
+            <>
+              <img src={item.content} className="cloud-img" />
+            </>
+          )
+        }
+        {
+          isPageStory && (
+            <div className="story" key={index}>
+              <h1>
+                <StoryContainer><img src={item.coverImage} width={'50%'} /><p>{item.title}</p></StoryContainer>
+              </h1>
+              {pages.map((page: PageItem) => (
+                <p className="story-content" key={page.id}>
+                  {page.content}
+                </p>
+              ))}
+            </div>
+          )
+        }
+        <div className="post-footer">
+          <h1 className="add-to-colab">
+            <a href={/* make this do something */}>Add to this Colab</a>
+          </h1>
+        </div>
+      </div >
+    );
+  };
+
+  return (
+    <div className="post-container">
+      {feedData && feedData.map(renderPost)}
+    </div>
+  );
+
+};
+
+export default Feed;
+
+
 // import React, { useEffect, useState } from 'react';
 // import { useAuth0 } from '@auth0/auth0-react';
 // import { formatDistanceToNow } from 'date-fns';
