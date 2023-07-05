@@ -19,6 +19,7 @@ const ArtImage = styled.img`
   height: 90%;
   object-fit: cover;
   border-radius: 10px;
+  border: 4px solid white;
 `;
 
 const ArtItem: React.FC<ArtItemProps> = ({ id, type, content, coverImage }) => {
