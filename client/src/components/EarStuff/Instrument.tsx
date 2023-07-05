@@ -5,9 +5,22 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as hand from 'handtrackjs';
 import { Model } from 'handtrackjs';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faCircleStop, faPlayCircle } from '@fortawesome/free-solid-svg-icons';
 
-// import blueNoteImage from './blue-note.png';
-// import redNoteImage from '/Users/mm/senior/co-lab/assests/pics/red-note.png'
+
+import blueNote from '../../assets/images/bluee-note.png';
+import redNote from '../../assets/images/red-note.png'
+import greenNote from '../../assets/images/green-note.png'
+import goldNote from '../../assets/images/gold-note.png'
+import pinkNote from '../../assets/images/pink-note.png'
+import aChord from '../../assets/sfx/a-chord.mp3'
+import bChord from '../../assets/sfx/b-chord.mp3'
+import cChord from '../../assets/sfx/c-chord.mp3'
+import eChord from '../../assets/sfx/e-chord.mp3'
+
+
+
 import './Video.css';
 import axios from 'axios';
 
@@ -47,21 +60,25 @@ const Instrument = () => {
           if (y > 230) {
             //bottom left
             if (x > 415) {
-              audio.current!.src = 'https://res.cloudinary.com/dtnq6yr17/video/upload/v1688069976/assets/a-chord_zxfqv2.mp3';
+              audio.current!.src = aChord;
+              //audio.current!.src = 'https://res.cloudinary.com/dtnq6yr17/video/upload/v1688069976/assets/a-chord_zxfqv2.mp3';
               audio.current!.play();
               //bottom right
             } else if (x < 55) {
-              audio.current!.src = 'https://res.cloudinary.com/dtnq6yr17/video/upload/v1688069977/assets/c-chord_c1wnjv.mp3';
+              //audio.current!.src = 'https://res.cloudinary.com/dtnq6yr17/video/upload/v1688069977/assets/c-chord_c1wnjv.mp3';
+              audio.current!.src = cChord;
               audio.current!.play();
             }
-          } else if (y < 98) {
+          } else if (y < 105) {
             //top left
             if (x > 400) {
-              audio.current!.src = 'https://res.cloudinary.com/dtnq6yr17/video/upload/v1688069977/assets/b-chord_alydx3.mp3';
+              //audio.current!.src = 'https://res.cloudinary.com/dtnq6yr17/video/upload/v1688069977/assets/b-chord_alydx3.mp3';
+              audio.current!.src = bChord;
               audio.current!.play();
               //top right
-            } else if (x < 55) {
-              audio.current!.src = 'https://res.cloudinary.com/dtnq6yr17/video/upload/v1688069977/assets/e-chord_schvpp.mp3';
+            } else if (x < 65) {
+              //audio.current!.src = 'https://res.cloudinary.com/dtnq6yr17/video/upload/v1688069977/assets/e-chord_schvpp.mp3';
+              audio.current!.src = eChord;
               audio.current!.play();
             }
           }
@@ -235,30 +252,59 @@ const Instrument = () => {
   return (
     <div className="instrument-container">
       <input
-        type="text"
         value={musicTitle}
         onChange={(e) => setMusicTitle(e.target.value)}
         placeholder="Enter music title"
+        style={{
+          border: 'none',
+          background: 'none',
+          cursor: 'pointer',
+          color: 'white',
+          fontSize: '2.5rem',
+          textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+        }}
       />
-      <button onClick={startRecording} disabled={recording}>
+      <button onClick={startRecording} disabled={recording} className="start-recording" style={{
+                border: 'none',
+                background: 'none',
+                cursor: 'pointer',
+                color: 'white',
+                fontSize: '2.5rem',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+              }}>
         Start Recording
+        <FontAwesomeIcon icon={faPlayCircle} /> 
       </button>
-      <button onClick={stopRecording} disabled={!recording}>
+      <button onClick={stopRecording} disabled={!recording} className="start-recording" style={{
+                border: 'none',
+                background: 'none',
+                cursor: 'pointer',
+                color: 'white',
+                fontSize: '2.5rem',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+              }}>
         Stop Recording
+        <FontAwesomeIcon icon={faCircleStop} />
       </button>
-      <button onClick={playRecording} disabled={!audioURL}>
+      {/* <button onClick={playRecording} disabled={!audioURL}>
         Play Recording
-      </button>
+      </button> */}
       {audioURL && <audio src={audioURL} controls />}
-      {audioURL && (
+      {/* {audioURL && (
         <button onClick={saveRecording}>
           Save Recording
         </button>
-      )}
+      )} */}
       <div className="video-wrapper">
         <video id="video" ref={video} className="resized-video" />
 
-        <img className="overlay-image" src={blueNoteImage} alt="Blue Note" />
+        <img className="blue-overlay" src={blueNote} alt="Blue Note" />
+        {/* <img className="red-overlay" src={redNote} alt="Red Note" /> */}
+        <img className="green-overlay" src={greenNote} alt="Green Note" />
+        <img className="gold-overlay" src={goldNote} alt="Gold Note" />
+        <img className="pink-overlay" src={pinkNote} alt="Pink Note" />
+
+
 
         <div className="overlay-aChord-box" />
         <div className="overlay-aChord-text">A Chord</div>
@@ -280,6 +326,7 @@ const Instrument = () => {
 };
 
 export default Instrument;
+
 
 
 
