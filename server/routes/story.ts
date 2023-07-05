@@ -24,16 +24,15 @@ CreateStoryRouter.post('/upload', upload.single('coverImage'), async (req, res) 
   }
 
   try {
-    const response = await cloudinary.uploader.upload(file.path, {
-      upload_preset: 'bebdyn7b',
-    });
+    //set quality to low
+    const response = await cloudinary.uploader.upload(file.path);
     return res.json({ imageUrl: response.secure_url });
   } catch (err) {
     console.error('Error uploading image to Cloudinary:', err);
     return res.status(500).send('Error uploading image.');
   } finally {
     //delete the temporary file
-    fs.unlink(file.path, () => {});
+    fs.unlink(file.path, () => { });
   }
 });
 

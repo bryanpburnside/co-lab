@@ -18,14 +18,22 @@ const ArtImage = styled.img`
   height: 90%;
   object-fit: cover;
   border-radius: 10px;
+  border: 4px solid white;
 `;
 
 const ArtItem: React.FC<ArtItemProps> = ({ id, type, content }) => {
+
   return (
-    <ImageContainer>
-      <ArtImage src={content} alt={type} />
-    </ImageContainer>
+    <>
+      {content &&
+        <ImageContainer>
+          <ArtImage src={content} alt={type} />
+        </ImageContainer>
+      }
+    </>
   );
+
+
 }
 
 export default ArtItem;
