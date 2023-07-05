@@ -35,8 +35,8 @@ const ProfilePicContainer = styled.div`
 
 const PencilIcon = styled.div`
   position: absolute;
-  top: 90%;
-  left: 75%;
+  top: 65%;
+  left: 70%;
   transform: translate(-50%, -50%);
   display: flex;
   justify-content: center;
@@ -62,7 +62,7 @@ const Name = styled.div`
 const ProfilePic = styled.img`
   display: block;
   width: 100%;
-  height: 20vw;
+  height: 15vw;
   margin-top: 10px;
   object-fit: cover;
   object-position: center;
