@@ -17,6 +17,87 @@ Users.get('/', async (req, res) => {
   }
 });
 
+Users.post('/', async (req, res) => {
+  try {
+    const { id, name, email, picture } = req.body;
+    const existingUser = await User.findByPk(id);
+    if (!existingUser) {
+      await User.create({ id, name, email, picture, friends: [] });
+      res.sendStatus(201);
+    } else {
+      console.log('User already exists!');
+    }
+  } catch (err) {
+    console.error('Failed to CREATE user in db:', err);
+    res.sendStatus(500);
+  }
+});
+
+Users.post('/add-friend', async (req, res) => {
+  try {
+    const { userId, friendId } = req.body;
+    const [user, friend] = await Promise.all([
+      User.findByPk(userId),
+      User.findByPk(friendId)
+    ]);
+
+    if (!user || !friend) {
+      return res.sendStatus(404);
+    }
+
+    const { friends: userFriends } = user;
+    const { friends: friendFriends } = friend;
+
+    if (userFriends.includes(friendId)) {
+      console.error('Friendship already exists');
+      res.sendStatus(400);
+    }
+
+    await Promise.all([
+      user.update({ friends: [...userFriends, friendId] }),
+      friend.update({ friends: [...friendFriends, userId] })
+    ]);
+
+    res.sendStatus(201);
+  } catch (err) {
+    console.error('Failed to ADD friend:', err);
+    res.sendStatus(500);
+  }
+});
+
+Users.patch('/unfriend', async (req, res) => {
+  try {
+    const { userId, friendId } = req.body;
+    const [user, friend] = await Promise.all([
+      User.findByPk(userId),
+      User.findByPk(friendId)
+    ]);
+    if (!user || !friend) {
+      return res.sendStatus(404);
+    }
+    const { friends: userFriends } = user;
+    const { friends: friendFriends } = friend;
+
+    if (!userFriends.includes(friendId)) {
+      console.error('Friendship does not exist');
+      return res.sendStatus(400);
+    }
+
+    const updatedUserFriendIds = userFriends.filter(id => id !== friendId);
+    const updatedFriendFriendIds = friendFriends.filter(id => id !== userId);
+
+    await Promise.all([
+      user.update({ friends: updatedUserFriendIds }),
+      friend.update({ friends: updatedFriendFriendIds })
+    ]);
+
+    res.sendStatus(200);
+  } catch (err) {
+    console.error('Failed to DELETE friend:', err);
+    res.sendStatus(500);
+  }
+})
+
 Users.route('/:userId')
   .get(async (req, res) => {
     try {
@@ -65,53 +146,5 @@ Users.route('/:userId')
       res.sendStatus(500);
     }
   });
-
-Users.post('/', async (req, res) => {
-  try {
-    const { id, name, email, picture } = req.body;
-    const existingUser = await User.findByPk(id);
-    if (!existingUser) {
-      await User.create({ id, name, email, picture, friends: [] });
-      res.sendStatus(201);
-    } else {
-      console.log('User already exists!');
-    }
-  } catch (err) {
-    console.error('Failed to CREATE user in db:', err);
-    res.sendStatus(500);
-  }
-});
-
-Users.post('/add-friend', async (req, res) => {
-  try {
-    const { userId, friendId } = req.body;
-    const [user, friend] = await Promise.all([
-      User.findByPk(userId),
-      User.findByPk(friendId)
-    ]);
-
-    if (!user || !friend) {
-      return res.sendStatus(404);
-    }
-
-    const { friends: userFriendIds } = user;
-    const { friends: friendFriendIds } = friend;
-
-    if (userFriendIds.includes(friendId)) {
-      console.error('Friendship already exists');
-      res.sendStatus(400);
-    }
-
-    await Promise.all([
-      user.update({ friends: [...userFriendIds, friendId] }),
-      friend.update({ friends: [...friendFriendIds, userId] })
-    ]);
-
-    res.sendStatus(201);
-  } catch (err) {
-    console.error('Failed to ADD FRIEND to db:', err);
-    res.sendStatus(500);
-  }
-});
 
 export default Users;
