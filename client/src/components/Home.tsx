@@ -6,7 +6,7 @@ import { io } from "socket.io-client";
 
 const Home = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
-  const picture = 'https://res.cloudinary.com/dtnq6yr17/image/upload/v1688235884/default_img_yx8pje.png';
+  const picture = 'https://res.cloudinary.com/dtnq6yr17/image/upload/v1688591605/default_img3.2_jchs6i.png';
   const navigate = useNavigate();
   const [roomId, setRoomId] = useState('');
   const socket = io('/');
