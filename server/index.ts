@@ -84,7 +84,6 @@ app.post('/api/stories', async (req, res) => {
   try {
     const newStoryData = req.body;
     const { originalCreatorId: userId } = req.body;
-    console.log(req.body);
     const artwork = await Artwork.create({ type: 'story', userId });
     const { id: artworkId } = artwork.dataValues;
     const newStory = await Story.create({ artworkId, ...newStoryData });

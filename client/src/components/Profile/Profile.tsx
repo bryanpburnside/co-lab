@@ -192,7 +192,6 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     if (friendIds.length) {
-      console.log('friendIds', friendIds);
       getFriends();
     }
   }, [friendIds]);
@@ -201,7 +200,6 @@ const Profile: React.FC = () => {
     try {
       const id = userId || user?.sub;
       const art = await axios.get(`/artwork/byUserId/${id}`);
-      console.log(art.data);
       setArtwork(art.data);
     } catch (err) {
       console.error('Failed to GET artwork at client:', err);
