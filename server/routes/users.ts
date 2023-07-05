@@ -74,8 +74,7 @@ Users.post('/', async (req, res) => {
       await User.create({ id, name, email, picture, friends: [] });
       res.sendStatus(201);
     } else {
-      console.error('User already exists!');
-      res.sendStatus(409);
+      console.log('User already exists!');
     }
   } catch (err) {
     console.error('Failed to CREATE user in db:', err);
