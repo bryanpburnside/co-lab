@@ -292,7 +292,7 @@ const Profile: React.FC = () => {
                         key={art.id}
                         id={art.id}
                         type={art.type}
-                        content={art.type === 'visual art' ? art.visualart.content : art.sculpture.content}
+                        content={art.type === 'visual art' ? art.visualart?.content || '' : art.sculpture?.content || ''}
                       />
                     );
                   }
