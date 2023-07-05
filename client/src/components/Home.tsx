@@ -73,14 +73,12 @@ const Home = () => {
       >
         <img src='https://res.cloudinary.com/dtnq6yr17/image/upload/v1688069622/assets/hand_z5epqn.png' alt="hand" />
       </div>
-      <Link to='/stories' className='image-link'>
         <div
           className='image-link'
           onClick={() => generateRoomId('stories')}
           style={{ cursor: 'pointer' }}>
           <img src='https://res.cloudinary.com/dtnq6yr17/image/upload/v1688069622/assets/mouth_lbo1al.png' alt="mouth" />
         </div>
-      </Link>
     </div>
   );
 }
