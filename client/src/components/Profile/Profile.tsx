@@ -256,7 +256,6 @@ const Profile: React.FC = () => {
         userId,
         friendId,
       });
-      console.log('Unfriended');
     } catch (err) {
       console.error('Failed to UNFRIEND at client:', err);
     }
