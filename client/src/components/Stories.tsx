@@ -26,6 +26,7 @@ interface Story {
   title: string;
   coverImage: string | null;
   numberOfPages: number | null;
+  originalCreatorId?: string;
 }
 
 export const TTSToggleContext = createContext<{
@@ -281,7 +282,12 @@ const StoryBook: React.FC = () => {
     }
   };
 
-  const deleteStory = async (storyId: number) => {
+  const deleteStory = async (storyId: number, originalCreatorId: string) => {
+    if (user?.sub !== originalCreatorId) {
+      console.error('Unauthorized deletion attempt');
+      return;
+    }
+
     try {
       const response = await fetch(`/api/stories/${storyId}?userId=${user?.sub}`, {
         method: 'DELETE',
@@ -290,8 +296,6 @@ const StoryBook: React.FC = () => {
       if (response.ok) {
         // remove the deleted story from the list
         setStories(stories.filter(story => story.id !== storyId));
-      } else if (response.status === 403) {
-        console.error('Unauthorized deletion attempt');
       } else {
         console.error('Failed to delete story-client');
       }
@@ -299,6 +303,7 @@ const StoryBook: React.FC = () => {
       console.error('Failed to delete story-client', error);
     }
   };
+
 
   return (
     <TTSToggleContext.Provider value={{ ttsOn, setTtsOn }}>
@@ -370,7 +375,6 @@ const StoryBook: React.FC = () => {
                         objectFit: 'cover'
                       }}
                     />
-                    
                   ) : (
                     <div style={{ fontSize: '0.8em', color: 'black', textAlign: 'center' }}>
                       No Image
@@ -380,19 +384,21 @@ const StoryBook: React.FC = () => {
                 <div style={{ fontSize: '0.8em', color: 'white', textAlign: 'center' }}>
                   {story.title}
                 </div>
-                <TooltipIcon
-                  icon={() => <FaTrash size={20} color="white" />}
-                  tooltipText="Delete story"
-                  handleClick={() => {
-                    if (window.confirm("Are you sure you want to delete this story?")) {
-                      deleteStory(story.id!);
-                      console.log('story deleted');
-                    }
-                  }}
-                  style={{
-                    marginTop: '7px'
-                  }}
-                />
+                {story.originalCreatorId === user?.sub && (
+                  <TooltipIcon
+                    icon={() => <FaTrash size={20} color="white" />}
+                    tooltipText="Delete story"
+                    handleClick={() => {
+                      if (window.confirm("Are you sure you want to delete this story?")) {
+                        deleteStory(story.id!, story.originalCreatorId!);
+                        console.log('story deleted');
+                      }
+                    }}
+                    style={{
+                      marginTop: '7px'
+                    }}
+                  />
+                )}
               </div>
             ))}
           </div>
