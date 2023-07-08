@@ -3,6 +3,8 @@ import TTS from './TTS';
 import '../styles.css';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
+import Dropzone from './DropZone';
+import { SliderPicker } from 'react-color'
 
 interface Page {
   id?: number;
@@ -24,13 +26,14 @@ interface NewStoryFormProps {
   onCancel: () => void;
 }
 
-const NewStoryForm: React.FC<{ onCreateStory: (story: Story) => void, onCancel: () => void }> = ({ onCreateStory, onCancel }) => {
+const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) => {
   const [title, setTitle] = useState('');
   // const [collaborators, setCollaborators] = useState('');
   const [coverImage, setCoverImage] = useState<File | null>(null);
   const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
   const [numberOfPages, setNumberOfPages] = useState<number | null>(null);
   const [speakText, setSpeakText] = useState('');
+  const [titleColor, setTitleColor] = useState('#000000');
   const { user } = useAuth0();
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,6 +44,10 @@ const NewStoryForm: React.FC<{ onCreateStory: (story: Story) => void, onCancel: 
   //   setCollaborators(event.target.value);
   // };
 
+  //for title color change
+  const handleColorChange = (color: any) => {
+    setTitleColor(color.hex);
+  };
 
   const handleCoverImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -130,24 +137,25 @@ const NewStoryForm: React.FC<{ onCreateStory: (story: Story) => void, onCancel: 
           id="title"
           value={ title }
           onChange={ handleTitleChange }
+          style={{ color: titleColor }}
           onMouseEnter={() => handleHover('Title')}
           onMouseLeave={() => handleLeave()} />
+          <div
+            onMouseEnter={() => handleHover('Change color of the Title')}
+            onMouseLeave={handleLeave}
+            style={{ marginBottom: '20px' }}
+          >
+            <SliderPicker
+              color={ titleColor }
+              onChangeComplete={handleColorChange}
+            />
+          </div>
       </div>
       {/* <div>
         <label htmlFor="collaborators">Collaborators:</label>
         <input type="text" id="collaborators" value={ collaborators } onChange={ handleCollaboratorsChange } />
       </div> */}
-      <div>
-        <label htmlFor="coverImage">Cover Image:</label>
-        <input
-          placeholder='coverImage'
-          type="file"
-          id="coverImage"
-          accept="image/*"
-          onChange={ handleCoverImageChange }
-          onMouseEnter={() => handleHover('Cover Image')}
-          onMouseLeave={() => handleLeave()} />
-      </div>
+      <Dropzone onImageUpload={ setCoverImageUrl } />
       <button
         type="submit"
         onMouseEnter={() => handleHover('Create Story')}
