@@ -307,10 +307,10 @@ const StoryBook: React.FC = () => {
 
   return (
     <TTSToggleContext.Provider value={{ ttsOn, setTtsOn }}>
-      <div style={{ display: 'flex', marginTop: '20px' }}>
+      <div style={{ display: 'flex' }}>
         {/* Column 1: Story List */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginRight: '20px' }}>
-          <div style={{ display: 'flex', marginBottom: '15px', marginTop: '20px' }}>
+          <div style={{ display: 'flex', marginBottom: '5px' }}>
             <TooltipIcon
               icon={ FaBookMedical }
               tooltipText="Create new story"
@@ -336,7 +336,7 @@ const StoryBook: React.FC = () => {
             borderRadius: '5px',
             padding: '10px',
             overflow: 'auto',
-            height: '680px',
+            height: '620px',
             width: '200px',
             marginLeft: '30px',
             marginTop: '40px'

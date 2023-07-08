@@ -130,7 +130,7 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
 
   return (
     <div>
-      <div style={{ position: 'relative', display: 'inline-block', top: '145px' }}>
+      <div style={{ position: 'relative', display: 'inline-block', top: '100px' }}>
         <GrammarlyEditorPlugin clientId='client_RZvMQYBxstbSeZEA6Ft7sA'>
           <textarea
             value={ content }
@@ -332,7 +332,7 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: '100px',
+        marginTop: '30px',
       }}
     >
     <TitlePage>
