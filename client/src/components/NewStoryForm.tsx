@@ -4,7 +4,6 @@ import '../styles.css';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import Dropzone from './DropZone';
-import { SliderPicker } from 'react-color'
 
 interface Page {
   id?: number;
@@ -33,7 +32,6 @@ const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) 
   const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
   const [numberOfPages, setNumberOfPages] = useState<number | null>(null);
   const [speakText, setSpeakText] = useState('');
-  const [titleColor, setTitleColor] = useState('#000000');
   const { user } = useAuth0();
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,10 +42,6 @@ const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) 
   //   setCollaborators(event.target.value);
   // };
 
-  //for title color change
-  const handleColorChange = (color: any) => {
-    setTitleColor(color.hex);
-  };
 
   const handleCoverImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -137,19 +131,8 @@ const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) 
           id="title"
           value={ title }
           onChange={ handleTitleChange }
-          style={{ color: titleColor }}
           onMouseEnter={() => handleHover('Title')}
           onMouseLeave={() => handleLeave()} />
-          <div
-            onMouseEnter={() => handleHover('Change color of the Title')}
-            onMouseLeave={handleLeave}
-            style={{ marginBottom: '20px' }}
-          >
-            <SliderPicker
-              color={ titleColor }
-              onChangeComplete={handleColorChange}
-            />
-          </div>
       </div>
       {/* <div>
         <label htmlFor="collaborators">Collaborators:</label>
@@ -163,6 +146,7 @@ const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) 
         Create Story
       </button>
       <button
+        style={{ marginTop: '20px'}}
         type="button"
         onClick={ handleCancel }
         onMouseEnter={() => handleHover('Cancel')}

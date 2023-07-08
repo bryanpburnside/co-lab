@@ -13,6 +13,8 @@ import { useParams } from 'react-router-dom'
 import Peer, { MediaConnection } from 'peerjs';
 import { io, Socket } from 'socket.io-client';
 import {v4 as generatePeerId} from 'uuid';
+
+
 export const socket = io('/');
 export const SocketContext = createContext<Socket | null>(null)
 
@@ -47,7 +49,6 @@ const Pages = styled.div`
   box-sizing: border-box;
   text-align: center;
 `;
-
 
 interface Page {
   id?: number;
@@ -198,6 +199,7 @@ interface FlipBookProps {
 const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdatePage, fetchPages, addNewPage, TooltipIcon, roomId }) => {
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
   const [isAutoReading, setIsAutoReading] = useState(false);
+  const [titleColor, setTitleColor] = useState('#000000');
 
 
   const flipBookRef = useRef<any>(null);
@@ -206,6 +208,9 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
     setSelectedPage(page);
   };
 
+    const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitleColor(event.target.value);
+  };
 
   //save page after editing it
   const handleSavePage = async (content: string) => {
@@ -323,7 +328,7 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
       style={{
         backgroundColor: '#fbf5df',
         boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
-        overflow: "hidden",
+        overflow: "visible",
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -340,7 +345,7 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
           backgroundPosition: 'center',
         }}>
       <div style={{
-          backgroundColor: '#fbf5df',
+          backgroundColor: 'transparent',
           height: '30px',
           maxWidth: 'calc(100% - 80px)',
           display: 'flex',
@@ -348,12 +353,22 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
           alignItems: 'center',
           padding: '0 10px',
           marginTop: '10px',
-          color: 'black',
+          color: titleColor,
           fontWeight: 'bolder',
+          fontSize: '32px',
           textAlign: 'center',
           margin: 'auto',
         }}>
         { story.title }
+      {/* Color Picker Input Field */}
+        <input
+          type="color"
+          id="titleColor"
+          name="titleColor"
+          value={ titleColor }
+          onChange={ handleColorChange }
+          style={{ marginLeft: '10px' }}
+        />
       </div>
       <div style={{
         position: 'absolute',
