@@ -12,7 +12,7 @@ dotenv.config({ path: path.resolve(dirname(fileURLToPath(import.meta.url)), '../
 const { PORT, CLOUD_NAME, CLOUD_API_KEY, CLOUD_SECRET, RapidAPI_KEY, RapidAPI_HOST } = process.env;
 import Users from './routes/users.js';
 import Messages from './routes/messages.js';
-import { Message } from './database/index.js';
+import { Artwork, Message } from './database/index.js';
 import artworkRouter from './routes/artwork.js';
 import VisualArtwork from './routes/visualartwork.js';
 import sculptureRouter from './routes/sculpture.js';
@@ -83,7 +83,10 @@ app.get('/api/stories', async (req, res) => {
 app.post('/api/stories', async (req, res) => {
   try {
     const newStoryData = req.body;
-    const newStory = await Story.create(newStoryData);
+    const { originalCreatorId: userId } = req.body;
+    const artwork = await Artwork.create({ type: 'story', userId });
+    const { id: artworkId } = artwork.dataValues;
+    const newStory = await Story.create({ artworkId, ...newStoryData });
     console.log(newStory);
     res.status(201).json(newStory);
   } catch (error) {

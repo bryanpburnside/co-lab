@@ -209,8 +209,8 @@ const initialize = async () => {
     if (seedStories.length === 0) {
       await createSeedData();
     }
-      await sequelize.sync({ alter: true });
-      console.log('Tables successfully created!');
+    await sequelize.sync({ alter: true });
+    console.log('Tables successfully created!');
   } catch (error) {
     console.error('Error creating tables :(', error);
   }
