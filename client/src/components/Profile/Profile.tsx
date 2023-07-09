@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth0, User } from '@auth0/auth0-react';
 import axios from 'axios';
@@ -143,8 +143,13 @@ const ArtworkContainer = styled.div`
   margin-top: 20px;
   justify-content: center;
   align-items: center;
-`;
+  overflow: auto;
+  max-height: ${({ containerHeight }) => `${containerHeight}px`};
 
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
 
 const Profile: React.FC = () => {
   const { userId } = useParams();
@@ -154,6 +159,17 @@ const Profile: React.FC = () => {
   const [friendIds, setFriendIds] = useState<string[]>([]);
   const [friends, setFriends] = useState<Friend[]>([]);
   const [artwork, setArtwork] = useState<string[]>([]);
+  const artworkContainerRef = useRef<HTMLDivElement>(null);
+  const [artworkContainerHeight, setArtworkContainerHeight] = useState<number>(0);
+
+  useEffect(() => {
+    calculateArtworkContainerHeight();
+    window.addEventListener('resize', calculateArtworkContainerHeight);
+
+    return () => {
+      window.removeEventListener('resize', calculateArtworkContainerHeight);
+    };
+  }, [artwork]);
 
   useEffect(() => {
     if (user) {
@@ -167,6 +183,17 @@ const Profile: React.FC = () => {
       getFriends();
     }
   }, [friendIds]);
+
+  const calculateArtworkContainerHeight = () => {
+    if (artworkContainerRef.current) {
+      const artworkItems = artworkContainerRef.current.children;
+      const artworkItemHeight = artworkItems.length ? (artworkItems[0] as HTMLElement).offsetHeight : 0;
+      const artworkContainerPadding = 40;
+      const maxRows = 2;
+      const containerHeight = artworkItemHeight * maxRows + artworkContainerPadding;
+      setArtworkContainerHeight(containerHeight);
+    }
+  };
 
   const getArtwork = async () => {
     try {
@@ -349,34 +376,33 @@ const Profile: React.FC = () => {
       </LeftContainer>
       <RightContainer>
         <div>
-          <Name>Artwork
-            <ArtworkContainer>
-              {artwork &&
-                artwork.slice(0, 7).map((art, index) => {
-                  if (art.type === 'visual art' || art.type === 'sculpture') {
-                    return (
-                      <ArtItem
-                        key={art.id}
-                        id={art.id}
-                        type={art.type}
-                        content={art.type === 'visual art' ? art.visualart?.content || '' : art.sculpture?.content || ''}
-                      />
-                    );
-                  }
-                  if (art.type === 'story') {
-                    return (
-                      <ArtItem
-                        key={art.id}
-                        id={art.id}
-                        type={art.type}
-                        content={art.story.coverImage}
-                      />
-                    );
-                  }
-                  return null;
-                })}
-            </ArtworkContainer>
-          </Name>
+          <Name>Artwork</Name>
+          <ArtworkContainer ref={artworkContainerRef} containerHeight={artworkContainerHeight}>
+            {artwork &&
+              artwork.map((art) => {
+                if (
+                  art.type === 'visual art' ||
+                  art.type === 'sculpture' ||
+                  art.type === 'story'
+                ) {
+                  return (
+                    <ArtItem
+                      key={art.id}
+                      id={art.id}
+                      type={art.type}
+                      content={
+                        art.type === 'visual art'
+                          ? art.visualart?.content || ''
+                          : art.type === 'sculpture'
+                            ? art.sculpture?.content || ''
+                            : art.story.coverImage
+                      }
+                    />
+                  );
+                }
+                return null;
+              })}
+          </ArtworkContainer>
         </div>
       </RightContainer>
       <FriendContainer>
