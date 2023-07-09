@@ -17,6 +17,24 @@ artworkRouter.get('/byId/:artworkId', async (req, res) => {
   }
 })
 
+artworkRouter.delete('/byId/:artworkId', async (req, res) => {
+  const { artworkId } = req.params;
+  try {
+    const artwork = await Artwork.findByPk(artworkId);
+    if (artwork) {
+      const art = await getArtByType(artwork.type, artwork.id);
+      await artwork.destroy();
+      await art.destroy();
+      res.sendStatus(204);
+    } else {
+      res.sendStatus(404);
+    }
+  } catch (err) {
+    console.error('Failed to DELETE artwork:', err);
+    res.sendStatus(500);
+  }
+})
+
 artworkRouter.get('/byId/originalImage/:artworkId', async (req, res) => {
   const { artworkId } = req.params;
   try {
