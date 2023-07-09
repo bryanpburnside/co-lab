@@ -84,9 +84,14 @@ const Sidebar = () => {
         <ul>
           {userList.map((user) => {
             if (user.id !== userId) {
-              return (<ClickableName key={user.id} onClick={() => handleRecipientClick(user.id)}>
-                {user.name}
-              </ClickableName>)
+              return (
+                <ClickableName
+                  key={user.id}
+                  onClick={() => handleRecipientClick(user.id)}
+                >
+                  {user.id === recipient ? `• ${user.name}` : user.name}
+                </ClickableName>
+              )
             }
           })}
         </ul>
