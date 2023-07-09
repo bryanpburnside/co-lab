@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useAuth0, User } from '@auth0/auth0-react';
 import axios from 'axios';
 import ArtItem from './ArtItem';
@@ -113,27 +113,25 @@ const FriendContainer = styled.div`
 `;
 
 const FriendListContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  width: 100%;
-  margin-top: 10px;
-  border-radius: 10px;
-  padding-bottom: 10px;
-  justify-content: space-evenly;
-  justify-items: center;
-  align-content: space-evenly;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
   align-items: center;
 `;
 
-const FriendLink = styled(Link)`
+const FriendLink = styled.a`
   display: flex;
-  width: 100%;
-  height: 100%;
+  width: 75px;
+  height: 75px;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
+  text-decoration: none;
 `;
 
 const FriendImage = styled.img`
-  width: 75px;
-  height: 75px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   object-position: center;
   clip-path: circle();
@@ -382,30 +380,29 @@ const Profile: React.FC = () => {
         </div>
       </RightContainer>
       <FriendContainer>
-        <Name>Friends
-          <FriendListContainer>
-            {friends &&
-              friends.slice(0, 9).map((friend) => {
-                if (userId && friend.id === user?.sub) {
-                  return (
-                    <div key={friend.id}>
-                      <FriendLink to={'/profile'}>
-                        <FriendImage src={friend.picture} alt={friend.name} />
-                      </FriendLink>
-                    </div>
-                  )
-                } else {
-                  return (
-                    <div key={friend.id}>
-                      <FriendLink to={`/profile/${friend.id}`}>
-                        <FriendImage src={friend.picture} alt={friend.name} />
-                      </FriendLink>
-                    </div>
-                  )
-                }
-              })}
-          </FriendListContainer>
-        </Name>
+        <Name>Friends</Name>
+        <FriendListContainer>
+          {friends &&
+            friends.slice(0, 9).map((friend) => {
+              if (userId && friend.id === user?.sub) {
+                return (
+                  <div key={friend.id}>
+                    <FriendLink href={'/profile'}>
+                      <FriendImage src={friend.picture} alt={friend.name} />
+                    </FriendLink>
+                  </div>
+                );
+              } else {
+                return (
+                  <div key={friend.id}>
+                    <FriendLink href={`/profile/${friend.id}`}>
+                      <FriendImage src={friend.picture} alt={friend.name} />
+                    </FriendLink>
+                  </div>
+                );
+              }
+            })}
+        </FriendListContainer>
       </FriendContainer>
     </ProfileContainer >
   ) : (
