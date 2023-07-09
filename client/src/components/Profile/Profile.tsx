@@ -161,6 +161,7 @@ const Profile: React.FC = () => {
   const [artwork, setArtwork] = useState<string[]>([]);
   const artworkContainerRef = useRef<HTMLDivElement>(null);
   const [artworkContainerHeight, setArtworkContainerHeight] = useState<number>(0);
+  const [hoveredArtwork, setHoveredArtwork] = useState<string | null>(null);
 
   useEffect(() => {
     calculateArtworkContainerHeight();
@@ -381,22 +382,17 @@ const Profile: React.FC = () => {
             {artwork &&
               artwork.map((art) => {
                 if (
-                  art.type === 'visual art' ||
-                  art.type === 'sculpture' ||
-                  art.type === 'story'
+                  art.type
                 ) {
                   return (
                     <ArtItem
                       key={art.id}
                       id={art.id}
                       type={art.type}
-                      content={
-                        art.type === 'visual art'
-                          ? art.visualart?.content || ''
-                          : art.type === 'sculpture'
-                            ? art.sculpture?.content || ''
-                            : art.story.coverImage
-                      }
+                      content={art[art.type.replace(' ', '')]?.content || art[art.type]?.coverImage}
+                      hoveredArtwork={hoveredArtwork}
+                      onMouseOver={() => setHoveredArtwork(art.id)}
+                      onMouseOut={() => setHoveredArtwork(null)}
                     />
                   );
                 }
