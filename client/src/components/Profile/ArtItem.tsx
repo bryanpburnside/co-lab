@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 
 interface ArtItemProps {
@@ -6,6 +8,7 @@ interface ArtItemProps {
   type: string;
   content: any;
   onClick: () => void;
+  deleteArtwork: () => void;
 }
 
 const ArtItemContainer = styled.div`
@@ -34,17 +37,55 @@ const ArtImage = styled.img`
   cursor: pointer;
 `;
 
+const TrashIcon = styled.div`
+  position: absolute;
+  top: 8%;
+  left: 95%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 2;
+  width: 50px;
+  height: 50px;
+  clip-path: circle();
+  background-color: #F06b80;
+`;
+
 const ArtItem: React.FC<ArtItemProps> = ({
   id,
   type,
   content,
+  deleteArtwork,
   onClick
 }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isDeleteClicked, setIsDeleteClicked] = useState(false);
+
+  const handleDelete = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    setIsDeleteClicked(true);
+    deleteArtwork(id);
+  };
+
+
   return (
     <>
-      {content && (
-        <ArtItemContainer onClick={() => onClick(id)}>
+      {!isDeleteClicked && (
+        <ArtItemContainer
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          onClick={(event) => onClick(id, event)}
+        >
           <ArtImage src={content} alt={type} />
+          {isHovered && (
+            <TrashIcon onClick={handleDelete}>
+              <FontAwesomeIcon icon={faTrash} size="lg" />
+            </TrashIcon>
+          )}
         </ArtItemContainer>
       )}
     </>

@@ -4,7 +4,7 @@ import { useAuth0, User } from '@auth0/auth0-react';
 import axios from 'axios';
 import ArtItem from './ArtItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencil, faUserPlus, faUserMinus } from '@fortawesome/free-solid-svg-icons';
+import { faPencil, faUserPlus, faUserMinus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 
 interface Friend {
@@ -225,6 +225,15 @@ const Profile: React.FC = () => {
     }
   };
 
+  const deleteArtwork = async (artworkId: string) => {
+    try {
+      await axios.delete(`/artwork/byId/${artworkId}`);
+      setArtwork(prevArtwork => prevArtwork.filter(art => art.id !== artworkId));
+    } catch (err) {
+      console.error('Failed to DELETE artwork at client:', err);
+    }
+  };
+
   const getFullSizeImage = async (artworkId: string) => {
     try {
       const { data } = await axios.get(`/artwork/byId/originalImage/${artworkId}`);
@@ -294,9 +303,16 @@ const Profile: React.FC = () => {
     }
   };
 
-  const handleArtworkClick = (artworkId: string) => {
-    getFullSizeImage(artworkId);
-    setShowPopup(true);
+  const handleArtworkClick = (artworkId: string, event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    const target = event.target as HTMLElement;
+    const isTrashIconClicked = target.classList.contains('trash-icon');
+    if (isTrashIconClicked) {
+      deleteArtwork(artworkId);
+    } else {
+      getFullSizeImage(artworkId);
+      setShowPopup(true);
+    }
   };
 
   const compressFile = (file: File): Promise<File> => {
@@ -421,7 +437,8 @@ const Profile: React.FC = () => {
                       id={art.id}
                       type={art.type}
                       content={art[art.type.replace(' ', '')]?.content || art[art.type]?.coverImage}
-                      onClick={() => { handleArtworkClick(art.id) }}
+                      onClick={handleArtworkClick}
+                      deleteArtwork={deleteArtwork}
                     />
                   );
                 }
