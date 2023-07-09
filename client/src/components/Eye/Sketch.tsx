@@ -4,6 +4,7 @@ import { SocketContext } from './VisualArt';
 import { Socket } from 'socket.io-client';
 import axios from 'axios';
 import paper, { Color } from 'paper';
+import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faPenFancy, faPalette, faEraser, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 
@@ -12,6 +13,13 @@ interface DrawProps {
   handleBackgroundColorChange: (color: string) => void;
   roomId: string | undefined;
 }
+
+const StyledCanvas = styled.canvas<{ backgroundColor: string }>`
+  width: 100vw;
+  height: 100vh;
+  background-color: ${({ backgroundColor }) => backgroundColor};
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+`;
 
 const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChange, roomId }) => {
   const { user } = useAuth0();
@@ -174,10 +182,10 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
 
   return (
     <div style={{ position: 'relative' }}>
-      <canvas
+      <StyledCanvas
         id="canvas"
         ref={canvasRef}
-        style={{ width: '100vw', height: '100vh', backgroundColor }}
+        backgroundColor={backgroundColor}
       />
       <div
         style={{
