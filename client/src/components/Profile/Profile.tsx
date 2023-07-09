@@ -143,8 +143,8 @@ const ArtworkContainer = styled.div`
   margin-top: 20px;
   justify-content: center;
   align-items: center;
-  place-items: center;
 `;
+
 
 const Profile: React.FC = () => {
   const { userId } = useParams();
@@ -352,7 +352,7 @@ const Profile: React.FC = () => {
           <Name>Artwork
             <ArtworkContainer>
               {artwork &&
-                artwork.slice(0, 7).map((art) => {
+                artwork.slice(0, 7).map((art, index) => {
                   if (art.type === 'visual art' || art.type === 'sculpture') {
                     return (
                       <ArtItem
@@ -371,7 +371,7 @@ const Profile: React.FC = () => {
                         type={art.type}
                         content={art.story.coverImage}
                       />
-                    )
+                    );
                   }
                   return null;
                 })}
