@@ -7,33 +7,39 @@ interface ArtItemProps {
   content: any;
 }
 
-const ImageContainer = styled.div`
-  width: 200px;
-  height: 200px;
-  overflow: hidden;
+const ArtItemContainer = styled.div`
+  flex: 1 0 33%;
+  max-width: 200px;
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  padding-bottom: 25%;
 `;
 
 const ArtImage = styled.img`
-  width: 90%;
-  height: 90%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   border-radius: 10px;
   border: 4px solid white;
 `;
 
 const ArtItem: React.FC<ArtItemProps> = ({ id, type, content }) => {
-
   return (
     <>
       {content &&
-        <ImageContainer>
+        <ArtItemContainer>
           <ArtImage src={content} alt={type} />
-        </ImageContainer>
+        </ArtItemContainer>
       }
     </>
   );
-
-
 }
 
 export default ArtItem;

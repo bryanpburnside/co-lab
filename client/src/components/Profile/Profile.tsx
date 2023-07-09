@@ -5,7 +5,6 @@ import axios from 'axios';
 import ArtItem from './ArtItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencil, faUserPlus, faUserMinus } from '@fortawesome/free-solid-svg-icons';
-import { SendButton } from '../../styled';
 import styled from 'styled-components';
 
 interface Friend {
@@ -73,7 +72,6 @@ const Name = styled.div`
   text-align: center;
   font-size: 32px;
   margin-top: 20px;
-  // background-color: #F06b80;
   border-radius: 10px;
 `
 
@@ -87,19 +85,8 @@ const ProfilePic = styled.img`
   clip-path: circle();
 `;
 
-const AddFriend = styled.button`
-// style={{ width: '20%', margin: '5px', background: '#3d3983' }}
-  width: 20%;
-  color: #ffffff;
-  margin-top: 20px;
-  background-color: #F06b80;
-  border: 2px solid white;
-  border-radius: 20px;
-`
-
 const LeftContainer = styled.div`
   width: 20%;
-  // background-color: #F06b80;
   border-radius: 10px;
 `;
 
@@ -107,12 +94,11 @@ const RightContainer = styled.div`
   width: 60%;
   display: flex;
   flex-direction: column;
-  // background-color: #F06b80;
+  flex-wrap: wrap;
   border-radius: 10px;
 `;
 
 const UserInfoContainer = styled.div`
-  // margin-bottom: 75px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -123,7 +109,6 @@ const FriendContainer = styled.div`
   width: 20%;
   display: flex;
   flex-direction: column;
-  // background-color: #F06b80;
   border-radius: 10px;
 `;
 
@@ -132,7 +117,6 @@ const FriendListContainer = styled.div`
   grid-template-columns: repeat(3, 1fr);
   width: 100%;
   margin-top: 10px;
-  // background-color: #F06b80;
   border-radius: 10px;
   padding-bottom: 10px;
   justify-content: space-evenly;
@@ -156,22 +140,12 @@ const FriendImage = styled.img`
 `;
 
 const ArtworkContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
   margin-top: 20px;
+  justify-content: center;
+  align-items: center;
   place-items: center;
-
-  @media (max-width: 1475px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(1, 1fr);
-  }
-
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-  }
 `;
 
 const Profile: React.FC = () => {
