@@ -151,6 +151,24 @@ const ArtworkContainer = styled.div`
   }
 `;
 
+const Popup = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 3;
+`;
+
+const PopupImage = styled.img`
+  max-width: 90%;
+  max-height: 90%;
+`;
+
 const Profile: React.FC = () => {
   const { userId } = useParams();
   const { user, isAuthenticated, isLoading } = useAuth0();
@@ -161,16 +179,8 @@ const Profile: React.FC = () => {
   const [artwork, setArtwork] = useState<string[]>([]);
   const artworkContainerRef = useRef<HTMLDivElement>(null);
   const [artworkContainerHeight, setArtworkContainerHeight] = useState<number>(0);
-  const [hoveredArtwork, setHoveredArtwork] = useState<string | null>(null);
-
-  useEffect(() => {
-    calculateArtworkContainerHeight();
-    window.addEventListener('resize', calculateArtworkContainerHeight);
-
-    return () => {
-      window.removeEventListener('resize', calculateArtworkContainerHeight);
-    };
-  }, [artwork]);
+  const [selectedArtwork, setSelectedArtwork] = useState<string | null>(null);
+  const [showPopup, setShowPopup] = useState<boolean>(false);
 
   useEffect(() => {
     if (user) {
@@ -184,6 +194,15 @@ const Profile: React.FC = () => {
       getFriends();
     }
   }, [friendIds]);
+
+  useEffect(() => {
+    calculateArtworkContainerHeight();
+    window.addEventListener('resize', calculateArtworkContainerHeight);
+
+    return () => {
+      window.removeEventListener('resize', calculateArtworkContainerHeight);
+    };
+  }, [artwork]);
 
   const calculateArtworkContainerHeight = () => {
     if (artworkContainerRef.current) {
@@ -205,6 +224,15 @@ const Profile: React.FC = () => {
       console.error('Failed to GET artwork at client:', err);
     }
   };
+
+  const getFullSizeImage = async (artworkId: string) => {
+    try {
+      const { data } = await axios.get(`/artwork/byId/originalImage/${artworkId}`);
+      setSelectedArtwork(data);
+    } catch (err) {
+      console.error('Failed to GET original image at client:', err);
+    }
+  }
 
   const getUserInfo = async () => {
     try {
@@ -264,6 +292,11 @@ const Profile: React.FC = () => {
     if (fileInput) {
       fileInput.click();
     }
+  };
+
+  const handleArtworkClick = (artworkId: string) => {
+    getFullSizeImage(artworkId);
+    setShowPopup(true);
   };
 
   const compressFile = (file: File): Promise<File> => {
@@ -381,18 +414,14 @@ const Profile: React.FC = () => {
           <ArtworkContainer ref={artworkContainerRef} containerHeight={artworkContainerHeight}>
             {artwork &&
               artwork.map((art) => {
-                if (
-                  art.type
-                ) {
+                if (art.type) {
                   return (
                     <ArtItem
                       key={art.id}
                       id={art.id}
                       type={art.type}
                       content={art[art.type.replace(' ', '')]?.content || art[art.type]?.coverImage}
-                      hoveredArtwork={hoveredArtwork}
-                      onMouseOver={() => setHoveredArtwork(art.id)}
-                      onMouseOut={() => setHoveredArtwork(null)}
+                      onClick={() => { handleArtworkClick(art.id) }}
                     />
                   );
                 }
@@ -426,6 +455,11 @@ const Profile: React.FC = () => {
             })}
         </FriendListContainer>
       </FriendContainer>
+      {showPopup && (
+        <Popup onClick={() => setShowPopup(false)}>
+          <PopupImage src={selectedArtwork} alt="Full-size artwork" />
+        </Popup>
+      )}
     </ProfileContainer >
   ) : (
     <p>You are not logged in</p>
