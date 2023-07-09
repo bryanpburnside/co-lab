@@ -5,9 +5,9 @@ const artworkRouter = Router();
 artworkRouter.get('/byId/:artworkId', async (req, res) => {
   const { artworkId } = req.params;
   try {
-    const artwork = await Artwork.findByPk(artworkId);
-    if (artwork) {
-      const { userId } = artwork.dataValues;
+    const artworkEntry = await Artwork.findByPk(artworkId);
+    if (artworkEntry) {
+      const { userId } = artworkEntry.dataValues;
       const user = await User.findByPk(userId);
       res.send(user).status(200);
     }
@@ -20,11 +20,11 @@ artworkRouter.get('/byId/:artworkId', async (req, res) => {
 artworkRouter.delete('/byId/:artworkId', async (req, res) => {
   const { artworkId } = req.params;
   try {
-    const artwork = await Artwork.findByPk(artworkId);
-    if (artwork) {
-      const art = await getArtByType(artwork.type, artwork.id);
-      await artwork.destroy();
-      await art.destroy();
+    const artworkEntry = await Artwork.findByPk(artworkId);
+    if (artworkEntry) {
+      const artPiece = await getArtByType(artworkEntry.type, artworkEntry.id);
+      await artworkEntry.destroy();
+      await artPiece.destroy();
       res.sendStatus(204);
     } else {
       res.sendStatus(404);
@@ -38,11 +38,11 @@ artworkRouter.delete('/byId/:artworkId', async (req, res) => {
 artworkRouter.get('/byId/originalImage/:artworkId', async (req, res) => {
   const { artworkId } = req.params;
   try {
-    const artwork = await Artwork.findByPk(artworkId);
-    if (artwork) {
-      const art = await getArtByType(artwork.type, artwork.id);
-      if (art) {
-        res.send(art.content).status(200);
+    const artworkEntry = await Artwork.findByPk(artworkId);
+    if (artworkEntry) {
+      const artPiece = await getArtByType(artworkEntry.type, artworkEntry.id);
+      if (artPiece) {
+        res.send(artPiece.content).status(200);
       } else {
         res.sendStatus(404);
       }
@@ -58,17 +58,17 @@ artworkRouter.get('/byId/originalImage/:artworkId', async (req, res) => {
 artworkRouter.get('/byUserId/:userId', async (req, res) => {
   const { userId } = req.params;
   try {
-    const artwork = await Artwork.findAll({
+    const artworkEntries = await Artwork.findAll({
       where: { userId },
       include: [VisualArt, Music, Story, Sculpture]
     });
-    res.send(artwork).status(200);
+    res.send(artworkEntries).status(200);
   } catch (err) {
     console.error('Failed to GET artwork BY USER ID:', err);
   }
 });
 
-async function getArtByType(type: string, artworkId?: number) {
+const getArtByType = async (type: string, artworkId?: number) => {
   let model: any;
   if (!artworkId) {
     console.log('No artwork ID provided');
@@ -79,6 +79,9 @@ async function getArtByType(type: string, artworkId?: number) {
       break;
     case 'sculpture':
       model = Sculpture;
+      break;
+    case 'music':
+      model = Music;
       break;
     default:
       return null;
