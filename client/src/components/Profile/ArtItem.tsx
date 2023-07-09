@@ -31,6 +31,7 @@ const ArtImage = styled.img`
   object-fit: cover;
   object-position: center;
   transition: transform 0.3s ease;
+  cursor: pointer;
 `;
 
 const ArtItem: React.FC<ArtItemProps> = ({
