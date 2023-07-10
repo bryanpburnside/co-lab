@@ -61,8 +61,9 @@ const Sidebar = () => {
 
   const getUsers = async () => {
     try {
-      const response = await axios.get('/users');
-      setUserList(response.data);
+      const { data } = await axios.get('/users');
+      setUserList(data);
+      setRecipient(data[0].id);
     } catch (err) {
       console.error('Failed to GET user list:', err);
     }
