@@ -303,9 +303,9 @@ const Profile: React.FC = () => {
     }
   };
 
-  const handleArtworkClick = (artworkId: string, event: React.MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation();
-    const target = event.target as HTMLElement;
+  const handleArtworkClick = (artworkId: string, e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    const target = e.target as HTMLElement;
     const isTrashIconClicked = target.classList.contains('trash-icon');
     if (isTrashIconClicked) {
       deleteArtwork(artworkId);

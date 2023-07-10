@@ -7,8 +7,8 @@ interface ArtItemProps {
   id: string;
   type: string;
   content: any;
-  onClick: () => void;
-  deleteArtwork: () => void;
+  onClick: (id: string, e: React.MouseEvent<HTMLDivElement>) => void;
+  deleteArtwork: (id: string) => void;
 }
 
 const ArtItemContainer = styled.div`
@@ -65,8 +65,8 @@ const ArtItem: React.FC<ArtItemProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const [isDeleteClicked, setIsDeleteClicked] = useState(false);
 
-  const handleDelete = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation();
+  const handleDelete = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
     setIsDeleteClicked(true);
     deleteArtwork(id);
   };
@@ -78,7 +78,7 @@ const ArtItem: React.FC<ArtItemProps> = ({
         <ArtItemContainer
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          onClick={(event) => onClick(id, event)}
+          onClick={(e: React.MouseEvent<HTMLDivElement>) => onClick(id, e)}
         >
           <ArtImage src={content} alt={type} />
           {isHovered && (
