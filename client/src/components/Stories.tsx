@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef, createContext } from "react";
 import NewStoryForm from "./NewStoryForm";
 import FlipBook from "./FlipBook";
-import STT from  './STT';
-import TranscriptLog from "./Transcript";
+// import STT from  './STT';
+// import TranscriptLog from "./Transcript";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useParams } from 'react-router-dom'
 import { io, Socket } from 'socket.io-client';
-import { FaPlusCircle, FaTty, FaHeadphones, FaBookMedical, FaTrash } from 'react-icons/fa';
+import { FaTty, FaHeadphones, FaBookMedical, FaTrash } from 'react-icons/fa';
 import TooltipIcon from './TooltipIcons';
 import TTS from "./TTS";
 import {v4 as generatePeerId} from 'uuid';

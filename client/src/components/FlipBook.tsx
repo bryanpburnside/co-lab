@@ -2,23 +2,18 @@ import React, { useState, useContext, useRef, createContext, useEffect } from "r
 import HTMLFlipBook from "react-pageflip";
 import STT from './STT';
 import '../styles.css';
-import { FaSave, FaTimesCircle, FaPlusCircle, FaVolumeUp, FaEraser, FaArrowRight } from 'react-icons/fa';
+import { FaSave, FaTimesCircle, FaPlusCircle, FaVolumeUp, FaEraser } from 'react-icons/fa';
 import TooltipIcon from './TooltipIcons';
 import { TTSToggleContext } from './Stories';
-import Switch from "react-switch";
-import axios from "axios";
+// import Switch from "react-switch";
+// import axios from "axios";
 import { GrammarlyEditorPlugin } from "@grammarly/editor-sdk-react";
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom'
-import Peer, { MediaConnection } from 'peerjs';
 import { io, Socket } from 'socket.io-client';
-import {v4 as generatePeerId} from 'uuid';
 
 
 export const socket = io('/');
 export const SocketContext = createContext<Socket | null>(null)
-
-const peers = {};
 
 const TitlePage: any = styled.div`
   data-density: hard;
@@ -138,7 +133,7 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
             maxLength={310}
             rows={10}
             cols={50}
-            style={{ width: '100%', height: '550px' }}
+            style={{ width: '100%', height: '50px' }}
           />
         </GrammarlyEditorPlugin>
         <FaTimesCircle
@@ -367,7 +362,13 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
           name="titleColor"
           value={ titleColor }
           onChange={ handleColorChange }
-          style={{ marginLeft: '10px' }}
+          style={{
+            marginLeft: '20px',
+            width: '20px',
+            height: '20px',
+            borderRadius: '50%',
+            border: 'none',
+        }}
         />
       </div>
       <div style={{
