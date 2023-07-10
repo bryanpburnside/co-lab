@@ -12,10 +12,15 @@ const SidebarContainer = styled.div`
   width: 100%;
 `;
 
+const Inbox = styled.h1`
+  margin-top: 10px;
+  margin-bottom: 0;
+`
+
 const MessageList = styled.div`
   flex: 1;
   width: 25%;
-  padding: 20px;
+
   ul {
     list-style: none;
     padding: 0;
@@ -80,7 +85,7 @@ const Sidebar = () => {
   return (
     <SidebarContainer>
       <MessageList>
-        <h1>Inbox</h1>
+        <Inbox>Inbox</Inbox>
         <ul>
           {userList.map((user) => {
             if (user.id !== userId) {
