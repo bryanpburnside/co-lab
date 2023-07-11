@@ -19,7 +19,14 @@ interface UserAttributes {
   picture: string;
 }
 
+interface ArtworkAttributes {
+  id?: number;
+  userId: string;
+  type: string;
+}
+
 interface UserModel extends Model<UserAttributes>, UserAttributes { }
+interface ArtworkModel extends Model<ArtworkAttributes>, ArtworkAttributes { }
 
 const User = sequelize.define<UserModel>('users', {
   id: {
@@ -65,7 +72,7 @@ const Message = sequelize.define('messages', {
   },
 });
 
-const Artwork = sequelize.define('artwork', {
+const Artwork = sequelize.define<ArtworkModel>('artwork', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -75,6 +82,9 @@ const Artwork = sequelize.define('artwork', {
   type: {
     type: DataTypes.STRING,
   },
+  userId: {
+    type: DataTypes.STRING,
+  }
 });
 
 const VisualArt = sequelize.define('visualart', {
@@ -205,8 +215,8 @@ Pages.belongsTo(Story, { foreignKey: 'storyId' })
 
 const initialize = async () => {
   try {
-    const seedStories = await Story.findAll();
-    await createSeedData();
+    // const seedStories = await Story.findAll();
+    // await createSeedData();
     await sequelize.sync({ alter: true });
     console.log('Tables successfully created!');
   } catch (error) {
@@ -221,6 +231,7 @@ export {
   UserModel,
   Message,
   Artwork,
+  ArtworkModel,
   VisualArt,
   Music,
   Story,

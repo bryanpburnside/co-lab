@@ -336,19 +336,26 @@ const StoryBook: React.FC = () => {
           )}
         </div>
          {/* Column 1: Story List */}
-         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginRight: '20px' }}>
+         <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            marginRight: '20px',
+            boxShadow: '5px 5px 13px #343171, -5px -5px 13px #464195',
+          }}>
           <div style={{ display: 'flex', marginBottom: '5px' }}>
             <TooltipIcon
               icon={ FaBookMedical }
               tooltipText="Create new story"
               handleClick={ handleShowNewStoryForm }
-              style={{ marginRight: '20px', marginLeft: '30px'}}
+              style={{ marginRight: '20px', marginTop: '30px'}}
             />
             <TooltipIcon
               icon={ FaTty }
               tooltipText={ttsOn ? "Turn TTS Off" : "Turn TTS On"}
               handleClick={() => setTtsOn(!ttsOn)}
-              style={{ marginRight: '20px' }}
+              style={{ marginRight: '20px', marginTop: '30px' }}
             >
               {ttsOn ? "Turn TTS Off" : "Turn TTS On"}
             </TooltipIcon>
@@ -356,11 +363,12 @@ const StoryBook: React.FC = () => {
               icon={ FaHeadphones }
               tooltipText={muted ? "Unmute" : "Mute"}
               handleClick={ handleToggleMute }
+              style={{ marginTop: '30px' }}
             />
           </div>
           <div className="story-list" style={{
-              border: '1px solid #ccc',
-              borderRadius: '5px',
+              // border: '1px solid #ccc',
+              // borderRadius: '5px',
               padding: '10px',
               overflow: 'auto',
               height: '620px',
