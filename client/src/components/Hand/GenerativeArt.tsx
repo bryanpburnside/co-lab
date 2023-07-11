@@ -21,8 +21,8 @@ const GenerativeArt = ({ roomId }) => {
 
       p.setup = () => {
         const container = document.querySelector('.canvas-container');
-        const canvasWidth = container?.clientWidth - 5;
-        const canvasHeight = container?.clientHeight - 5;
+        const canvasWidth = container?.clientWidth - 7;
+        const canvasHeight = container?.clientHeight - 7;
         p.createCanvas(canvasWidth, canvasHeight, p.WEBGL).parent(canvasRef.current);
         p.background(61, 57, 131); // Set background color to #3d3983
         current = p.createVector(0, 0, 0);

@@ -49,7 +49,7 @@ html {
 .canvas-container {
   background-color: #3d3983;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   width: 80vw;
   /* Adjust the width as desired */
