@@ -5,10 +5,14 @@
 }
 
 video {
+  display: flex;
+  border-radius: 5%;
+  padding: 1%;
   min-width: 100%;
   min-height: 100vh;
   object-fit: cover;
-  border: 10px solid purple;
+  box-shadow: 5px 5px 13px #343171,
+  -5px -5px 13px #464195;
 }
 
 
@@ -25,7 +29,10 @@ video {
 
 
 .video-wrapper {
+  display: flex;
   position: relative;
+  box-shadow: 5px 5px 13px #343171,
+  -5px -5px 13px #464195;
 }
 
 .blue-overlay {
