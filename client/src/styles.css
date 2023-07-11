@@ -204,7 +204,10 @@ html {
 .cloud-img {
   width: 100%;
   height: auto;
-
+  border-radius: 10px;
+  background: #3d3983;
+  box-shadow: inset 50px 50px 81px #383479,
+    inset -50px -50px 81px #423e8d;
 }
 
 .page {
