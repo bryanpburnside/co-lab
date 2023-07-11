@@ -5,9 +5,7 @@ import { Socket } from 'socket.io-client';
 import axios from 'axios';
 import paper, { Color } from 'paper';
 import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faPenFancy, faPalette, faEraser, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
-
+import { FaPen, FaPenFancy, FaPalette, FaEraser, FaSave } from 'react-icons/fa';
 interface DrawProps {
   backgroundColor: string;
   handleBackgroundColorChange: (color: string) => void;
@@ -203,8 +201,8 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
           transform: 'translateY(-50%)',
         }}
       >
-        <div style={{ marginBottom: '1rem' }}>
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+        <div style={{ marginTop: '25rem', marginBottom: '1rem' }}>
+          <div style={{ display: 'flex' }}>
             <input
               type="color"
               id="bg-color"
@@ -220,11 +218,11 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
                 background: 'none',
                 cursor: 'pointer',
                 color: 'white',
-                fontSize: '2.5rem',
+                fontSize: '48px',
                 textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
               }}
             >
-              <FontAwesomeIcon icon={faPalette} />
+              <FaPalette />
             </button>
           </div>
         </div>
@@ -245,11 +243,11 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
                 background: 'none',
                 cursor: 'pointer',
                 color: 'white',
-                fontSize: '2.5rem',
+                fontSize: '48px',
                 textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
               }}
             >
-              <FontAwesomeIcon icon={faPen} />
+              <FaPen />
             </button>
           </div>
         </div>
@@ -263,11 +261,11 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
                 background: 'none',
                 cursor: 'pointer',
                 color: 'white',
-                fontSize: '2.5rem',
+                fontSize: '48px',
                 textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
               }}
             >
-              <FontAwesomeIcon icon={faPenFancy} />
+              <FaPenFancy />
             </button>
             {showPenWidthSlider && (
               <div className="pen-width-slider">
@@ -287,7 +285,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
                     background: 'none',
                     cursor: 'pointer',
                     color: 'white',
-                    fontSize: '2.5rem',
+                    fontSize: '48px',
                     textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
                   }}
                 >
@@ -306,11 +304,11 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
                 background: 'none',
                 cursor: 'pointer',
                 color: 'white',
-                fontSize: '2.5rem',
+                fontSize: '48px',
                 textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
               }}
             >
-              <FontAwesomeIcon icon={faEraser} />
+              <FaEraser />
             </button>
           </div>
         </div>
@@ -326,11 +324,11 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
                   marginLeft: '5px',
                   cursor: 'pointer',
                   color: 'white',
-                  fontSize: '2.5rem',
+                  fontSize: '48px',
                   textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
                 }}
               >
-                <FontAwesomeIcon icon={faFloppyDisk} />
+                <FaSave />
               </button>
             </div>
           </div>}
