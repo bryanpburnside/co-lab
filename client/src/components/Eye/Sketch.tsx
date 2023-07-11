@@ -14,11 +14,19 @@ interface DrawProps {
   roomId: string | undefined;
 }
 
+const CanvasContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
 const StyledCanvas = styled.canvas<{ backgroundColor: string }>`
-  width: 100vw;
-  height: 100vh;
+  width: 80vw;
+  height: 75vh;
   background-color: ${({ backgroundColor }) => backgroundColor};
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  box-shadow:  5px 5px 13px #343171,
+               -5px -5px 13px #464195;
 `;
 
 const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChange, roomId }) => {
@@ -181,7 +189,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
   };
 
   return (
-    <div style={{ position: 'relative' }}>
+    <CanvasContainer>
       <StyledCanvas
         id="canvas"
         ref={canvasRef}
@@ -327,7 +335,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
             </div>
           </div>}
       </div>
-    </div>
+    </CanvasContainer>
   );
 };
 
