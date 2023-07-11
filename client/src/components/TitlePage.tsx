@@ -18,15 +18,20 @@ interface TitlePageProps {
 }
 
 const TitlePage: React.FC<TitlePageProps> = ({ story, TooltipIcon, addNewPage, titleColor, handleColorChange }) => (
+  <div
+    style={{
+      backgroundImage: `url(${story.coverImage})`,
+      height: '100%',
+      width: '500px',
+      backgroundSize: '100% 100%',
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center',
+      position: 'relative'
+    }}
+  >
+    {/* Title and Color Picker */}
     <div
       style={{
-        backgroundImage: `url(${story.coverImage})`,
-        height: '700px', width: '500px',
-        backgroundSize: '100% 100%',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center',
-      }}>
-    <div style={{
         backgroundColor: 'transparent',
         height: '30px',
         maxWidth: 'calc(100% - 80px)',
@@ -40,9 +45,9 @@ const TitlePage: React.FC<TitlePageProps> = ({ story, TooltipIcon, addNewPage, t
         fontSize: '32px',
         textAlign: 'center',
         margin: 'auto',
-      }}>
+      }}
+    >
       { story.title }
-    {/* Color Picker Input Field */}
       <input
         type="color"
         id="titleColor"
@@ -57,34 +62,37 @@ const TitlePage: React.FC<TitlePageProps> = ({ story, TooltipIcon, addNewPage, t
           borderRadius: '50%',
           border: 'none',
           cursor: 'pointer',
-      }}
+        }}
       />
     </div>
-    <div style={{
-      position: 'absolute',
-      left: '50%',
-      transform: 'translate(-50%, 0)',
-      bottom: '10px'
-    }}>
-    <TooltipIcon
-      icon={ FaPlusCircle }
-      tooltipText="Add New Page"
-      handleClick={(e: React.MouseEvent) => {
-        e.stopPropagation();
-        addNewPage();
-      }}
+
+    {/* Add New Page Icon */}
+    <div
       style={{
         position: 'absolute',
-        color: '#3d3983',
-        backgroundColor: 'white',
-        borderRadius: '50%',
-        padding: '5px',
-        paddingBottom: '2px',
-        margin: '5px'
+        left: '50%',
+        bottom: '10px',
+        transform: 'translate(-50%, 0)',
       }}
-    />
+    >
+      <TooltipIcon
+        icon={ FaPlusCircle }
+        tooltipText="Add New Page"
+        handleClick={(e: React.MouseEvent) => {
+          e.stopPropagation();
+          addNewPage();
+        }}
+        style={{
+          color: '#3d3983',
+          backgroundColor: 'white',
+          borderRadius: '50%',
+          padding: '5px',
+          paddingBottom: '2px',
+          margin: '5px'
+        }}
+      />
     </div>
-    </div>
+  </div>
   );
 
 export default TitlePage;

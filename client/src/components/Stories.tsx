@@ -9,6 +9,7 @@ import { io, Socket } from 'socket.io-client';
 import { FaTty, FaHeadphones, FaBookMedical, FaTrash } from 'react-icons/fa';
 import TooltipIcon from './TooltipIcons';
 import TTS from "./TTS";
+import axios from 'axios';
 import {v4 as generatePeerId} from 'uuid';
 import Peer, { MediaConnection } from 'peerjs';
 export const socket = io('/');
@@ -53,6 +54,7 @@ const StoryBook: React.FC = () => {
   const [ttsOn, setTtsOn] = useState(false);
   const [peerId, setPeerId] = useState('');
   const [muted, setMuted] = useState(true);
+  const [defaultStory, setDefaultStory] = useState(null);
 
   const userStream = useRef<MediaStream | null>(null);
   const peerConnections = useRef<Record<string, MediaConnection>>({});
@@ -221,9 +223,9 @@ const StoryBook: React.FC = () => {
   };
 
   //might need
-  const handleStoryLeave = () => {
-    setSpeakText('');
-  };
+  // const handleStoryLeave = () => {
+  //   setSpeakText('');
+  // };
 
   //create a new story should show the form
   //add the story to the list of stories
@@ -304,12 +306,37 @@ const StoryBook: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchDefaultStory = async () => {
+      const res = await axios.get('/api/books?title=Instructions&userId=fakeId');
+      setDefaultStory(res.data);
+    };
+    fetchDefaultStory();
+  }, []);
+
 
   return (
     <TTSToggleContext.Provider value={{ ttsOn, setTtsOn }}>
       <div style={{ display: 'flex' }}>
-        {/* Column 1: Story List */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginRight: '20px' }}>
+        {/* Column 2: FlipBook and PageEditor and NewStoryForm */}
+        <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '20px', height: '100%', width: '100%' }}>
+          {showNewStoryForm ? (
+            <NewStoryForm onCreateStory={ handleCreateStory } onCancel={ handleCancelCreateStory } />
+          ) : (
+            selectedStory &&
+            <FlipBook
+              story={ selectedStory || defaultStory }
+              selectedStoryPages={ pages }
+              onUpdatePage={ handleUpdatePage }
+              fetchPages={ fetchPages }
+              TooltipIcon={ TooltipIcon }
+              addNewPage={ addNewPage }
+              roomId={ roomId }
+            />
+          )}
+        </div>
+         {/* Column 1: Story List */}
+         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginRight: '20px' }}>
           <div style={{ display: 'flex', marginBottom: '5px' }}>
             <TooltipIcon
               icon={ FaBookMedical }
@@ -331,16 +358,20 @@ const StoryBook: React.FC = () => {
               handleClick={ handleToggleMute }
             />
           </div>
-          <div style={{
-            border: '1px solid #ccc',
-            borderRadius: '5px',
-            padding: '10px',
-            overflow: 'auto',
-            height: '620px',
-            width: '200px',
-            marginLeft: '30px',
-            marginTop: '40px'
-          }}>
+          <div className="story-list" style={{
+              border: '1px solid #ccc',
+              borderRadius: '5px',
+              padding: '10px',
+              overflow: 'auto',
+              height: '620px',
+              width: '250px',
+              margin: '20px',
+              marginTop: '40px',
+              display: 'flex',
+              flexWrap: 'wrap',
+              flexDirection: 'row',
+              justifyContent: 'space-evenly'
+            }}>
             {stories.map((story, index) => (
               <div
                 key={ index }
@@ -353,7 +384,8 @@ const StoryBook: React.FC = () => {
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  margin: '10px',
                 }}
               >
                 <div style={{
@@ -402,23 +434,6 @@ const StoryBook: React.FC = () => {
               </div>
             ))}
           </div>
-        </div>
-        {/* Column 2: FlipBook and PageEditor and NewStoryForm */}
-        <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '20px', height: '100%', width: '100%' }}>
-          {showNewStoryForm ? (
-            <NewStoryForm onCreateStory={ handleCreateStory } onCancel={ handleCancelCreateStory } />
-          ) : (
-            selectedStory &&
-            <FlipBook
-              story={ selectedStory }
-              selectedStoryPages={ pages }
-              onUpdatePage={ handleUpdatePage }
-              fetchPages={ fetchPages }
-              TooltipIcon={ TooltipIcon }
-              addNewPage={ addNewPage }
-              roomId={ roomId }
-            />
-          )}
         </div>
       </div>
       {/* TTS */}

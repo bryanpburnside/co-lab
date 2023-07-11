@@ -14,6 +14,7 @@ body {
   background-color: #3d3983;
   margin: 0;
   padding: 0;
+
 }
 
 html {
@@ -310,4 +311,16 @@ div:hover>.tooltip-text {
 
 .new-story-form button:hover {
   background-color: #f06b80;
+}
+
+/* larger screens */
+.story-list {
+  width: 500px;
+}
+
+/* smaller screens */
+@media screen and (max-width: 800px) {
+  .story-list {
+    width: 200px;
+  }
 }

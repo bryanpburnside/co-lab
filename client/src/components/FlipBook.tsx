@@ -159,13 +159,13 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
       showCover={true}
       useMouseEvents={true}
       style={{
-        backgroundColor: '#fbf5df',
-        boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
+        backgroundColor: '#3d3983',
         overflow: "visible",
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: '30px',
+        marginLeft: '20px',
       }}
       >
         <div>
@@ -237,7 +237,7 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
             <Pages data-density="hard">
               { page.content }
             </Pages>
-            <span style={{ color: 'black' }}>{ page.page_number }</span>
+            <span style={{ color: 'white' }}>{ page.page_number }</span>
           </PageContainer>
         </div>
       ))}
