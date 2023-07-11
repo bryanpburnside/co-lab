@@ -30,7 +30,9 @@ const ArtImage = styled.img`
   width: 100%;
   height: 100%;
   border-radius: 10px;
-  border: 4px solid white;
+  background: #3d3983;
+  box-shadow:  5px 5px 13px #343171,
+               -5px -5px 13px #464195;
   object-fit: cover;
   object-position: center;
   transition: transform 0.3s ease;
