@@ -4,14 +4,28 @@ import { SocketContext } from './VisualArt';
 import { Socket } from 'socket.io-client';
 import axios from 'axios';
 import paper, { Color } from 'paper';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faPenFancy, faPalette, faEraser, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
-
+import styled from 'styled-components';
+import { FaPen, FaPenFancy, FaPalette, FaEraser, FaSave } from 'react-icons/fa';
 interface DrawProps {
   backgroundColor: string;
   handleBackgroundColorChange: (color: string) => void;
   roomId: string | undefined;
 }
+
+const CanvasContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const StyledCanvas = styled.canvas<{ backgroundColor: string }>`
+  width: 80vw;
+  height: 75vh;
+  background-color: ${({ backgroundColor }) => backgroundColor};
+  border-radius: 10px;
+  box-shadow:  5px 5px 13px #343171,
+               -5px -5px 13px #464195;
+`;
 
 const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChange, roomId }) => {
   const { user } = useAuth0();
@@ -173,11 +187,11 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
   };
 
   return (
-    <div style={{ position: 'relative' }}>
-      <canvas
+    <CanvasContainer>
+      <StyledCanvas
         id="canvas"
         ref={canvasRef}
-        style={{ width: '100vw', height: '100vh', backgroundColor }}
+        backgroundColor={backgroundColor}
       />
       <div
         style={{
@@ -187,8 +201,8 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
           transform: 'translateY(-50%)',
         }}
       >
-        <div style={{ marginBottom: '1rem' }}>
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+        <div style={{ marginTop: '25rem', marginBottom: '1rem' }}>
+          <div style={{ display: 'flex' }}>
             <input
               type="color"
               id="bg-color"
@@ -204,11 +218,11 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
                 background: 'none',
                 cursor: 'pointer',
                 color: 'white',
-                fontSize: '2.5rem',
+                fontSize: '48px',
                 textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
               }}
             >
-              <FontAwesomeIcon icon={faPalette} />
+              <FaPalette />
             </button>
           </div>
         </div>
@@ -229,11 +243,11 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
                 background: 'none',
                 cursor: 'pointer',
                 color: 'white',
-                fontSize: '2.5rem',
+                fontSize: '48px',
                 textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
               }}
             >
-              <FontAwesomeIcon icon={faPen} />
+              <FaPen />
             </button>
           </div>
         </div>
@@ -247,11 +261,11 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
                 background: 'none',
                 cursor: 'pointer',
                 color: 'white',
-                fontSize: '2.5rem',
+                fontSize: '48px',
                 textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
               }}
             >
-              <FontAwesomeIcon icon={faPenFancy} />
+              <FaPenFancy />
             </button>
             {showPenWidthSlider && (
               <div className="pen-width-slider">
@@ -271,7 +285,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
                     background: 'none',
                     cursor: 'pointer',
                     color: 'white',
-                    fontSize: '2.5rem',
+                    fontSize: '48px',
                     textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
                   }}
                 >
@@ -290,34 +304,35 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
                 background: 'none',
                 cursor: 'pointer',
                 color: 'white',
-                fontSize: '2.5rem',
+                fontSize: '48px',
                 textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
               }}
             >
-              <FontAwesomeIcon icon={faEraser} />
+              <FaEraser />
             </button>
           </div>
         </div>
-        <div style={{ marginBottom: '1rem' }}>
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-            <button
-              type="submit"
-              onClick={handleSaveClick}
-              style={{
-                border: 'none',
-                background: 'none',
-                cursor: 'pointer',
-                color: 'white',
-                fontSize: '2.5rem',
-                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-              }}
-            >
-              <FontAwesomeIcon icon={faFloppyDisk} />
-            </button>
-          </div>
-        </div>
+        {user &&
+          <div style={{ marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+              <button
+                type="submit"
+                onClick={handleSaveClick}
+                style={{
+                  border: 'none',
+                  background: 'none',
+                  cursor: 'pointer',
+                  color: 'white',
+                  fontSize: '48px',
+                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+                }}
+              >
+                <FaSave />
+              </button>
+            </div>
+          </div>}
       </div>
-    </div>
+    </CanvasContainer>
   );
 };
 
