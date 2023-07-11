@@ -13,9 +13,12 @@ const SidebarContainer = styled.div`
 `;
 
 const Inbox = styled.h1`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-top: 10px;
-  margin-bottom: 0;
-`
+  margin-bottom: 10px;
+`;
 
 const MessageList = styled.div`
   flex: 1;
@@ -48,7 +51,23 @@ const ConfigButton = styled.button`
 `;
 
 const ClickableName = styled.li`
+  display: flex;
+  align-items: center;
+  font-size: 20px;
   cursor: pointer;
+
+  strong {
+    font-weight: bold;
+    text-shadow: 7px 7px 5px #23224d;
+    filter: brightness(100%);
+  }
+`;
+
+const UserImage = styled.img`
+  width: 40px;
+  height: 40px;
+  clip-path: circle();
+  margin: 5px 10px 5px 50px;
 `;
 
 const Sidebar = () => {
@@ -95,7 +114,8 @@ const Sidebar = () => {
                   key={user.id}
                   onClick={() => handleRecipientClick(user.id)}
                 >
-                  {user.id === recipient ? `• ${user.name}` : user.name}
+                  <UserImage src={user.picture} />
+                  {user.id === recipient ? <strong>{user.name}</strong> : user.name}
                 </ClickableName>
               )
             }
