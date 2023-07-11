@@ -306,25 +306,26 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
             </button>
           </div>
         </div>
-        <div style={{ marginBottom: '1rem' }}>
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-            <button
-              type="submit"
-              onClick={handleSaveClick}
-              style={{
-                border: 'none',
-                background: 'none',
-                marginLeft: '5px',
-                cursor: 'pointer',
-                color: 'white',
-                fontSize: '2.5rem',
-                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-              }}
-            >
-              <FontAwesomeIcon icon={faFloppyDisk} />
-            </button>
-          </div>
-        </div>
+        {user &&
+          <div style={{ marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+              <button
+                type="submit"
+                onClick={handleSaveClick}
+                style={{
+                  border: 'none',
+                  background: 'none',
+                  marginLeft: '5px',
+                  cursor: 'pointer',
+                  color: 'white',
+                  fontSize: '2.5rem',
+                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+                }}
+              >
+                <FontAwesomeIcon icon={faFloppyDisk} />
+              </button>
+            </div>
+          </div>}
       </div>
     </div>
   );
