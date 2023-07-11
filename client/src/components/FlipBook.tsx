@@ -5,14 +5,15 @@ import { FaPlusCircle, FaVolumeUp } from 'react-icons/fa';
 import TooltipIcon from './TooltipIcons';
 import styled from 'styled-components';
 import PageEditor from "./PageEditor";
+import TitlePage from './TitlePage';
 
-const TitlePage: any = styled.div`
-  data-density: hard;
-  background-size: cover;
-  background-position: center;
-  height: 90%;
-  width: 500px;
-`;
+// const TitlePage: any = styled.div`
+//   data-density: hard;
+//   background-size: cover;
+//   background-position: center;
+//   height: 90%;
+//   width: 500px;
+// `;
 
 const PageContainer = styled.div`
   width: 500px;
@@ -60,9 +61,9 @@ interface FlipBookProps {
   roomId: string | undefined;
 }
 
-const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdatePage, fetchPages, addNewPage, TooltipIcon, roomId }) => {
+const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPages, addNewPage, TooltipIcon, roomId }) => {
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
-  const [isAutoReading, setIsAutoReading] = useState(false);
+  // const [isAutoReading, setIsAutoReading] = useState(false);
   const [titleColor, setTitleColor] = useState('#000000');
 
 
@@ -81,7 +82,7 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
     if (selectedPage && story) {
       const existingPage = selectedStoryPages.find(page => page.page_number === selectedPage.page_number);
       let response;
-  
+
       if (existingPage) {
         //update the existing page
         try {
@@ -147,12 +148,12 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
       autoSize={true}
       maxShadowOpacity={0}
       mobileScrollSupport={false}
-      clickEventForward={true}
+      clickEventForward={false}
       swipeDistance={0}
       showPageCorners={false}
       disableFlipByClick={true}
       width={500}
-      height={700}
+      height={650}
       className={'my-flipbook'}
       startPage={1}
       showCover={true}
@@ -166,74 +167,26 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, onUpdate
         justifyContent: 'center',
         marginTop: '30px',
       }}
-    >
-    <TitlePage>
-      <div
-        style={{
-          backgroundImage: `url(${story.coverImage})`,
-          height: '700px', width: '500px',
-          backgroundSize: '100% 100%',
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center',
-        }}>
-      <div style={{
-          backgroundColor: 'transparent',
-          height: '30px',
-          maxWidth: 'calc(100% - 80px)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: '0 10px',
-          marginTop: '10px',
-          color: titleColor,
-          fontWeight: 'bolder',
-          fontSize: '32px',
-          textAlign: 'center',
-          margin: 'auto',
-        }}>
-        { story.title }
-      {/* Color Picker Input Field */}
-        <input
-          type="color"
-          id="titleColor"
-          name="titleColor"
-          value={ titleColor }
-          onChange={ handleColorChange }
-          style={{
-            marginLeft: '20px',
-            width: '20px',
-            height: '20px',
-            borderRadius: '50%',
-            border: 'none',
-        }}
-        />
-      </div>
-      <div style={{
-        position: 'absolute',
-        left: '50%',
-        transform: 'translate(-50%, 0)',
-        bottom: '10px'
-      }}>
-      <TooltipIcon
-        icon={ FaPlusCircle }
-        tooltipText="Add New Page"
-        handleClick={(e: React.MouseEvent) => {
-          e.stopPropagation();
-          addNewPage();
-        }}
-        style={{
-          position: 'absolute',
-          color: '#3d3983',
-          backgroundColor: 'white',
-          borderRadius: '50%',
-          padding: '5px',
-          paddingBottom: '2px',
-          margin: '5px'
-        }}
-      />
-      </div>
-      </div>
-    </TitlePage>
+      >
+        <div>
+          <PageContainer
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              height: '90%',
+              margin: 'auto',
+            }}>
+            <TitlePage
+              story={ story }
+              addNewPage={ addNewPage }
+              handleColorChange={ handleColorChange }
+              titleColor={ titleColor }
+              TooltipIcon={ TooltipIcon }
+            />
+          </PageContainer>
+        </div>
       {selectedStoryPages.map((page, index) => (
         <div key={index}>
         <PageContainer

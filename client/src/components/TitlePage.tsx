@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef, createContext, useEffect } from "react";
+import React from "react";
 import { FaPlusCircle } from 'react-icons/fa';
 import TooltipIcon from './TooltipIcons';
 
@@ -13,19 +13,21 @@ interface TitlePageProps {
   story: Story;
   TooltipIcon: typeof TooltipIcon;
   addNewPage: () => void;
+  handleColorChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  titleColor: any;
 }
 
-export const TitlePage: React.FC<TitlePageProps> = ({ story, TooltipIcon, addNewPage }) => (
-  <div
-    style={{
-      backgroundImage: `url(${story.coverImage})`,
-      height: '700px', width: '500px',
-      backgroundSize: '100% 100%',
-      backgroundRepeat: 'no-repeat',
-      backgroundPosition: 'center',
-    }}>
+const TitlePage: React.FC<TitlePageProps> = ({ story, TooltipIcon, addNewPage, titleColor, handleColorChange }) => (
+    <div
+      style={{
+        backgroundImage: `url(${story.coverImage})`,
+        height: '700px', width: '500px',
+        backgroundSize: '100% 100%',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+      }}>
     <div style={{
-        backgroundColor: '#fbf5df',
+        backgroundColor: 'transparent',
         height: '30px',
         maxWidth: 'calc(100% - 80px)',
         display: 'flex',
@@ -33,12 +35,30 @@ export const TitlePage: React.FC<TitlePageProps> = ({ story, TooltipIcon, addNew
         alignItems: 'center',
         padding: '0 10px',
         marginTop: '10px',
-        color: 'black',
+        color: titleColor,
         fontWeight: 'bolder',
+        fontSize: '32px',
         textAlign: 'center',
         margin: 'auto',
-    }}>
+      }}>
       { story.title }
+    {/* Color Picker Input Field */}
+      <input
+        type="color"
+        id="titleColor"
+        name="titleColor"
+        value={ titleColor }
+        onChange={ handleColorChange }
+        title='Click to change title color'
+        style={{
+          marginLeft: '20px',
+          width: '20px',
+          height: '20px',
+          borderRadius: '50%',
+          border: 'none',
+          cursor: 'pointer',
+      }}
+      />
     </div>
     <div style={{
       position: 'absolute',
@@ -64,5 +84,7 @@ export const TitlePage: React.FC<TitlePageProps> = ({ story, TooltipIcon, addNew
       }}
     />
     </div>
-  </div>
-);
+    </div>
+  );
+
+export default TitlePage;
