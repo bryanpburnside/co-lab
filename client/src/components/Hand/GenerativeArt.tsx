@@ -6,7 +6,7 @@ import { SocketContext } from './Sculpture';
 import p5 from 'p5';
 import { FaSave } from 'react-icons/fa';
 
-const GenerativeArt = ( {roomId} ) => {
+const GenerativeArt = ({ roomId }) => {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const canvasRef = useRef(null);
   const socket = useContext(SocketContext) as Socket;
@@ -186,17 +186,19 @@ const GenerativeArt = ( {roomId} ) => {
   return (
     <div className='body-container' style={{ position: 'relative' }}>
       <div ref={canvasRef} style={{ position: 'relative', zIndex: '1', marginTop: '20px' }}>
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '10px',
-            zIndex: '2',
-            cursor: 'pointer',
-          }}
-          onClick={handleSave}
-        >
-          <FaSave size={48} />
-        </div>
+        {user &&
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '10px',
+              zIndex: '2',
+              cursor: 'pointer',
+            }}
+            onClick={handleSave}
+          >
+            <FaSave size={48} />
+          </div>
+        }
       </div>
     </div>
   );
