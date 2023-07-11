@@ -46,6 +46,21 @@ html {
   margin: 50px;
 }
 
+.canvas-container {
+  background-color: #3d3983;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 80vw;
+  /* Adjust the width as desired */
+  margin: 0 auto;
+  /* Center the container horizontally */
+  height: 75vh;
+  border-radius: 10px;
+  box-shadow: 5px 5px 13px #343171,
+    -5px -5px 13px #464195;
+}
+
 .profile-container {
   background-color: #3d3983;
   display: flex;

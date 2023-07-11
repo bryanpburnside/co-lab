@@ -20,9 +20,9 @@ const GenerativeArt = ({ roomId }) => {
       let previous;
 
       p.setup = () => {
-        const container = document.querySelector('.body-container');
-        const canvasWidth = container?.clientWidth;
-        const canvasHeight = container?.clientHeight;
+        const container = document.querySelector('.canvas-container');
+        const canvasWidth = container?.clientWidth - 5;
+        const canvasHeight = container?.clientHeight - 5;
         p.createCanvas(canvasWidth, canvasHeight, p.WEBGL).parent(canvasRef.current);
         p.background(61, 57, 131); // Set background color to #3d3983
         current = p.createVector(0, 0, 0);
@@ -184,13 +184,14 @@ const GenerativeArt = ({ roomId }) => {
   };
 
   return (
-    <div className='body-container' style={{ position: 'relative' }}>
-      <div ref={canvasRef} style={{ position: 'relative', zIndex: '1', marginTop: '20px' }}>
+    <div className='canvas-container' style={{ position: 'relative' }}>
+      <div ref={canvasRef} style={{ position: 'relative', zIndex: '1' }}>
         {user &&
           <div
             style={{
               position: 'absolute',
-              bottom: '10px',
+              bottom: '50px',
+              left: '-75px',
               zIndex: '2',
               cursor: 'pointer',
             }}
