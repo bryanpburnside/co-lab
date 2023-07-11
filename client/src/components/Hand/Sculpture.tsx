@@ -4,12 +4,8 @@ import { useParams } from 'react-router-dom'
 import { io, Socket } from 'socket.io-client';
 import GenerativeArt from "./GenerativeArt";
 import Peer, { MediaConnection } from 'peerjs';
-<<<<<<< HEAD:client/src/components/Sculpture.tsx
 import {v4 as generatePeerId} from 'uuid';
-=======
 import p5 from 'p5';
-import { v4 as generatePeerId } from 'uuid';
->>>>>>> f7ee8346745891ca94d63f60d174e93aafc3257b:client/src/components/Hand/Sculpture.tsx
 
 export const socket = io('/', {
   withCredentials: true
