@@ -7,20 +7,18 @@ import { useAuth0 } from '@auth0/auth0-react';
 import * as hand from 'handtrackjs';
 import { Model } from 'handtrackjs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faCircleStop, faPlayCircle } from '@fortawesome/free-solid-svg-icons';
-
+import { faCircleStop, faPlayCircle } from '@fortawesome/free-solid-svg-icons';
+import { motion } from 'framer-motion';
 
 import blueNote from '../../assets/images/bluee-note.png';
-import redNote from '../../assets/images/red-note.png'
-import greenNote from '../../assets/images/green-note.png'
-import goldNote from '../../assets/images/gold-note.png'
-import pinkNote from '../../assets/images/pink-note.png'
-import aChord from '../../assets/sfx/a-chord.mp3'
-import bChord from '../../assets/sfx/b-chord.mp3'
-import cChord from '../../assets/sfx/c-chord.mp3'
-import eChord from '../../assets/sfx/e-chord.mp3'
-
-
+import redNote from '../../assets/images/red-note.png';
+import greenNote from '../../assets/images/green-note.png';
+import goldNote from '../../assets/images/gold-note.png';
+import pinkNote from '../../assets/images/pink-note.png';
+import aChord from '../../assets/sfx/a-chord.mp3';
+import bChord from '../../assets/sfx/b-chord.mp3';
+import cChord from '../../assets/sfx/c-chord.mp3';
+import eChord from '../../assets/sfx/e-chord.mp3';
 
 import './Video.css';
 import axios from 'axios';
@@ -46,7 +44,12 @@ const Instrument = () => {
   const virtualSourceRef = useRef(null);
   const mediaStreamDestinationRef = useRef(null);
   const [noteColor, setNoteColor] = useState('blue');
-
+  const [shouldJiggle, setShouldJiggle] = useState({
+    blue: false,
+    green: false,
+    gold: false,
+    pink: false,
+  });
 
   let model: Model;
 
@@ -59,31 +62,41 @@ const Instrument = () => {
           const y = hand1[1];
           console.log(predictions[0].label, y, x);
 
+          setShouldJiggle({
+            blue: y < 105 && x > 475,
+            green: y > 230 && x < 92,
+            gold: y < 105 && x < 92,
+            pink: y > 230 && x > 475,
+          });
+
           if (y > 230) {
             //bottom left
-            if (x > 415) {
+            if (x > 475) {
               audio.current!.src = aChord;
-              //audio.current!.src = 'https://res.cloudinary.com/dtnq6yr17/video/upload/v1688069976/assets/a-chord_zxfqv2.mp3';
               audio.current!.play();
               //bottom right
-            } else if (x < 55) {
-              //audio.current!.src = 'https://res.cloudinary.com/dtnq6yr17/video/upload/v1688069977/assets/c-chord_c1wnjv.mp3';
+            } else if (x < 92) {
               audio.current!.src = cChord;
               audio.current!.play();
             }
           } else if (y < 105) {
             //top left
-            if (x > 400) {
-              //audio.current!.src = 'https://res.cloudinary.com/dtnq6yr17/video/upload/v1688069977/assets/b-chord_alydx3.mp3';
+            if (x > 475) {
               audio.current!.src = bChord;
               audio.current!.play();
               //top right
-            } else if (x < 65) {
-              //audio.current!.src = 'https://res.cloudinary.com/dtnq6yr17/video/upload/v1688069977/assets/e-chord_schvpp.mp3';
+            } else if (x < 92) {
               audio.current!.src = eChord;
               audio.current!.play();
             }
           }
+        } else {
+          setShouldJiggle({
+            blue: false,
+            green: false,
+            gold: false,
+            pink: false,
+          });
         }
       });
     };
@@ -115,36 +128,43 @@ const Instrument = () => {
     mediaStreamDestinationRef.current = audioContextRef.current.createMediaStreamDestination();
   }, []);
 
+  const toggleRecording = () => {
+    if (recording) {
+      stopRecording();
+    } else {
+      startRecording();
+    }
+  };
+
   const startRecording = () => {
     audio.current!.pause();
-  
+
     mediaRecorderRef.current = new MediaRecorder(mediaStreamDestinationRef.current.stream);
-    const recordedChunks = []; // Add this line
-  
+    const recordedChunks = [];
+
     mediaRecorderRef.current.addEventListener('dataavailable', (event) => {
       if (event.data.size > 0) {
         recordedChunks.push(event.data);
       }
     });
-  
+
     mediaRecorderRef.current.addEventListener('stop', () => {
       const formData = new FormData();
       formData.append('file', new Blob(recordedChunks), { type: 'audio/wav' });
-      formData.append('upload_preset', 'e9ynzrtp'); // Replace with your Cloudinary upload preset
-  
+      formData.append('upload_preset', 'e9ynzrtp');
+
       axios
         .post('https://api.cloudinary.com/v1_1/dkw6ksyvn/upload', formData)
         .then((response) => {
           const audioPublicURL = response.data.secure_url;
           console.log('Audio uploaded:', audioPublicURL);
-  
-         
+
           const requestBody = {
-            songTitle: musicTitle, 
+            songTitle: musicTitle,
             url: audioPublicURL,
-            userId: user?.sub
+            userId: user?.sub,
           };
-  
+
           axios
             .post('/music', requestBody)
             .then((serverResponse) => {
@@ -158,12 +178,11 @@ const Instrument = () => {
           console.error('Error uploading audio:', error);
         });
     });
-  
+
     mediaRecorderRef.current.start();
-  
+
     setRecording(true);
   };
-  
 
   const stopRecording = () => {
     mediaRecorderRef.current.stop();
@@ -177,37 +196,35 @@ const Instrument = () => {
 
   const saveRecording = async () => {
     try {
-      const recordedChunks = []; 
-  
+      const recordedChunks = [];
+
       const handleDataAvailable = (event) => {
         if (event.data.size > 0) {
           recordedChunks.push(event.data);
         }
       };
-  
+
       mediaRecorderRef.current.addEventListener('dataavailable', handleDataAvailable);
-  
+
       mediaRecorderRef.current.addEventListener('stop', () => {
-        audio.crossOrigin = "anonymous";
+        audio.crossOrigin = 'anonymous';
         const formData = new FormData();
         formData.append('file', new Blob(recordedChunks), { type: 'audio/wav' });
-        formData.append('upload_preset', 'e9ynzrtp'); 
-  
-        axios.post(
-          'https://api.cloudinary.com/v1_1/dkw6ksyvn/upload', 
-          formData
-        )
+        formData.append('upload_preset', 'e9ynzrtp');
+
+        axios
+          .post('https://api.cloudinary.com/v1_1/dkw6ksyvn/upload', formData)
           .then((response) => {
             const audioPublicURL = response.data.secure_url;
             console.log('Audio uploaded:', audioPublicURL);
-  
-            
+
             const requestBody = {
-              songTitle: musicTitle, 
+              songTitle: musicTitle,
               url: audioPublicURL,
             };
-  
-            axios.post('/music', requestBody) 
+
+            axios
+              .post('/music', requestBody)
               .then((serverResponse) => {
                 console.log('Music saved to the database:', serverResponse.data);
               })
@@ -219,16 +236,14 @@ const Instrument = () => {
             console.error('Error uploading audio:', error);
           });
       });
-  
+
       mediaRecorderRef.current.stop();
-  
+
       setRecording(false);
     } catch (error) {
       console.error('Error saving audio:', error);
     }
   };
-  
-
 
   const connectVirtualSource = () => {
     virtualSourceRef.current = audioContextRef.current.createMediaElementSource(audio.current!);
@@ -242,7 +257,6 @@ const Instrument = () => {
       virtualSourceRef.current.disconnect(audioContextRef.current.destination);
     }
   };
-  
 
   useEffect(() => {
     if (recording) {
@@ -267,63 +281,72 @@ const Instrument = () => {
           textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
         }}
       />
-      <button onClick={startRecording} disabled={recording} className="start-recording" style={{
-                border: 'none',
-                background: 'none',
-                cursor: 'pointer',
-                color: 'white',
-                fontSize: '2.5rem',
-                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-              }}>
-        Start Recording
-        <FontAwesomeIcon icon={faPlayCircle} /> 
+      <button
+        onClick={toggleRecording}
+        className="start-recording"
+        style={{
+          border: 'none',
+          background: 'none',
+          cursor: 'pointer',
+          color: 'white',
+          fontSize: '2.5rem',
+          textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+        }}
+      >
+        {recording ? (
+          <>
+            Stop Recording <FontAwesomeIcon icon={faCircleStop} />
+          </>
+        ) : (
+          <>
+            Start Recording <FontAwesomeIcon icon={faPlayCircle} />
+          </>
+        )}
       </button>
-      <button onClick={stopRecording} disabled={!recording} className="start-recording" style={{
-                border: 'none',
-                background: 'none',
-                cursor: 'pointer',
-                color: 'white',
-                fontSize: '2.5rem',
-                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-              }}>
-        Stop Recording
-        <FontAwesomeIcon icon={faCircleStop} />
-      </button>
-      {/* <button onClick={playRecording} disabled={!audioURL}>
-        Play Recording
-      </button> */}
-      {audioURL && <audio src={audioURL} controls />}
-      {/* {audioURL && (
-        <button onClick={saveRecording}>
-          Save Recording
-        </button>
-      )} */}
       <div className="video-wrapper">
         <video id="video" ref={video} className="resized-video" />
 
-        <img className="blue-overlay" src={blueNote} alt="Blue Note" />
-        {/* <img className="red-overlay" src={redNote} alt="Red Note" /> */}
-        <img className="green-overlay" src={greenNote} alt="Green Note" />
-        <img className="gold-overlay" src={goldNote} alt="Gold Note" />
-        <img className="pink-overlay" src={pinkNote} alt="Pink Note" />
+        <motion.div
+          className="blue-overlay"
+          animate={{ rotate: shouldJiggle.blue ? [-10, 10, -10, 10, -10, 10, -10, 0] : 0 }}
+          transition={{ duration: 1.5}}
+        >
+          <img src={blueNote} alt="Blue Note" />
+        </motion.div>
 
+        <motion.div
+          className="green-overlay"
+          animate={{ rotate: shouldJiggle.green ? [-10, 10, -10, 10, -10, 10, -10, 0] : 0 }}
+          transition={{ duration: 1.5}}
+        >
+          <img src={greenNote} alt="Green Note" />
+        </motion.div>
 
+        <motion.div
+          className="gold-overlay"
+          animate={{ rotate: shouldJiggle.gold ? [-10, 10, -10, 10, -10, 10, -10, 0] : 0 }}
+          transition={{ duration: 1.5 }}
+        >
+          <img src={goldNote} alt="Gold Note" />
+        </motion.div>
 
-        <div className="overlay-aChord-box" />
-        <div className="overlay-aChord-text">A Chord</div>
+        <motion.div
+          className="pink-overlay"
+          animate={{ rotate: shouldJiggle.pink ? [-10, 10, -10, 10, -10, 10, -10, 0] : 0 }}
+          transition={{ duration: 1.5}}
+        >
+          <img src={pinkNote} alt="Pink Note" />
+        </motion.div>
 
-        <div className="overlay-cChord-box" />
+        {/* <div className="overlay-aChord-text">A Chord</div>
+
         <div className="overlay-cChord-text">C Chord</div>
 
-        <div className="overlay-bChord-box" />
         <div className="overlay-bChord-text">B Chord</div>
 
-        <div className="overlay-eChord-box" />
-        <div className="overlay-eChord-text">E Chord</div>
+        <div className="overlay-eChord-text">E Chord</div> */}
       </div>
-      <audio id="audio" ref={audio}>
-        {/* <source src={aChord} /> */}
-      </audio>
+      <audio id="audio" ref={audio}></audio>
     </div>
   );
 };
