@@ -128,10 +128,9 @@ sequelize.authenticate()
 initialize();
 
 Rooms.post('/', (req, res) => {
-  const { userId } = req.body;
   const roomId = generateRoomId();
 
-  res.json({ userId, roomId });
+  res.json({ roomId });
 })
 
 io.on('connection', socket => {
