@@ -67,7 +67,7 @@ const UserImage = styled.img`
   width: 40px;
   height: 40px;
   clip-path: circle();
-  margin: 5px 10px 5px 50px;
+  margin: 5px 10px 5px 65px;
 `;
 
 const Sidebar = () => {
