@@ -10,12 +10,9 @@ const ConversationContainer = styled.div`
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
   padding: 20px;
-  // border: 4px solid white;
-  // border-radius: 10px;
   border-radius: 10px;
-  background: #3d3983;
-  box-shadow: inset 50px 50px 81px #383479,
-              inset -50px -50px 81px #423e8d;
+  box-shadow:  5px 5px 13px #343171,
+               -5px -5px 13px #464195;
   
   /* For WebKit browsers (ex. Chrome) */
   &::-webkit-scrollbar {
