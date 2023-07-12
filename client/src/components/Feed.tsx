@@ -97,7 +97,7 @@ const Feed: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [artResponse, sculptureResponse, storyResponse, musicResponse] = await Promise.all([fetch('/visualart'), fetch('/sculpture'), fetch('/api/stories'), fetch('/music')]);
+        const [artResponse, sculptureResponse, storyResponse, musicResponse] = await Promise.all([fetch('/visualart'), fetch('/sculpture'), fetch('/api/stories'), fetch('/api/music')]);
         const [artData, sculptureData, storyData, musicData] = await Promise.all([artResponse.json(), sculptureResponse.json(), storyResponse.json(), musicResponse.json()]);
 
         const combinedData: FeedItem[] = [...artData, ...sculptureData, ...storyData, ...musicData];

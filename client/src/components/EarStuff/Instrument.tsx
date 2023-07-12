@@ -168,7 +168,7 @@ const Instrument = () => {
           };
   
           axios
-            .post('/music', requestBody)
+            .post('/api/music', requestBody)
             .then((serverResponse) => {
               console.log('Music saved to the database:', serverResponse.data);
             })
@@ -229,7 +229,7 @@ const Instrument = () => {
               url: audioPublicURL,
             };
   
-            axios.post('/music', requestBody) 
+            axios.post('/api/music', requestBody) 
               .then((serverResponse) => {
                 console.log('Music saved to the database:', serverResponse.data);
               })
