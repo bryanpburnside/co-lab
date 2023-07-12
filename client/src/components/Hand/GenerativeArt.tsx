@@ -176,8 +176,8 @@ const GenerativeArt = ({ roomId }) => {
           <div
             style={{
               position: 'absolute',
-              bottom: '4px',
-              left: '-78px',
+              bottom: '50px',
+              left: '-75px',
               zIndex: '2',
               cursor: 'pointer',
             }}

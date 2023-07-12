@@ -321,6 +321,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
                 style={{
                   border: 'none',
                   background: 'none',
+                  marginLeft: '5px',
                   cursor: 'pointer',
                   color: 'white',
                   fontSize: '48px',
