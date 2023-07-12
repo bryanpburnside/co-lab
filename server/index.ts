@@ -58,7 +58,7 @@ app.use('/api/stories', CreateStoryRouter);
 app.use('/api/pages', pagesRouter);
 app.use('/sculpture', sculptureRouter);
 
-app.use('/music', Ear)
+app.use('/api/music', Ear)
 app.use(express.static(staticFilesPath));
 
 app.get('*', (req, res) => {
