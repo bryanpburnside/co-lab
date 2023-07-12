@@ -53,6 +53,39 @@ const PostContainer = styled.div`
     align-items: center;
     justify-content: center;
   }
+
+  /* For Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+
+  &::-moz-scrollbar {
+    width: 6px;
+  }
+
+  &::-moz-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-moz-scrollbar-thumb {
+    background-color: #f5c968;
+    border-radius: 12px;
+    border: 3px solid transparent;
+  }
+
+  /* For WebKit browsers */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #f5c968;
+    border-radius: 12px;
+    border: 3px solid transparent;
+  }
 `;
 
 
