@@ -248,7 +248,7 @@ const Profile: React.FC = () => {
     try {
       let userData;
       let result;
-      if (!userId || userId === user?.sub) {
+      if (isOwnProfile) {
         result = await axios.get(`/users/${user?.sub}`);
         userData = result.data;
       } else {
