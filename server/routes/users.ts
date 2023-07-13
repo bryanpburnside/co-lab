@@ -48,7 +48,7 @@ Users.post('/add-friend', async (req, res) => {
     const { friends: userFriends } = user;
     const { friends: friendFriends } = friend;
 
-    if (userFriends.includes(friendId)) {
+    if (userFriends.includes(friendId) || friendFriends.includes(userId)) {
       console.error('Friendship already exists');
       return res.sendStatus(400);
     }
