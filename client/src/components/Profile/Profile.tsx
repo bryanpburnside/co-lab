@@ -191,9 +191,7 @@ const Profile: React.FC = () => {
   }, [user, userId]);
 
   useEffect(() => {
-    if (friendIds.length) {
-      getFriends();
-    }
+    getFriends();
   }, [friendIds]);
 
   useEffect(() => {
@@ -281,6 +279,11 @@ const Profile: React.FC = () => {
         userId,
         friendId,
       });
+      if (isOwnProfile) {
+        setFriendIds(prevFriendIds => [...prevFriendIds, friendId]);
+      } else {
+        setFriendIds(prevFriendIds => [...prevFriendIds, userId]);
+      }
     } catch (err) {
       console.error('Failed to ADD FRIEND at client:', err);
     }
@@ -292,6 +295,11 @@ const Profile: React.FC = () => {
         userId,
         friendId,
       });
+      if (isOwnProfile) {
+        setFriendIds(prevFriendIds => prevFriendIds.filter(id => id !== friendId));
+      } else {
+        setFriendIds(prevFriendIds => prevFriendIds.filter(id => id !== userId));
+      }
     } catch (err) {
       console.error('Failed to UNFRIEND at client:', err);
     }
@@ -392,15 +400,23 @@ const Profile: React.FC = () => {
     }
   };
 
-  const renderAddOrUnfriendButton = () => (
-    friendIds.includes(user?.sub) ?
-      (<AddFriendIcon onClick={() => { unfriend(user?.sub, profileUser.id) }}>
-        <FontAwesomeIcon icon={faUserMinus} size="lg" />
-      </AddFriendIcon>) :
-      (<AddFriendIcon onClick={() => { addFriend(user?.sub, profileUser.id) }}>
-        <FontAwesomeIcon icon={faUserPlus} size="lg" />
-      </AddFriendIcon>)
-  )
+  const renderAddOrUnfriendButton = () => {
+    const isFriend = friendIds.includes(user?.sub);
+
+    if (isFriend) {
+      return (
+        <AddFriendIcon onClick={() => unfriend(user?.sub, profileUser.id)}>
+          <FontAwesomeIcon icon={faUserMinus} size="lg" />
+        </AddFriendIcon>
+      );
+    } else {
+      return (
+        <AddFriendIcon onClick={() => addFriend(user?.sub, profileUser.id)}>
+          <FontAwesomeIcon icon={faUserPlus} size="lg" />
+        </AddFriendIcon>
+      );
+    }
+  };
 
   if (isLoading) {
     return <div className="loading-container">Loading ...</div>;
