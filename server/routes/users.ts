@@ -50,7 +50,7 @@ Users.post('/add-friend', async (req, res) => {
 
     if (userFriends.includes(friendId)) {
       console.error('Friendship already exists');
-      res.sendStatus(400);
+      return res.sendStatus(400);
     }
 
     await Promise.all([
