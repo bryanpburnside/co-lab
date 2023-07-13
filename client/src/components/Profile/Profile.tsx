@@ -4,7 +4,7 @@ import { useAuth0, User } from '@auth0/auth0-react';
 import axios from 'axios';
 import ArtItem from './ArtItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencil, faUserPlus, faUserMinus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPencil, faUserPlus, faUserMinus } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 
 interface Friend {
