@@ -172,6 +172,7 @@ const PopupImage = styled.img`
 const Profile: React.FC = () => {
   const { userId } = useParams();
   const { user, isAuthenticated, isLoading } = useAuth0();
+  const isOwnProfile = !userId || userId === user?.sub;
   const [profileUser, setProfileUser] = useState<User | undefined>(undefined);
   const [profilePic, setProfilePic] = useState<File | undefined>(undefined);
   const [friendIds, setFriendIds] = useState<string[]>([]);
@@ -391,6 +392,16 @@ const Profile: React.FC = () => {
     }
   };
 
+  const renderAddOrUnfriendButton = () => (
+    friendIds.includes(user?.sub) ?
+      (<AddFriendIcon onClick={() => { unfriend(user?.sub, profileUser.id) }}>
+        <FontAwesomeIcon icon={faUserMinus} size="lg" />
+      </AddFriendIcon>) :
+      (<AddFriendIcon onClick={() => { addFriend(user?.sub, profileUser.id) }}>
+        <FontAwesomeIcon icon={faUserPlus} size="lg" />
+      </AddFriendIcon>)
+  )
+
   if (isLoading) {
     return <div className="loading-container">Loading ...</div>;
   }
@@ -403,20 +414,13 @@ const Profile: React.FC = () => {
             <Name>{profileUser.name}</Name>
             <ProfilePicContainer>
               <ProfilePic src={profilePic || profileUser.picture} alt={profileUser.name} />
-              {!userId && <PencilIcon onClick={handlePicClick}>
+              {isOwnProfile && <PencilIcon onClick={handlePicClick}>
                 <FontAwesomeIcon icon={faPencil} size="lg" />
                 <input type="file" accept="image/*" id="fileInput" onChange={handlePicChange} style={{ display: 'none' }} />
               </PencilIcon>
               }
-              {userId && userId !== user?.sub && !friendIds.includes(user?.sub) && (
-                <AddFriendIcon onClick={() => { addFriend(user?.sub, profileUser.id) }}>
-                  <FontAwesomeIcon icon={faUserPlus} size="lg" />
-                </AddFriendIcon>
-              )}
-              {userId && userId !== user?.sub && friendIds.includes(user?.sub) && (
-                <AddFriendIcon onClick={() => { unfriend(user?.sub, profileUser.id) }}>
-                  <FontAwesomeIcon icon={faUserMinus} size="lg" />
-                </AddFriendIcon>
+              {!isOwnProfile && (
+                renderAddOrUnfriendButton()
               )}
             </ProfilePicContainer>
           </UserInfoContainer>
@@ -437,7 +441,7 @@ const Profile: React.FC = () => {
                       id={art.id}
                       type={art.type}
                       content={art[art.type.replace(' ', '')]?.content || art[art.type]?.content || art[art.type]?.coverImage}
-                      isOwnProfile={!userId || userId === user?.sub}
+                      isOwnProfile={isOwnProfile}
                       onClick={handleArtworkClick}
                       deleteArtwork={deleteArtwork}
                     />
