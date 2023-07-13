@@ -4,6 +4,7 @@ import '../styles.css';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import Dropzone from './DropZone';
+import {  StyledButtonStory, StyledFormStory, StyledInputStory,} from '../styled';
 
 interface Page {
   id?: number;
@@ -122,39 +123,42 @@ const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) 
   };
 
   return (
-    <form onSubmit={ handleSubmit } className="new-story-form">
+    <StyledFormStory onSubmit={handleSubmit}>
       <div>
         <label htmlFor="title">Title:</label>
-        <input
+        <StyledInputStory
           placeholder='Title'
           type="text"
           id="title"
-          value={ title }
-          onChange={ handleTitleChange }
+          value={title}
+          onChange={handleTitleChange}
           onMouseEnter={() => handleHover('Title')}
-          onMouseLeave={() => handleLeave()} />
+          onMouseLeave={() => handleLeave()}
+        />
       </div>
       {/* <div>
         <label htmlFor="collaborators">Collaborators:</label>
         <input type="text" id="collaborators" value={ collaborators } onChange={ handleCollaboratorsChange } />
       </div> */}
-      <Dropzone onImageUpload={ setCoverImageUrl } />
-      <button
+      <Dropzone onImageUpload={setCoverImageUrl} />
+      <StyledButtonStory
         type="submit"
         onMouseEnter={() => handleHover('Create Story')}
-        onMouseLeave={() => handleLeave()}>
+        onMouseLeave={() => handleLeave()}
+      >
         Create Story
-      </button>
-      <button
-        style={{ marginTop: '20px'}}
+      </StyledButtonStory>
+      <StyledButtonStory
+        style={{ marginTop: '20px' }}
         type="button"
-        onClick={ handleCancel }
+        onClick={handleCancel}
         onMouseEnter={() => handleHover('Cancel')}
-        onMouseLeave={() => handleLeave()}>
+        onMouseLeave={() => handleLeave()}
+      >
         Cancel
-      </button>
-      {speakText && <TTS text={ speakText } />}
-    </form>
+      </StyledButtonStory>
+      {speakText && <TTS text={speakText} />}
+    </StyledFormStory>
   );
 };
 

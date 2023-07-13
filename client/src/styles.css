@@ -300,43 +300,6 @@ html {
   font-weight: 900;
 }
 
-.new-story-form {
-  background-color: #ffffff;
-  border: 1px solid #cccccc;
-  border-radius: 5px;
-  padding: 20px;
-  max-width: 500px;
-  margin: auto;
-}
-
-.new-story-form label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.new-story-form input {
-  width: 100%;
-  margin-bottom: 15px;
-  padding: 10px;
-  box-sizing: border-box;
-  border-radius: 5px;
-  border: 1px solid #cccccc;
-}
-
-.new-story-form button {
-  padding: 10px 20px;
-  border-radius: 5px;
-  border: none;
-  color: #ffffff;
-  background-color: #f06b80;
-  margin-right: 10px;
-  cursor: pointer;
-}
-
-.new-story-form button:hover {
-  background-color: #f06b80;
-}
-
 .tooltip-text {
   position: absolute;
   bottom: 100%;
@@ -359,18 +322,15 @@ div:hover>.tooltip-text {
   display: block;
 }
 
-.new-story-form button:hover {
-  background-color: #f06b80;
-}
-
 /* larger screens */
 .story-list {
-  box-shadow: 5px 5px 13px #343171, -5px -5px 13px #464195;
+  /* box-shadow: 5px 5px 13px #343171, -5px -5px 13px #464195; */
   padding: 10px;
   overflow: auto;
   height: 620px;
   width: 250px;
   margin: 20px;
+  border-top: 1px solid #fff;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;

@@ -29,11 +29,11 @@ const Dropzone: React.FC<DropzoneProps> = ({ onImageUpload }) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
-    <div {...getRootProps()} style={{height: '200px', width: '200px', border: '2px dashed gray', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+    <div {...getRootProps()} style={{height: '400px', width: '300px', border: '4px dashed #3d3983', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
       <input {...getInputProps()} />
       {isDragActive ?
         <p style={{ color: 'black' }}>Drop the files here ...</p> :
-        (selectedImage ? <img src={selectedImage as string} alt="preview" style={{maxHeight: '100%', maxWidth: '100%'}}/> : 
+        (selectedImage ? <img src={selectedImage as string} alt="preview" style={{maxHeight: '100%', maxWidth: '100%'}}/> :
           <p style={{ color: 'black' }}>Drag 'n' drop some files here, or click to select files</p>)
       }
     </div>

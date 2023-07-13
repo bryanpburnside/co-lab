@@ -139,6 +139,10 @@ const Story = sequelize.define('stories', {
   },
   numberOfPages: {
     type: DataTypes.INTEGER,
+  },
+  isPrivate: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
   }
 });
 

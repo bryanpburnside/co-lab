@@ -6,7 +6,7 @@ import FlipBook from "./FlipBook";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useParams } from 'react-router-dom'
 import { io, Socket } from 'socket.io-client';
-import { FaTty, FaHeadphones, FaBookMedical, FaTrash } from 'react-icons/fa';
+import { FaTty, FaHeadphones, FaPenSquare, FaMicrophone, FaMicrophoneSlash } from 'react-icons/fa';
 import TooltipIcon from './TooltipIcons';
 import TTS from "./TTS";
 import axios from 'axios';
@@ -15,6 +15,8 @@ import Peer, { MediaConnection } from 'peerjs';
 export const socket = io('/');
 export const SocketContext = createContext<Socket | null>(null);
 import '../styles.css';
+import StoryCarousel from "./Carousel";
+// import SimpleSlider from "./Slider";
 
 interface Page {
   id?: number;
@@ -74,8 +76,6 @@ const StoryBook: React.FC = () => {
       return !prevMuted;
     });
 };
-
-
 
   useEffect(() => {
     setPeerId(generatePeerId());
@@ -309,8 +309,10 @@ const StoryBook: React.FC = () => {
 
   useEffect(() => {
     const fetchDefaultStory = async () => {
-      const res = await axios.get('/api/books?title=Instructions&userId=fakeId');
-      setDefaultStory(res.data);
+      const res = await axios.get('/api/stories');
+      const defaultStory = res.data.filter((story: any) => story.title === 'pickles')
+      console.log(defaultStory[0]);
+      setSelectedStory(defaultStory[0]);
     };
     fetchDefaultStory();
   }, []);
@@ -320,11 +322,52 @@ const StoryBook: React.FC = () => {
     <TTSToggleContext.Provider value={{ ttsOn, setTtsOn }}>
       <div style={{ display: 'flex' }}>
         {/* Column 2: FlipBook and PageEditor and NewStoryForm */}
-        <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '20px', height: '100%', width: '100%' }}>
-          {showNewStoryForm ? (
-            <NewStoryForm onCreateStory={ handleCreateStory } onCancel={ handleCancelCreateStory } />
-          ) : (
-            selectedStory &&
+        <div
+          style={{
+            display: 'grid',
+            placeItems: 'center',
+            height: '100%',
+            width: '100%',
+          }}
+        >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'right',
+            justifyContent: 'right',
+            marginRight: '20px',
+            boxShadow: '5px 5px 13px #343171, -5px -5px 13px #464195',
+          }}>
+          <div style={{ display: 'flex', marginBottom: '5px' }}>
+            <TooltipIcon
+              icon={ FaPenSquare }
+              tooltipText="Create new story"
+              handleClick={ handleShowNewStoryForm }
+              style={{ marginRight: '20px', fontSize: '32px' }}
+            />
+            <TooltipIcon
+              icon={ FaTty }
+              tooltipText={ttsOn ? "Turn TTS Off" : "Turn TTS On"}
+              handleClick={() => setTtsOn(!ttsOn)}
+              style={{ marginRight: '20px' }}
+            >
+              {ttsOn ? "Turn TTS Off" : "Turn TTS On"}
+            </TooltipIcon>
+            <TooltipIcon
+              icon={ muted ? FaMicrophoneSlash : FaMicrophone }
+              tooltipText={muted ? "Unmute" : "Mute"}
+              handleClick={ handleToggleMute }
+              style={{ fontSize: '32px' }}
+            />
+          </div>
+         </div>
+         {showNewStoryForm && (
+          <NewStoryForm onCreateStory={ handleCreateStory } onCancel={ handleCancelCreateStory } />
+        )}
+
+        {!showNewStoryForm && selectedStory &&
+          <div style={{ height: '100%', width: '100%' }}>
             <FlipBook
               story={ selectedStory || defaultStory }
               selectedStoryPages={ pages }
@@ -334,108 +377,22 @@ const StoryBook: React.FC = () => {
               addNewPage={ addNewPage }
               roomId={ roomId }
             />
-          )}
-        </div>
-         {/* Column 1: Story List */}
-         <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            marginRight: '20px',
-            boxShadow: '5px 5px 13px #343171, -5px -5px 13px #464195',
-          }}>
-          <div style={{ display: 'flex', marginBottom: '5px' }}>
-            <TooltipIcon
-              icon={ FaBookMedical }
-              tooltipText="Create new story"
-              handleClick={ handleShowNewStoryForm }
-              style={{ marginRight: '20px', marginTop: '30px'}}
-            />
-            <TooltipIcon
-              icon={ FaTty }
-              tooltipText={ttsOn ? "Turn TTS Off" : "Turn TTS On"}
-              handleClick={() => setTtsOn(!ttsOn)}
-              style={{ marginRight: '20px', marginTop: '30px' }}
-            >
-              {ttsOn ? "Turn TTS Off" : "Turn TTS On"}
-            </TooltipIcon>
-            <TooltipIcon
-              icon={ FaHeadphones }
-              tooltipText={muted ? "Unmute" : "Mute"}
-              handleClick={ handleToggleMute }
-              style={{ marginTop: '30px' }}
-            />
           </div>
-          <div className="story-list" style={{
-              marginTop: '40px',
-            }}>
-            {stories.map((story, index) => (
-              <div
-                key={ index }
-                onClick={() => handleStoryClick(story)}
-                onMouseEnter={() => handleStoryHover(story)}
-                style={{
-                  marginBottom: '20px',
-                  color: '#3d3983',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  margin: '10px',
-                }}
-              >
-                <div style={{
-                  width: '80px',
-                  height: '100px',
-                  borderRadius: '5px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: story.coverImage ? 'transparent' : 'white',
-                }}>
-                  {story.coverImage ? (
-                    <img
-                      src={ story.coverImage }
-                      alt={ story.title }
-                      style={{
-                        width: '80px',
-                        height: '100px',
-                        objectFit: 'cover'
-                      }}
-                    />
-                  ) : (
-                    <div style={{ fontSize: '0.8em', color: 'black', textAlign: 'center' }}>
-                      No Image
-                    </div>
-                  )}
-                </div>
-                <div style={{ fontSize: '0.8em', color: 'white', textAlign: 'center' }}>
-                  {story.title}
-                </div>
-                {story.originalCreatorId === user?.sub && (
-                  <TooltipIcon
-                    icon={() => <FaTrash size={20} color="white" />}
-                    tooltipText="Delete story"
-                    handleClick={() => {
-                      if (window.confirm("Are you sure you want to delete this story?")) {
-                        deleteStory(story.id!, story.originalCreatorId!);
-                        console.log('story deleted');
-                      }
-                    }}
-                    style={{
-                      marginTop: '7px'
-                    }}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
+        }
         </div>
       </div>
+      {/* Carousel */}
+      <div style={{ height: '200px', border: '1px solid white', marginLeft: '200px', marginRight: '200px'}}>
+        <StoryCarousel
+          items={ stories }
+          handleStoryClick={ handleStoryClick }
+          handleStoryHover={ handleStoryHover }
+          deleteStory={ deleteStory }
+          user={ user?.sub }
+        />
+      </div>
       {/* TTS */}
-      {speakText && <TTS text={speakText} />}
+      {speakText && <TTS text={ speakText } />}
     </TTSToggleContext.Provider>
   );
 };

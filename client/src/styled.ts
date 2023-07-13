@@ -124,6 +124,58 @@ const SendButton = styled.button`
   cursor: pointer;
 `;
 
+//Storybook
+const StyledFormStory = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 600px;
+  width: 500px;
+  background-color: #fff;
+`;
+
+const StyledInputStory = styled.input`
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 40px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  background-color: #f3f3f3;
+  color: #3d3983;
+  transition: background-color 0.3s ease;
+
+  &::placeholder {
+    color: #aaa;
+  }
+
+  &:focus {
+    background-color: #e1e1e1;
+  }
+`;
+
+const StyledButtonStory = styled.button`
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  background-color: #3d3983;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #5e5a9e;
+  }
+`;
+
+
+
+
+
 export {
   ConversationContainer,
   BubbleContainer,
@@ -133,5 +185,9 @@ export {
   TextInputContainer,
   STTButton,
   SendMessageContainer,
-  SendButton
+  SendButton,
+  StyledButtonStory,
+  StyledFormStory,
+  StyledInputStory,
+
 };
