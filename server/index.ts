@@ -57,7 +57,6 @@ app.use('/visualart', VisualArtwork);
 app.use('/api/stories', CreateStoryRouter);
 app.use('/api/pages', pagesRouter);
 app.use('/sculpture', sculptureRouter);
-
 app.use('/api/music', Ear)
 app.use(express.static(staticFilesPath));
 
@@ -174,14 +173,12 @@ io.on('connection', socket => {
     const sortedIds = [userId, receiverId].sort();
     const thread = `user-${sortedIds[0]}-${sortedIds[1]}`;
     socket.join(thread);
-    console.log(`User ${userId} joined the message thread ${thread}. Recipient is ${receiverId}`);
   });
 
   socket.on('disconnectThread', (userId, receiverId) => {
     const sortedIds = [userId, receiverId].sort();
     const thread = `user-${sortedIds[0]}-${sortedIds[1]}`;
     socket.leave(thread);
-    console.log(`${userId} left the message thread`);
   });
 
 
