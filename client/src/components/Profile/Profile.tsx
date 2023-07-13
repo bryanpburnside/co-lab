@@ -50,7 +50,7 @@ const PencilIcon = styled.div`
   background-color: #F06b80;
 `;
 
-const AddFriendIcon = styled.div`
+const FriendButton = styled.div`
   position: absolute;
   top: 95%;
   left: 75%;
@@ -273,38 +273,6 @@ const Profile: React.FC = () => {
     }
   };
 
-  const addFriend = async (userId: string, friendId: string) => {
-    try {
-      await axios.post('/users/add-friend', {
-        userId,
-        friendId,
-      });
-      if (isOwnProfile) {
-        setFriendIds(prevFriendIds => [...prevFriendIds, friendId]);
-      } else {
-        setFriendIds(prevFriendIds => [...prevFriendIds, userId]);
-      }
-    } catch (err) {
-      console.error('Failed to ADD FRIEND at client:', err);
-    }
-  };
-
-  const unfriend = async (userId: string, friendId: string) => {
-    try {
-      await axios.patch('/users/unfriend', {
-        userId,
-        friendId,
-      });
-      if (isOwnProfile) {
-        setFriendIds(prevFriendIds => prevFriendIds.filter(id => id !== friendId));
-      } else {
-        setFriendIds(prevFriendIds => prevFriendIds.filter(id => id !== userId));
-      }
-    } catch (err) {
-      console.error('Failed to UNFRIEND at client:', err);
-    }
-  };
-
   const handlePicClick = () => {
     const fileInput = document.getElementById('fileInput');
     if (fileInput) {
@@ -400,22 +368,39 @@ const Profile: React.FC = () => {
     }
   };
 
+  const updateFriendStatus = async (userId: string, friendId: string, action: 'add' | 'unfriend') => {
+    const endpoint = action === 'add' ? '/users/add-friend' : '/users/unfriend';
+    try {
+      await axios.patch(endpoint, {
+        userId,
+        friendId,
+      });
+      if (isOwnProfile) {
+        action === 'add' ?
+          setFriendIds(prevFriendIds => [...prevFriendIds, friendId])
+          :
+          setFriendIds(prevFriendIds => prevFriendIds.filter(id => id !== friendId))
+      } else {
+        action === 'add' ?
+          setFriendIds(prevFriendIds => [...prevFriendIds, userId])
+          :
+          setFriendIds(prevFriendIds => prevFriendIds.filter(id => id !== userId));
+      }
+    } catch (err) {
+      console.error(`Failed to UPDATE friend status (${action}) at client:`, err);
+    }
+  };
+
   const renderAddOrUnfriendButton = () => {
     const isFriend = friendIds.includes(user?.sub);
+    const action = !isFriend ? 'add' : 'unfriend';
+    const button = action === 'add' ? faUserPlus : faUserMinus;
 
-    if (isFriend) {
-      return (
-        <AddFriendIcon onClick={() => unfriend(user?.sub, profileUser.id)}>
-          <FontAwesomeIcon icon={faUserMinus} size="lg" />
-        </AddFriendIcon>
-      );
-    } else {
-      return (
-        <AddFriendIcon onClick={() => addFriend(user?.sub, profileUser.id)}>
-          <FontAwesomeIcon icon={faUserPlus} size="lg" />
-        </AddFriendIcon>
-      );
-    }
+    return (
+      <FriendButton onClick={() => updateFriendStatus(user?.sub, profileUser.id, action)}>
+        <FontAwesomeIcon icon={button} size="lg" />
+      </FriendButton>
+    );
   };
 
   if (isLoading) {
