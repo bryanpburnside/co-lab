@@ -140,7 +140,7 @@ io.on('connection', socket => {
     console.log(`${userId} created room: ${roomId}`);
   });
 
-  // // Handle join room event
+  // Handle join room event
   socket.on('joinRoom', (userId, roomId) => {
     socket.join(roomId); // Join the room with the provided ID
     socket.to(roomId).emit('userJoined', userId); // Emit the userJoined event to the participants in the room
@@ -152,6 +152,7 @@ io.on('connection', socket => {
     });
   });
 
+  // MESSAGES
   socket.on('directMessage', async ({ senderId, receiverId, message }) => {
     const sortedIds = [senderId, receiverId].sort(); // Sort the user IDs
     const room = `user-${sortedIds[0]}-${sortedIds[1]}`; // Concatenate the sorted IDs
@@ -181,24 +182,23 @@ io.on('connection', socket => {
     socket.leave(thread);
   });
 
-
   // // Handle key press event
   // socket.on('keyPress', (key: string, roomId: string) => {
   //   // Broadcast the key press to all participants in the same room
   //   socket.to(roomId).emit('keyPress', key);
   // });
 
-  socket.on('drawing', (data: any) => {
-    socket.to(data.roomId).emit('drawing', data);
-  })
-
   //for the storybook page editor text area
   socket.on('typing', ({ roomId, content }) => {
     socket.to(roomId).emit('typing', content);
   });
 
+  // VISUAL ART
+  socket.on('drawing', (data: any) => {
+    socket.to(data.roomId).emit('drawing', data);
+  })
+
   socket.on('changeBackgroundColor', ({ color, roomId }) => {
-    console.log('bg color changed:', color);
     socket.to(roomId).emit('changeBackgroundColor', color);
   });
 
