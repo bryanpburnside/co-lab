@@ -165,6 +165,7 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
         alignItems: 'center',
         justifyContent: 'center',
         marginLeft: '20px',
+        paddingLeft: '5px',
       }}
       >
         <div>
