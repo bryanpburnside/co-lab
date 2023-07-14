@@ -93,12 +93,13 @@ const VisualArt: React.FC = () => {
   const handleBackgroundColorChange = (e: any) => {
     const { value } = e.target;
     setBackgroundColor(value);
+    socket.emit('changeBackgroundColor', { color: value, roomId });
   };
 
   return (
     <>
       <SocketContext.Provider value={socket}>
-        <Draw backgroundColor={backgroundColor} handleBackgroundColorChange={handleBackgroundColorChange} roomId={roomId} />
+        <Draw backgroundColor={backgroundColor} setBackgroundColor={setBackgroundColor} handleBackgroundColorChange={handleBackgroundColorChange} roomId={roomId} />
       </SocketContext.Provider>
     </>
   )

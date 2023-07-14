@@ -197,6 +197,11 @@ io.on('connection', socket => {
     socket.to(roomId).emit('typing', content);
   });
 
+  socket.on('changeBackgroundColor', ({ color, roomId }) => {
+    console.log('bg color changed:', color);
+    socket.to(roomId).emit('changeBackgroundColor', color);
+  });
+
   socket.on('startDrawing', (data) => {
     socket.to(data.roomId).emit('startDrawing', data);
   });

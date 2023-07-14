@@ -27,7 +27,7 @@ const StyledCanvas = styled.canvas<{ backgroundColor: string }>`
                -5px -5px 13px #464195;
 `;
 
-const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChange, roomId }) => {
+const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handleBackgroundColorChange, roomId }) => {
   const { user } = useAuth0();
   const socket = useContext(SocketContext) as Socket;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -95,6 +95,11 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, handleBackgroundColorChang
       pathRef.current = path;
       socket.emit('startDrawing', { x: event.point.x, y: event.point.y, roomId });
     };
+
+    socket.on('changeBackgroundColor', (color) => {
+      setBackgroundColor(color);
+      socket.emit('changeBackgroundColor', color);
+    });
 
     socket.on('startDrawing', (data) => {
       const path = new paper.Path();
