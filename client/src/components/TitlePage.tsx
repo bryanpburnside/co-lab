@@ -20,7 +20,7 @@ interface TitlePageProps {
 const TitlePage: React.FC<TitlePageProps> = ({ story, TooltipIcon, addNewPage, titleColor, handleColorChange }) => (
   <div
     style={{
-      backgroundImage: `url(${story.coverImage})`,
+      backgroundImage: `url(${story.coverImage || 'https://res.cloudinary.com/dhin8tgv1/image/upload/v1689349895/cgdztp7ma8eqxivjsd5r.png'})`,
       height: '100%',
       width: '500px',
       backgroundSize: '100% 100%',
@@ -39,12 +39,12 @@ const TitlePage: React.FC<TitlePageProps> = ({ story, TooltipIcon, addNewPage, t
         justifyContent: 'center',
         alignItems: 'center',
         padding: '0 10px',
-        marginTop: '10px',
         color: titleColor,
         fontWeight: 'bolder',
         fontSize: '32px',
         textAlign: 'center',
         margin: 'auto',
+        marginTop: '50px'
       }}
     >
       { story.title }

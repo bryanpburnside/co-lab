@@ -408,3 +408,7 @@ div:hover>.tooltip-text {
     border: 3px solid transparent;
   }
 }
+
+#carousel .slick-dots {
+  bottom: -30px;
+}

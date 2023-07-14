@@ -164,7 +164,6 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: '30px',
         marginLeft: '20px',
       }}
       >
@@ -228,16 +227,27 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
                     backgroundColor: 'white',
                     borderRadius: '50%',
                     marginBottom: '10px',
-                    marginTop: '10px'
+                    marginTop: '10px',
+                    padding: '2.5px',
                   }}
                   size={30}
                 />
               </div>
             </div>
             <Pages data-density="hard">
-              { page.content }
+              {page.content}
+              <span
+                style={{
+                  position: 'absolute',
+                  bottom: '68px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  color: 'black'
+                }}
+              >
+                {page.page_number}
+              </span>
             </Pages>
-            <span style={{ color: 'white' }}>{ page.page_number }</span>
           </PageContainer>
         </div>
       ))}

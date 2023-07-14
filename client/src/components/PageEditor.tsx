@@ -94,17 +94,17 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
           <textarea
             value={ content }
             onChange={ handleContentChange }
-            maxLength={310}
+            maxLength={3000}
             rows={10}
             cols={50}
-            style={{ width: '100%', height: '500px' }}
+            style={{ width: '100%', height: '450px', padding: '15px' }}
           />
         </GrammarlyEditorPlugin>
         <FaTimesCircle
           style={{
             position: 'absolute',
-            top: '-30px',
-            right: 0,
+            top: '-22px',
+            right: '-45px',
             color: '#3d3983',
             backgroundColor: 'white',
             borderRadius: '100%'
@@ -123,19 +123,19 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
           icon={ FaSave }
           tooltipText="Save"
           handleClick={ handleSave }
-          style={{ top: '15px'}}
+          style={{ top: '14px', fontSize: '34px'}}
         />
           <TooltipIcon
             icon={ FaEraser }
             tooltipText="Clear"
             handleClick={ handleClearContent }
-            style={{ top: '15px'}}
+            style={{ top: '14px', fontSize: '34px'}}
           />
         <TooltipIcon
           icon={ FaVolumeUp }
           tooltipText="TTY"
           handleClick={ handleSpeakClick }
-          style={{ top: '15px'}}
+          style={{ top: '14px', fontSize: '34px'}}
         />
         <STT updateTranscript={ updateContentWithTranscript } />
       </div>

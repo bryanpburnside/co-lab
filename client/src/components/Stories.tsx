@@ -326,6 +326,7 @@ const StoryBook: React.FC = () => {
           style={{
             display: 'grid',
             placeItems: 'center',
+            alignContent: 'center',
             height: '100%',
             width: '100%',
           }}
@@ -382,7 +383,15 @@ const StoryBook: React.FC = () => {
         </div>
       </div>
       {/* Carousel */}
-      <div style={{ height: '200px', border: '1px solid white', marginLeft: '200px', marginRight: '200px'}}>
+      <div
+        style={{
+          height: '250px',
+          width: '700px',
+          boxShadow:  '5px 5px 13px #343171, -5px -5px 13px #464195',
+          justifyContent: 'center',
+          alignItems: 'center',
+          margin: 'auto',
+        }}>
         <StoryCarousel
           items={ stories }
           handleStoryClick={ handleStoryClick }
