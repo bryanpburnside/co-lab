@@ -207,7 +207,6 @@ io.on('connection', socket => {
   });
 
   socket.on('draw', (data) => {
-    console.log(data.color, data.width);
     socket.to(data.roomId).emit('draw', data);
   });
 

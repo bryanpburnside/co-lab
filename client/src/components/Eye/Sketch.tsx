@@ -93,7 +93,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
       path.strokeJoin = 'round';
       path.add(event.point);
       pathRef.current = path;
-      socket.emit('startDrawing', { x: event.point.x, y: event.point.y, roomId });
+      socket.emit('startDrawing', { x: event.point.x, y: event.point.y, color: path.strokeColor.toCSS(true), width: path.strokeWidth, roomId });
     };
 
     socket.on('changeBackgroundColor', (color) => {
@@ -103,8 +103,8 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
 
     socket.on('startDrawing', (data) => {
       const path = new paper.Path();
-      path.strokeColor = penColorRef.current;
-      path.strokeWidth = penWidthRef.current;
+      path.strokeColor = new Color(data.color);
+      path.strokeWidth = data.width;
       path.strokeCap = 'smooth';
       path.strokeJoin = 'round';
       path.add(new paper.Point(data.x, data.y));
@@ -115,15 +115,14 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
       if (!pathRef.current) return;
 
       pathRef.current.add(event.point);
-      socket.emit('draw', { x: event.point.x, y: event.point.y, color: penColorRef.current, width: penWidthRef.current, roomId });
+      socket.emit('draw', { x: event.point.x, y: event.point.y, color: penColorRef.current.toCSS(true), width: penWidthRef.current, roomId });
     };
 
     socket.on('draw', (data) => {
       if (!pathRef.current) return;
-      pathRef.current.strokeColor = data.color;
-      pathRef.current.strokeWidth = data.width;
       pathRef.current.add(new paper.Point(data.x, data.y));
-      console.log(data.color, data.width);
+      pathRef.current.strokeColor = new Color(data.color);
+      pathRef.current.strokeWidth = data.width;
     });
 
     tool.onMouseUp = () => {
