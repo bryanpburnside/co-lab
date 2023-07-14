@@ -115,13 +115,15 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
       if (!pathRef.current) return;
 
       pathRef.current.add(event.point);
-      socket.emit('draw', { x: event.point.x, y: event.point.y, roomId });
+      socket.emit('draw', { x: event.point.x, y: event.point.y, color: penColorRef.current, width: penWidthRef.current, roomId });
     };
 
     socket.on('draw', (data) => {
       if (!pathRef.current) return;
-
+      pathRef.current.strokeColor = data.color;
+      pathRef.current.strokeWidth = data.width;
       pathRef.current.add(new paper.Point(data.x, data.y));
+      console.log(data.color, data.width);
     });
 
     tool.onMouseUp = () => {
