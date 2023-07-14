@@ -34,6 +34,17 @@ const DrawContainer = styled.div`
   transform: translateY(-50%);
 `;
 
+const ColorPicker = styled.input`
+  display: none;
+`;
+
+const ButtonContainer = styled.div`
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
 const Button = styled.button`
   border: none;
   background: none;
@@ -41,6 +52,10 @@ const Button = styled.button`
   color: white;
   font-size: 48px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+
+  &:hover {
+    color: #8b88b5;
+  }
 `;
 
 const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handleBackgroundColorChange, roomId }) => {
@@ -216,88 +231,77 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
         backgroundColor={backgroundColor}
       />
       <DrawContainer>
-        <div style={{ marginTop: '25rem', marginBottom: '1rem' }}>
-          <div style={{ display: 'flex' }}>
-            <input
-              type="color"
-              id="bg-color"
-              value={backgroundColor}
-              onChange={handleBackgroundColorChange}
-              style={{ display: 'none' }}
-            />
-            <Button
-              type="button"
-              onClick={() => document.getElementById('bg-color')?.click()}
-            >
-              <FaPalette />
-            </Button>
-          </div>
-        </div>
-        <div style={{ marginBottom: '1rem' }}>
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-            <input
-              type="color"
-              id="pen-color"
-              value={selectedColor}
-              onChange={handlePenColorChange}
-              style={{ display: 'none' }}
-            />
-            <Button
-              type="button"
-              onClick={() => document.getElementById('pen-color')?.click()}
-            >
-              <FaPen />
-            </Button>
-          </div>
-        </div>
-        <div style={{ marginBottom: '1rem' }}>
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-            <Button
-              type="button"
-              onClick={handlePenWidthButtonClick}
-            >
-              <FaPenFancy />
-            </Button>
-            {showPenWidthSlider && (
-              <div className="pen-width-slider">
-                <input
-                  type="range"
-                  value={penWidth.toString()}
-                  onChange={handlePenWidthSliderChange}
-                  min={1}
-                  max={100}
-                  className="slider is-small"
-                />
-                <Button
-                  type="button"
-                  onClick={handlePenWidthSliderClose}
-                >
-                  Close
-                </Button>
-              </div>
-            )}
-          </div>
-        </div>
-        <div style={{ marginBottom: '1rem' }}>
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-            <Button
-              onClick={handleEraserClick}
-            >
-              <FaEraser />
-            </Button>
-          </div>
-        </div>
-        {user &&
-          <div style={{ marginBottom: '1rem' }}>
-            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+        <ButtonContainer style={{ marginTop: '25rem' }}>
+          <ColorPicker
+            type="color"
+            id="bg-color"
+            value={backgroundColor}
+            onChange={handleBackgroundColorChange}
+          />
+          <Button
+            type="button"
+            onClick={() => document.getElementById('bg-color')?.click()}
+          >
+            <FaPalette />
+          </Button>
+        </ButtonContainer>
+        <ButtonContainer>
+          <ColorPicker
+            type="color"
+            id="pen-color"
+            value={selectedColor}
+            onChange={handlePenColorChange}
+          />
+          <Button
+            type="button"
+            onClick={() => document.getElementById('pen-color')?.click()}
+          >
+            <FaPen />
+          </Button>
+        </ButtonContainer>
+        <ButtonContainer>
+          <Button
+            type="button"
+            onClick={handlePenWidthButtonClick}
+          >
+            <FaPenFancy />
+          </Button>
+          {showPenWidthSlider && (
+            <div className="pen-width-slider">
+              <input
+                type="range"
+                value={penWidth.toString()}
+                onChange={handlePenWidthSliderChange}
+                min={1}
+                max={100}
+                className="slider is-small"
+              />
               <Button
-                type="submit"
-                onClick={handleSaveClick}
+                type="button"
+                onClick={handlePenWidthSliderClose}
               >
-                <FaSave />
+                Close
               </Button>
             </div>
-          </div>}
+          )}
+        </ButtonContainer>
+        <ButtonContainer>
+          <Button
+            onClick={handleEraserClick}
+          >
+            <FaEraser />
+          </Button>
+        </ButtonContainer>
+        {user &&
+          <ButtonContainer>
+            <Button
+              type="submit"
+              onClick={handleSaveClick}
+            >
+              <FaSave />
+            </Button>
+          </ButtonContainer>
+        }
       </DrawContainer>
     </CanvasContainer>
   );
