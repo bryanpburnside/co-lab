@@ -27,6 +27,22 @@ const StyledCanvas = styled.canvas<{ backgroundColor: string }>`
                -5px -5px 13px #464195;
 `;
 
+const DrawContainer = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  transform: translateY(-50%);
+`;
+
+const Button = styled.button`
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: white;
+  font-size: 48px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+`;
+
 const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handleBackgroundColorChange, roomId }) => {
   const { user } = useAuth0();
   const socket = useContext(SocketContext) as Socket;
@@ -199,14 +215,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
         ref={canvasRef}
         backgroundColor={backgroundColor}
       />
-      <div
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: '5%',
-          transform: 'translateY(-50%)',
-        }}
-      >
+      <DrawContainer>
         <div style={{ marginTop: '25rem', marginBottom: '1rem' }}>
           <div style={{ display: 'flex' }}>
             <input
@@ -216,20 +225,12 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
               onChange={handleBackgroundColorChange}
               style={{ display: 'none' }}
             />
-            <button
+            <Button
               type="button"
               onClick={() => document.getElementById('bg-color')?.click()}
-              style={{
-                border: 'none',
-                background: 'none',
-                cursor: 'pointer',
-                color: 'white',
-                fontSize: '48px',
-                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-              }}
             >
               <FaPalette />
-            </button>
+            </Button>
           </div>
         </div>
         <div style={{ marginBottom: '1rem' }}>
@@ -241,38 +242,22 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
               onChange={handlePenColorChange}
               style={{ display: 'none' }}
             />
-            <button
+            <Button
               type="button"
               onClick={() => document.getElementById('pen-color')?.click()}
-              style={{
-                border: 'none',
-                background: 'none',
-                cursor: 'pointer',
-                color: 'white',
-                fontSize: '48px',
-                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-              }}
             >
               <FaPen />
-            </button>
+            </Button>
           </div>
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-            <button
+            <Button
               type="button"
               onClick={handlePenWidthButtonClick}
-              style={{
-                border: 'none',
-                background: 'none',
-                cursor: 'pointer',
-                color: 'white',
-                fontSize: '48px',
-                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-              }}
             >
               <FaPenFancy />
-            </button>
+            </Button>
             {showPenWidthSlider && (
               <div className="pen-width-slider">
                 <input
@@ -283,61 +268,37 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
                   max={100}
                   className="slider is-small"
                 />
-                <button
+                <Button
                   type="button"
                   onClick={handlePenWidthSliderClose}
-                  style={{
-                    border: 'none',
-                    background: 'none',
-                    cursor: 'pointer',
-                    color: 'white',
-                    fontSize: '48px',
-                    textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-                  }}
                 >
                   Close
-                </button>
+                </Button>
               </div>
             )}
           </div>
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-            <button
+            <Button
               onClick={handleEraserClick}
-              style={{
-                border: 'none',
-                background: 'none',
-                cursor: 'pointer',
-                color: 'white',
-                fontSize: '48px',
-                textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-              }}
             >
               <FaEraser />
-            </button>
+            </Button>
           </div>
         </div>
         {user &&
           <div style={{ marginBottom: '1rem' }}>
             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-              <button
+              <Button
                 type="submit"
                 onClick={handleSaveClick}
-                style={{
-                  border: 'none',
-                  background: 'none',
-                  cursor: 'pointer',
-                  color: 'white',
-                  fontSize: '48px',
-                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-                }}
               >
                 <FaSave />
-              </button>
+              </Button>
             </div>
           </div>}
-      </div>
+      </DrawContainer>
     </CanvasContainer>
   );
 };
