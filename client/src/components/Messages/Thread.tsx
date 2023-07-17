@@ -138,12 +138,20 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
             <BubbleContainer>
               {msg.senderId === userId ? (
                 <TimestampSender>
-                  <SenderBubble>{msg.message}</SenderBubble>
+                  <SenderBubble>
+                    {msg.message.includes('http://co-lab.group/') ?
+                      <a href={msg.message}>Invite Link</a>
+                      : msg.message}
+                  </SenderBubble>
                   {formatTimeDifference(msg.createdAt)}
                 </TimestampSender>
               ) : (
                 <TimestampRecipient>
-                  <RecipientBubble>{msg.message}</RecipientBubble>
+                  <RecipientBubble>
+                    {msg.message.includes('http://co-lab.group/') ?
+                      <a href={msg.message}>Invite Link</a>
+                      : msg.message}
+                  </RecipientBubble>
                   {formatTimeDifference(msg.createdAt)}
                 </TimestampRecipient>
               )}
