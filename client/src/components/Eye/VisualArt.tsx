@@ -17,7 +17,7 @@ const VisualArt: React.FC = () => {
   const { roomId } = useParams<string>();
   const [peerId, setPeerId] = useState('');
   const [backgroundColor, setBackgroundColor] = useState('#3d3983');
-  const [friendList, setFriendList] = useState<string[]>([]);
+  const [friendList, setFriendList] = useState<Object[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -111,8 +111,22 @@ const VisualArt: React.FC = () => {
   const sendInvite = async () => {
     try {
       setIsModalOpen(true);
+      await getFriends();
+    } catch (err) {
+      console.error('Failed to send invite at client:', err);
+    }
+  }
+
+  const getFriends = async () => {
+    try {
+      setIsModalOpen(true);
       const { data } = await axios.get(`/users/${user?.sub}`);
-      setFriendList(data.friends);
+      const friends = await Promise.all(
+        data.friends.map(async (friendId: string) => {
+          const userObj = await axios.get(`/users/${friendId}`);
+          return { name: userObj.data.name, id: friendId };
+        }))
+      setFriendList(friends);
     } catch (err) {
       console.error('Failed to GET user friends at client:', err);
     }
