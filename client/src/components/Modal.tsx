@@ -9,7 +9,7 @@ const ModalContainer = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,14 +20,12 @@ const ModalContent = styled.div`
   background-color: #3d3983;
   padding: 1rem;
   border-radius: 10px;
-  box-shadow: 5px 5px 13px #343171,
-    -5px -5px 13px #464195;
 `;
 
 const XIcon = styled.div`
   position: absolute;
-  top: 2%;
-  left: 87.5%;
+  top: 3%;
+  left: 90%;
   display: flex;
   justify-content: center;
   align-items: center;
