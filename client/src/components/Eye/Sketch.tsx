@@ -9,6 +9,7 @@ import { FaPen, FaPenFancy, FaPalette, FaEraser, FaSave, FaUserPlus } from 'reac
 interface DrawProps {
   backgroundColor: string;
   handleBackgroundColorChange: (color: string) => void;
+  sendInvite: () => void;
   roomId: string | undefined;
 }
 
@@ -64,7 +65,7 @@ const Button = styled.button`
   }
 `;
 
-const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handleBackgroundColorChange, roomId }) => {
+const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handleBackgroundColorChange, sendInvite, roomId }) => {
   const { user } = useAuth0();
   const socket = useContext(SocketContext) as Socket;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -312,6 +313,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
       <ButtonContainerRight>
         <Button
           type="button"
+          onClick={sendInvite}
         >
           <FaUserPlus />
         </Button>

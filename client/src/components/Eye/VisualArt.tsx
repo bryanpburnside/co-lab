@@ -1,7 +1,9 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import React, { useState, useEffect, createContext } from 'react';
 import Draw from './Sketch';
+import Modal from '../Modal';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import { io, Socket } from 'socket.io-client';
 import Peer, { MediaConnection } from 'peerjs';
 import { v4 as generatePeerId } from 'uuid';
@@ -15,6 +17,8 @@ const VisualArt: React.FC = () => {
   const { roomId } = useParams<string>();
   const [peerId, setPeerId] = useState('');
   const [backgroundColor, setBackgroundColor] = useState('#3d3983');
+  const [friendList, setFriendList] = useState<string[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     setPeerId(generatePeerId());
@@ -90,16 +94,35 @@ const VisualArt: React.FC = () => {
     };
   }, []);
 
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   const handleBackgroundColorChange = (e: any) => {
     const { value } = e.target;
     setBackgroundColor(value);
     socket.emit('changeBackgroundColor', { color: value, roomId });
   };
 
+  const sendInvite = async () => {
+    try {
+      setIsModalOpen(true);
+      const { data } = await axios.get(`/users/${user?.sub}`);
+      setFriendList(data.friends);
+    } catch (err) {
+      console.error('Failed to GET user friends at client:', err);
+    }
+  }
+
   return (
     <>
       <SocketContext.Provider value={socket}>
-        <Draw backgroundColor={backgroundColor} setBackgroundColor={setBackgroundColor} handleBackgroundColorChange={handleBackgroundColorChange} roomId={roomId} />
+        <Modal isOpen={isModalOpen} onClose={handleCloseModal} friendList={friendList} />
+        <Draw backgroundColor={backgroundColor} setBackgroundColor={setBackgroundColor} handleBackgroundColorChange={handleBackgroundColorChange} sendInvite={sendInvite} roomId={roomId} />
       </SocketContext.Provider>
     </>
   )
