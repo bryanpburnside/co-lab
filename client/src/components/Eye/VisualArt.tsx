@@ -108,7 +108,7 @@ const VisualArt: React.FC = () => {
     socket.emit('changeBackgroundColor', { color: value, roomId });
   };
 
-  const sendInvite = async () => {
+  const openModal = async () => {
     try {
       setIsModalOpen(true);
       await getFriends();
@@ -136,7 +136,7 @@ const VisualArt: React.FC = () => {
     <>
       <SocketContext.Provider value={socket}>
         <Modal isOpen={isModalOpen} onClose={handleCloseModal} friendList={friendList} />
-        <Draw backgroundColor={backgroundColor} setBackgroundColor={setBackgroundColor} handleBackgroundColorChange={handleBackgroundColorChange} sendInvite={sendInvite} roomId={roomId} />
+        <Draw backgroundColor={backgroundColor} setBackgroundColor={setBackgroundColor} handleBackgroundColorChange={handleBackgroundColorChange} openModal={openModal} roomId={roomId} />
       </SocketContext.Provider>
     </>
   )

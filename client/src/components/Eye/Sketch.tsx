@@ -65,7 +65,7 @@ const Button = styled.button`
   }
 `;
 
-const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handleBackgroundColorChange, sendInvite, roomId }) => {
+const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handleBackgroundColorChange, openModal, roomId }) => {
   const { user } = useAuth0();
   const socket = useContext(SocketContext) as Socket;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -313,7 +313,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
       <ButtonContainerRight>
         <Button
           type="button"
-          onClick={sendInvite}
+          onClick={openModal}
         >
           <FaUserPlus />
         </Button>

@@ -31,7 +31,9 @@ const Modal = ({ isOpen, onClose, friendList }) => {
       <ModalContent>
         <h2>Invite Friends</h2>
         {friendList.length ?
-          friendList.map((friend: object, i: number) => <p key={i}>{friend.name}</p>)
+          friendList.map((friend: object, i: number) => <p
+            key={i}
+          >{friend.name}</p>)
           :
           null
         }
