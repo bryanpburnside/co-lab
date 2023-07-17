@@ -13,6 +13,7 @@ const ModalContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1;
 `;
 
 const ModalContent = styled.div`
@@ -25,12 +26,12 @@ const ModalContent = styled.div`
 const XIcon = styled.div`
   position: absolute;
   top: 3%;
-  left: 90%;
+  left: 87.5%;
   display: flex;
   justify-content: center;
   align-items: center;
   color: white;
-  font-size: 1rem;
+  font-size: 1.25rem;
   cursor: pointer;
   z-index: 2;
 `;
