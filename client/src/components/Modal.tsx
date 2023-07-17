@@ -21,7 +21,7 @@ const ModalContent = styled.div`
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 `;
 
-const Modal = ({ isOpen, onClose, friendList }) => {
+const Modal = ({ isOpen, onClose, roomId, userId, friendList, sendInvite }) => {
   if (!isOpen) {
     return null;
   }
@@ -33,6 +33,7 @@ const Modal = ({ isOpen, onClose, friendList }) => {
         {friendList.length ?
           friendList.map((friend: object, i: number) => <p
             key={i}
+            onClick={() => { sendInvite(userId, friend.id, `http://co-lab.group/visualart/${roomId}`) }}
           >{friend.name}</p>)
           :
           null

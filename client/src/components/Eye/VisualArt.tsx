@@ -132,10 +132,19 @@ const VisualArt: React.FC = () => {
     }
   }
 
+  const sendInvite = async (senderId: string, receiverId: string, message: string) => {
+    console.log(senderId, receiverId, message)
+    socket.emit('directMessage', {
+      senderId,
+      receiverId,
+      message,
+    });
+  }
+
   return (
     <>
       <SocketContext.Provider value={socket}>
-        <Modal isOpen={isModalOpen} onClose={handleCloseModal} friendList={friendList} />
+        <Modal isOpen={isModalOpen} onClose={handleCloseModal} roomId={roomId} userId={user?.sub} friendList={friendList} sendInvite={sendInvite} />
         <Draw backgroundColor={backgroundColor} setBackgroundColor={setBackgroundColor} handleBackgroundColorChange={handleBackgroundColorChange} openModal={openModal} roomId={roomId} />
       </SocketContext.Provider>
     </>
