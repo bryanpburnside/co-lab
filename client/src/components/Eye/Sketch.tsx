@@ -5,7 +5,7 @@ import { Socket } from 'socket.io-client';
 import axios from 'axios';
 import paper, { Color } from 'paper';
 import styled from 'styled-components';
-import { FaPen, FaPenFancy, FaPalette, FaEraser, FaSave } from 'react-icons/fa';
+import { FaPen, FaPenFancy, FaPalette, FaEraser, FaSave, FaUserPlus } from 'react-icons/fa';
 interface DrawProps {
   backgroundColor: string;
   handleBackgroundColorChange: (color: string) => void;
@@ -19,7 +19,7 @@ const CanvasContainer = styled.div`
 `
 
 const StyledCanvas = styled.canvas<{ backgroundColor: string }>`
-  width: 80vw;
+  width: 75vw;
   height: 75vh;
   background-color: ${({ backgroundColor }) => backgroundColor};
   border-radius: 10px;
@@ -41,8 +41,14 @@ const ColorPicker = styled.input`
 const ButtonContainer = styled.div`
   margin-bottom: 1rem;
   display: flex;
-  flex-direction: row;
   align-items: center;
+`;
+
+const ButtonContainerRight = styled.div`
+  margin-left: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-self: start;
 `;
 
 const Button = styled.button`
@@ -303,6 +309,13 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
           </ButtonContainer>
         }
       </DrawContainer>
+      <ButtonContainerRight>
+        <Button
+          type="button"
+        >
+          <FaUserPlus />
+        </Button>
+      </ButtonContainerRight>
     </CanvasContainer>
   );
 };
