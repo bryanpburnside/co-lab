@@ -46,6 +46,10 @@ const TimestampRecipient = styled.div`
   font-size: 12px;
 `;
 
+const InviteLink = styled.a`
+  color: inherit;
+`;
+
 const Thread = ({ userId, receiverId, userList, setUserList }) => {
   const socket = useContext(SocketContext) as Socket;
   const conversationContainerRef = useRef<HTMLDivElement>(null);
@@ -140,7 +144,7 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
                 <TimestampSender>
                   <SenderBubble>
                     {msg.message.includes('http://co-lab.group/') ?
-                      <a href={msg.message}>Invite Link</a>
+                      <InviteLink href={msg.message}>Let's collab!</InviteLink>
                       : msg.message}
                   </SenderBubble>
                   {formatTimeDifference(msg.createdAt)}
@@ -149,7 +153,7 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
                 <TimestampRecipient>
                   <RecipientBubble>
                     {msg.message.includes('http://co-lab.group/') ?
-                      <a href={msg.message}>Invite Link</a>
+                      <InviteLink href={msg.message}>Let's collab!</InviteLink>
                       : msg.message}
                   </RecipientBubble>
                   {formatTimeDifference(msg.createdAt)}
