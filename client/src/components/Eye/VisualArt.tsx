@@ -133,7 +133,6 @@ const VisualArt: React.FC = () => {
   }
 
   const sendInvite = async (senderId: string, receiverId: string, message: string) => {
-    console.log(senderId, receiverId, message)
     socket.emit('directMessage', {
       senderId,
       receiverId,
