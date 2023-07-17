@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleXmark } from '@fortawesome/free-regular-svg-icons';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 const ModalContainer = styled.div`
   position: fixed;
@@ -9,7 +9,7 @@ const ModalContainer = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.2);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,24 +19,22 @@ const ModalContent = styled.div`
   position: relative;
   background-color: #3d3983;
   padding: 1rem;
-  border: 4px solid white;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 5px 5px 13px #343171,
+    -5px -5px 13px #464195;
 `;
 
 const XIcon = styled.div`
   position: absolute;
-  top: -10%;
-  left: 90%;
+  top: 2%;
+  left: 87.5%;
   display: flex;
   justify-content: center;
   align-items: center;
   color: white;
-  font-size: 2rem;
+  font-size: 1rem;
   cursor: pointer;
   z-index: 2;
-  clip-path: circle();
-  background-color: #F06b80;
 `;
 
 
@@ -49,7 +47,7 @@ const Modal = ({ isOpen, onClose, roomId, userId, friendList, sendInvite }) => {
     <ModalContainer>
       <ModalContent>
         <XIcon onClick={onClose}>
-          <FontAwesomeIcon icon={faCircleXmark} size='lg' />
+          <FontAwesomeIcon icon={faXmark} />
         </XIcon>
         <h2>Invite Friends</h2>
         {friendList.length ?
