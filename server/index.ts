@@ -182,16 +182,16 @@ io.on('connection', socket => {
     socket.leave(thread);
   });
 
+  //for the storybook page editor text area
+  socket.on('typing', ({ roomId, content }) => {
+    socket.to(roomId).emit('typing', content);
+  });
+
   // // Handle key press event
   // socket.on('keyPress', (key: string, roomId: string) => {
   //   // Broadcast the key press to all participants in the same room
   //   socket.to(roomId).emit('keyPress', key);
   // });
-
-  //for the storybook page editor text area
-  socket.on('typing', ({ roomId, content }) => {
-    socket.to(roomId).emit('typing', content);
-  });
 
   // VISUAL ART
   socket.on('drawing', (data: any) => {
@@ -217,5 +217,4 @@ io.on('connection', socket => {
 
 server.listen(PORT, () => {
   console.log(`Server listening on http://127.0.0.1:${PORT}`);
-  console.log(process.env.DB_USER, process.env.DB_PW);
 });
