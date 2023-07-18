@@ -213,6 +213,8 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
       context.lineWidth = path.strokeWidth;
       context.lineCap = 'round';
       context.lineJoin = 'round';
+      context.imageSmoothingEnabled = true;
+      context.imageSmoothingQuality = 'high';
 
       path.segments.forEach((segment, index) => {
         if (index === 0) {
