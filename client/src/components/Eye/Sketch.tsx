@@ -291,8 +291,6 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
             <FaPalette />
           </Button>
         </ButtonContainer>
-        {collaboratorMouseX}
-        {collaboratorMouseY}
         <ButtonContainer>
           <ColorPicker
             type="color"
