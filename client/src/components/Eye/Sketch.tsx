@@ -77,6 +77,8 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
   const penWidthRef = useRef<number>(penWidth);
   const [eraseMode, setEraseMode] = useState(false);
   const [showPenWidthSlider, setShowPenWidthSlider] = useState(false);
+  const [friendX, setFriendX] = useState<number | null>(null);
+  const [friendY, setFriendY] = useState<number | null>(null);
 
   const handlePenColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -124,6 +126,10 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
 
     const tool = new paper.Tool();
 
+    tool.onMouseMove = (event: paper.ToolEvent) => {
+      socket.emit('mouseMove', { x: event.point.x, y: event.point.y, roomId });
+    }
+
     tool.onMouseDown = (event: paper.ToolEvent) => {
       const path = new paper.Path();
       path.strokeColor = penColorRef.current;
@@ -138,6 +144,12 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
     socket.on('changeBackgroundColor', (color) => {
       setBackgroundColor(color);
       socket.emit('changeBackgroundColor', color);
+    });
+
+    socket.on('mouseMove', (x, y) => {
+      setFriendX(x);
+      setFriendY(y);
+      console.log(friendX, friendY);
     });
 
     socket.on('startDrawing', (data) => {

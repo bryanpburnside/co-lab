@@ -194,9 +194,13 @@ io.on('connection', socket => {
   // });
 
   // VISUAL ART
+  socket.on('mouseMove', ({ x, y, roomId }) => {
+    socket.to(roomId).emit('mouseMove', x, y);
+  });
+
   socket.on('drawing', (data: any) => {
     socket.to(data.roomId).emit('drawing', data);
-  })
+  });
 
   socket.on('changeBackgroundColor', ({ color, roomId }) => {
     socket.to(roomId).emit('changeBackgroundColor', color);
