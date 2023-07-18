@@ -167,7 +167,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
     tool.onMouseUp = () => {
       if (!pathRef.current) return;
 
-      pathRef.current.simplify(10);
+      pathRef.current.smooth();
       pathRef.current = null;
       socket.emit('endDrawing', { roomId });
     };
@@ -175,7 +175,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
     socket.on('endDrawing', () => {
       if (!pathRef.current) return;
 
-      pathRef.current.simplify(10);
+      pathRef.current.smooth();
       pathRef.current = null;
     });
 
