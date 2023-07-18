@@ -84,17 +84,17 @@ const Modal = ({ isOpen, onClose, roomId, userId, friendList, sendInvite }) => {
   const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
 
-  const handleInputChange = (event) => {
+  const handleInputChange = event => {
     const value = event.target.value;
     setInputValue(value);
 
-    const filteredSuggestions = friendList.filter((friend) =>
+    const filteredSuggestions = friendList.filter(friend =>
       friend.name.toLowerCase().includes(value.toLowerCase())
     );
     setSuggestions(filteredSuggestions);
   };
 
-  const handleInvite = (friendId) => {
+  const handleInvite = friendId => {
     sendInvite(userId, friendId, `http://co-lab.group/visualart/${roomId}`);
     setInputValue('');
     setSuggestions([]);
