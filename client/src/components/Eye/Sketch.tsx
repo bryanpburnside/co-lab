@@ -66,14 +66,14 @@ const Button = styled.button`
   }
 `;
 
-const CollaboratorCursor = styled.div<{ x: number; y: number }>`
+const CollaboratorCursor = styled.div<{ x: number; y: number, collaboratorColor: Color }>`
   position: absolute;
   top: ${({ y }) => y}px;
   left: ${({ x }) => x}px;
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background-color: red;
+  background-color: ${({ collaboratorColor }) => collaboratorColor.toCSS(true)};
   pointer-events: none;
 `;
 
@@ -90,6 +90,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
   const [showPenWidthSlider, setShowPenWidthSlider] = useState(false);
   const [collaboratorMouseX, setCollaboratorMouseX] = useState<number | null>(null);
   const [collaboratorMouseY, setCollaboratorMouseY] = useState<number | null>(null);
+  const [collaboratorColor, setCollaboratorColor] = useState<Color>(new Color('white'));
 
   const handlePenColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -182,6 +183,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
     socket.on('startDrawing', (data) => {
       const path = new paper.Path();
       path.strokeColor = new Color(data.color);
+      setCollaboratorColor(new Color(data.color));
       path.strokeWidth = data.width;
       path.strokeCap = 'smooth';
       path.strokeJoin = 'round';
@@ -268,7 +270,11 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
         backgroundColor={backgroundColor}
       />
       {collaboratorMouseX !== null && collaboratorMouseY !== null && (
-        <CollaboratorCursor x={collaboratorMouseX} y={collaboratorMouseY} />
+        <CollaboratorCursor
+          x={collaboratorMouseX}
+          y={collaboratorMouseY}
+          collaboratorColor={collaboratorColor}
+        />
       )}
       <DrawContainer>
         <ButtonContainer style={{ marginTop: '25rem' }}>
