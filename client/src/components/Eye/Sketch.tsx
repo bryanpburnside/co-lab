@@ -17,7 +17,7 @@ const CanvasContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;
 
 const StyledCanvas = styled.canvas<{ backgroundColor: string }>`
   width: 75vw;
@@ -64,6 +64,17 @@ const Button = styled.button`
   &:hover {
     color: #8b88b5;
   }
+`;
+
+const CollaboratorCursor = styled.div<{ x: number; y: number }>`
+  position: absolute;
+  top: ${({ y }) => y}px;
+  left: ${({ x }) => x}px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: red;
+  pointer-events: none;
 `;
 
 const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handleBackgroundColorChange, openModal, roomId }) => {
@@ -118,6 +129,12 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
     });
   };
 
+  const handleMouseMove = (event: MouseEvent) => {
+    const { clientX, clientY } = event;
+    const data = { x: clientX, y: clientY, roomId };
+    socket.emit('mouseMove', data);
+  }
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -125,10 +142,6 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
     paper.setup(canvas);
 
     const tool = new paper.Tool();
-
-    tool.onMouseMove = (event: paper.ToolEvent) => {
-      socket.emit('mouseMove', { x: event.point.x, y: event.point.y, roomId });
-    }
 
     tool.onMouseDown = (event: paper.ToolEvent) => {
       const path = new paper.Path();
@@ -146,10 +159,12 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
       socket.emit('changeBackgroundColor', color);
     });
 
-    socket.on('mouseMove', (x, y) => {
+    socket.on('mouseMove', ({ x, y }) => {
       setCollaboratorMouseX(x);
       setCollaboratorMouseY(y);
     });
+
+    document.addEventListener('mousemove', handleMouseMove);
 
     socket.on('startDrawing', (data) => {
       const path = new paper.Path();
@@ -251,6 +266,9 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
         ref={canvasRef}
         backgroundColor={backgroundColor}
       />
+      {collaboratorMouseX !== null && collaboratorMouseY !== null && (
+        <CollaboratorCursor x={collaboratorMouseX} y={collaboratorMouseY} />
+      )}
       <DrawContainer>
         <ButtonContainer style={{ marginTop: '25rem' }}>
           <ColorPicker
@@ -266,6 +284,8 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
             <FaPalette />
           </Button>
         </ButtonContainer>
+        {collaboratorMouseX}
+        {collaboratorMouseY}
         <ButtonContainer>
           <ColorPicker
             type="color"
