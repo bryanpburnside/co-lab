@@ -133,7 +133,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
     const { clientX, clientY } = event;
     const data = { x: clientX, y: clientY, roomId };
     socket.emit('mouseMove', data);
-  }
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -154,6 +154,21 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
       socket.emit('startDrawing', { x: event.point.x, y: event.point.y, color: path.strokeColor.toCSS(true), width: path.strokeWidth, roomId });
     };
 
+    tool.onMouseDrag = (event: paper.ToolEvent) => {
+      if (!pathRef.current) return;
+
+      pathRef.current.add(event.point);
+      socket.emit('draw', { x: event.point.x, y: event.point.y, color: penColorRef.current.toCSS(true), width: penWidthRef.current, roomId });
+    };
+
+    tool.onMouseUp = () => {
+      if (!pathRef.current) return;
+
+      pathRef.current.smooth();
+      pathRef.current = null;
+      socket.emit('endDrawing', { roomId });
+    };
+
     socket.on('changeBackgroundColor', (color) => {
       setBackgroundColor(color);
       socket.emit('changeBackgroundColor', color);
@@ -163,8 +178,6 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
       setCollaboratorMouseX(x);
       setCollaboratorMouseY(y);
     });
-
-    document.addEventListener('mousemove', handleMouseMove);
 
     socket.on('startDrawing', (data) => {
       const path = new paper.Path();
@@ -176,27 +189,12 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
       pathRef.current = path;
     });
 
-    tool.onMouseDrag = (event: paper.ToolEvent) => {
-      if (!pathRef.current) return;
-
-      pathRef.current.add(event.point);
-      socket.emit('draw', { x: event.point.x, y: event.point.y, color: penColorRef.current.toCSS(true), width: penWidthRef.current, roomId });
-    };
-
     socket.on('draw', (data) => {
       if (!pathRef.current) return;
       pathRef.current.add(new paper.Point(data.x, data.y));
       pathRef.current.strokeColor = new Color(data.color);
       pathRef.current.strokeWidth = data.width;
     });
-
-    tool.onMouseUp = () => {
-      if (!pathRef.current) return;
-
-      pathRef.current.smooth();
-      pathRef.current = null;
-      socket.emit('endDrawing', { roomId });
-    };
 
     socket.on('endDrawing', () => {
       if (!pathRef.current) return;
@@ -205,7 +203,10 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
       pathRef.current = null;
     });
 
+    document.addEventListener('mousemove', handleMouseMove);
+
     return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
       tool.remove();
       paper.project.clear();
     };

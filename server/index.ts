@@ -194,11 +194,11 @@ io.on('connection', socket => {
   // });
 
   // VISUAL ART
-  socket.on('mouseMove', (data) => {
-    socket.to(data.roomId).emit('mouseMove', data);
+  socket.on('mouseMove', ({ x, y, roomId }) => {
+    socket.to(roomId).emit('mouseMove', { x, y });
   });
 
-  socket.on('drawing', (data: any) => {
+  socket.on('drawing', (data) => {
     socket.to(data.roomId).emit('drawing', data);
   });
 
