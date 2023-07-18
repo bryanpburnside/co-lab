@@ -199,7 +199,7 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
             height: '90%',
             margin: 'auto',
             }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               { index === selectedStoryPages.length - 1 && (
                 <TooltipIcon
                   icon={ FaPlusCircle }
@@ -213,8 +213,11 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
                     color: '#3d3983',
                     backgroundColor: 'white',
                     borderRadius: '50%',
-                    marginTop: '10px',
-                    marginBottom: '15px'
+                    margin: '10px',
+                    padding: '4px',
+                    height: '30px',
+                    marginTop: '5px',
+                    width: '30px'
                   }}
                 />
               )}
@@ -227,9 +230,11 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
                     color: '#3d3983',
                     backgroundColor: 'white',
                     borderRadius: '50%',
-                    marginBottom: '10px',
-                    marginTop: '10px',
-                    padding: '2.5px',
+                    margin: '10px',
+                    // marginBottom: '-0.25px',
+                    padding: '3px',
+                    height: '30px',
+                    width: '30px'
                   }}
                   size={30}
                 />

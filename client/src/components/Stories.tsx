@@ -31,6 +31,7 @@ interface Story {
   coverImage: string | null;
   numberOfPages: number | null;
   originalCreatorId?: string;
+  isPrivate: boolean;
 }
 
 export const TTSToggleContext = createContext<{
@@ -232,9 +233,11 @@ const StoryBook: React.FC = () => {
   //add the story to the list of stories
   //and set the created story as the current working story
   const handleCreateStory = (createdStory: Story) => {
+    if (createdStory.isPrivate === true) {
     setStories([...stories, createdStory]);
     setSelectedStory(createdStory);
     setShowNewStoryForm(false);
+    }
   };
 
   //in case of cancel
