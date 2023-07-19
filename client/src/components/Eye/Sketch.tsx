@@ -52,7 +52,7 @@ const ButtonContainerRight = styled.div`
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-self: start;
 `;
 
@@ -69,15 +69,16 @@ const Button = styled.button`
   }
 `;
 
-const CollaboratorImage = styled.img<{ collaboratorColor: Color }>`
+const CollaboratorImage = styled.img`
   width: 48px;
   height: 48px;
+  margin-bottom: 12.5px;
   margin-left: -10px;
   object-fit: cover;
   object-position: center;
   clip-path: circle();
   align-self: center;
-  border: 4px solid ${({ collaboratorColor }) => collaboratorColor.toCSS(true)};
+  border: 4px solid white;
   border-radius: 50%;
 `;
 
@@ -376,7 +377,6 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
             <CollaboratorImage
               key={i}
               src={user.picture}
-              collaboratorColor={collaboratorColor}
             />
           )
         }
