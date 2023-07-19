@@ -195,7 +195,7 @@ io.on('connection', socket => {
 
   // VISUAL ART
   socket.on('sendUserInfo', ({ userId, roomId }) => {
-    socket.to(roomId).emit('receiveUserInfo', { userId, roomId });
+    socket.to(roomId).emit('userInfoReceived', { userId, roomId });
   });
 
   socket.on('mouseMove', ({ x, y, roomId }) => {

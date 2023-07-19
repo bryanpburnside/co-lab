@@ -101,7 +101,7 @@ const VisualArt: React.FC = () => {
       socket.emit('sendUserInfo', { userId: user?.sub, roomId });
       setCurrentCollaborators(prevCollaborators => new Set(prevCollaborators).add(user?.sub));
     }
-    socket.on('receiveUserInfo', ({ userId, roomId }) => {
+    socket.on('userInfoReceived', ({ userId, roomId }) => {
       setCurrentCollaborators(prevCollaborators => new Set(prevCollaborators).add(userId));
     });
   }, [user?.sub]);
