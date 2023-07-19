@@ -92,7 +92,7 @@ const CollaboratorCursor = styled.div<{ x: number; y: number, collaboratorColor:
   pointer-events: none;
 `;
 
-const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handleBackgroundColorChange, openModal, userImages, roomId }) => {
+const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handleBackgroundColorChange, openModal, currentCollaborators, roomId }) => {
   const { user } = useAuth0();
   const socket = useContext(SocketContext) as Socket;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -371,8 +371,8 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
         >
           <FaUserPlus />
         </Button>
-        {userImages &&
-          userImages.map((user: Object, i: number) =>
+        {currentCollaborators &&
+          currentCollaborators.map((user: Object, i: number) =>
             <CollaboratorImage
               key={i}
               src={user.picture}

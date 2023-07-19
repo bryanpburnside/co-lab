@@ -17,7 +17,7 @@ const VisualArt: React.FC = () => {
   const { roomId } = useParams<string>();
   const [peerId, setPeerId] = useState('');
   const [backgroundColor, setBackgroundColor] = useState('#3d3983');
-  const [currentCollaborators, setCurrentCollaborators] = useState<Set<string>>(new Set());
+  const [currentCollaborators, setCurrentCollaborators] = useState<Array<Object>>([]);
   const [userImages, setUserImages] = useState<Array<Object>>([]);
   const [friendList, setFriendList] = useState<Object[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -96,34 +96,66 @@ const VisualArt: React.FC = () => {
     };
   }, []);
 
+  // useEffect(() => {
+  //   if (user?.sub) {
+  //     try {
+  //       const userObj = getUserImage(user?.sub);
+  //       console.log('user', userObj.data);
+  //       socket.emit('sendUserInfo', { userId: user?.sub, picture: userObj.picture, roomId })
+  //     } catch (err) {
+  //       console.error('Failed to GET user image at client:', err);
+  //     }
+  //     // socket.emit('sendUserInfo', { userId: user?.sub, roomId });
+  //     setCurrentCollaborators(prevCollaborators => new Set(prevCollaborators).add(user?.sub));
+  //   }
+  //   socket.on('userInfoReceived', ({ userId, roomId }) => {
+  //     setCurrentCollaborators(prevCollaborators => new Set(prevCollaborators).add(userId));
+  //   });
+  // }, [user?.sub]);
+
   useEffect(() => {
-    if (user?.sub) {
-      socket.emit('sendUserInfo', { userId: user?.sub, roomId });
-      setCurrentCollaborators(prevCollaborators => new Set(prevCollaborators).add(user?.sub));
-    }
-    socket.on('userInfoReceived', ({ userId, roomId }) => {
-      setCurrentCollaborators(prevCollaborators => new Set(prevCollaborators).add(userId));
+    const getUserImageAndSendInfo = async () => {
+      if (user?.sub) {
+        try {
+          const { userId, picture } = await getUserImage(user?.sub);
+          console.log('user', userId, picture);
+          // setUserImages(prevImages => [...prevImages, picture]);
+          setCurrentCollaborators(prevCollaborators => [...prevCollaborators, { userId, picture }])
+          socket.emit('sendUserInfo', { userId, picture, roomId });
+        } catch (err) {
+          console.error('Failed to GET user image at client:', err);
+        }
+        // setCurrentCollaborators(prevCollaborators => new Set(prevCollaborators).add(user?.sub));
+      }
+    };
+
+    getUserImageAndSendInfo();
+
+    socket.on('userInfoReceived', ({ userId, collaborators, roomId }) => {
+      console.log('user info received');
+      console.log('collaborators', collaborators);
+      // setCurrentCollaborators(prevCollaborators => new Set(prevCollaborators).add(userId));
+      setCurrentCollaborators(collaborators);
     });
   }, [user?.sub]);
 
-  useEffect(() => {
-    if (currentCollaborators) {
-      getUserImages(currentCollaborators);
-    }
-  }, [currentCollaborators]);
+  // useEffect(() => {
+  //   if (currentCollaborators) {
+  //     getUserImage(currentCollaborators);
+  //   }
+  // }, [currentCollaborators]);
 
-  const getUserImages = async (userIds: Set<string>) => {
+  const getUserImage = async (userId: string) => {
     try {
-      for (const userId of userIds) {
-        const { data } = await axios.get(`/users/${userId}`);
-        const collaborator = {
-          userId,
-          picture: data.picture
-        }
-        if (!userImages.some(user => user.userId === collaborator.userId)) {
-          setUserImages(prevImages => [...prevImages, collaborator]);
-        }
+      const { data } = await axios.get(`/users/${userId}`);
+      const collaborator = {
+        userId,
+        picture: data.picture
       }
+      // if (!currentCollaborators.some(user => user.userId === collaborator.userId)) {
+      //   setCurrentCollaborators(prevCollaborators => [...prevCollaborators, collaborator]);
+      // }
+      return collaborator;
     } catch (err) {
       console.error('Failed to GET user images at client:', err);
     }
@@ -190,7 +222,7 @@ const VisualArt: React.FC = () => {
           setBackgroundColor={setBackgroundColor}
           handleBackgroundColorChange={handleBackgroundColorChange}
           openModal={openModal}
-          userImages={userImages}
+          currentCollaborators={currentCollaborators}
           roomId={roomId}
         />
       </SocketContext.Provider>

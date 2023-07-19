@@ -132,6 +132,8 @@ Rooms.post('/', (req, res) => {
   res.json({ roomId });
 })
 
+const collaboratorsMap = new Map();
+
 io.on('connection', socket => {
   // Handle create room event
   socket.on('createRoom', (userId, roomId) => {
@@ -194,8 +196,16 @@ io.on('connection', socket => {
   // });
 
   // VISUAL ART
-  socket.on('sendUserInfo', ({ userId, roomId }) => {
-    socket.to(roomId).emit('userInfoReceived', { userId, roomId });
+  socket.on('sendUserInfo', ({ userId, picture, roomId }) => {
+    const roomCollaborators = collaboratorsMap.get(roomId) || new Map();
+    roomCollaborators.set(userId, picture);
+    collaboratorsMap.set(roomId, roomCollaborators);
+
+    const roomCollaboratorsArray = Array.from(roomCollaborators, ([userId, picture]) => ({ userId, picture }));
+
+    socket.emit('userInfoReceived', { userId, collaborators: roomCollaboratorsArray, roomId });
+
+    socket.to(roomId).emit('userInfoReceived', { userId, collaborators: roomCollaboratorsArray, roomId });
   });
 
   socket.on('mouseMove', ({ x, y, roomId }) => {
