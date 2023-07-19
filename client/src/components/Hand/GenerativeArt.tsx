@@ -4,7 +4,20 @@ import axios from 'axios';
 import { Socket } from 'socket.io-client';
 import { SocketContext } from './Sculpture';
 import p5 from 'p5';
+import styled from 'styled-components';
 import { FaSave } from 'react-icons/fa';
+
+const SaveButton = styled.div`
+  position: absolute;
+  left: -78px;
+  bottom: 4px;
+  z-index: 2;
+  cursor: pointer;
+
+  &:hover {
+    color: #8b88b5;
+  }
+`
 
 const GenerativeArt = ({ roomId }) => {
   const { user, isAuthenticated, isLoading } = useAuth0();
@@ -173,6 +186,7 @@ const GenerativeArt = ({ roomId }) => {
     <div className='canvas-container' style={{ position: 'relative' }}>
       <div ref={canvasRef} style={{ position: 'relative', zIndex: '1' }}>
         {user &&
+<<<<<<< HEAD
           <div
             style={{
               position: 'absolute',
@@ -181,10 +195,13 @@ const GenerativeArt = ({ roomId }) => {
               zIndex: '2',
               cursor: 'pointer',
             }}
+=======
+          <SaveButton
+>>>>>>> 8710e0647bd524d3e27f93a5a873c890dccbf98d
             onClick={handleSave}
           >
             <FaSave size={48} />
-          </div>
+          </SaveButton>
         }
       </div>
     </div>

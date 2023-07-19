@@ -63,7 +63,22 @@ const config = {
   plugins: [
     new HtmlWebpackPlugin({
       title: 'co-lab',
+<<<<<<< HEAD
       templateContent: ({ htmlWebpackPlugin }) => `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${htmlWebpackPlugin.options.title}</title><link rel='icon' type='image/x-icon' href='assets/images/favicon.ico'></head><body><div id="app"></div></body></html>`,
+=======
+      templateContent: ({ htmlWebpackPlugin }) => `
+      <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>${htmlWebpackPlugin.options.title}</title>
+          <link rel='icon' type='image/x-icon' href='assets/images/favicon.ico'>
+        </head>
+        <body>
+          <div id="app"></div>
+        </body>
+        </html>`,
+>>>>>>> 8710e0647bd524d3e27f93a5a873c890dccbf98d
       filename: 'index.html',
     }),
     new webpack.DefinePlugin({
