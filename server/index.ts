@@ -195,7 +195,6 @@ io.on('connection', socket => {
 
   // VISUAL ART
   socket.on('sendUserInfo', ({ userId, roomId }) => {
-    console.log('user', userId, 'room', roomId);
     socket.to(roomId).emit('receiveUserInfo', { userId, roomId });
   });
 
