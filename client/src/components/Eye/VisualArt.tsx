@@ -96,54 +96,25 @@ const VisualArt: React.FC = () => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (user?.sub) {
-  //     try {
-  //       const userObj = getUserImage(user?.sub);
-  //       console.log('user', userObj.data);
-  //       socket.emit('sendUserInfo', { userId: user?.sub, picture: userObj.picture, roomId })
-  //     } catch (err) {
-  //       console.error('Failed to GET user image at client:', err);
-  //     }
-  //     // socket.emit('sendUserInfo', { userId: user?.sub, roomId });
-  //     setCurrentCollaborators(prevCollaborators => new Set(prevCollaborators).add(user?.sub));
-  //   }
-  //   socket.on('userInfoReceived', ({ userId, roomId }) => {
-  //     setCurrentCollaborators(prevCollaborators => new Set(prevCollaborators).add(userId));
-  //   });
-  // }, [user?.sub]);
-
   useEffect(() => {
     const getUserImageAndSendInfo = async () => {
       if (user?.sub) {
         try {
           const { userId, picture } = await getUserImage(user?.sub);
-          console.log('user', userId, picture);
-          // setUserImages(prevImages => [...prevImages, picture]);
           setCurrentCollaborators(prevCollaborators => [...prevCollaborators, { userId, picture }])
           socket.emit('sendUserInfo', { userId, picture, roomId });
         } catch (err) {
           console.error('Failed to GET user image at client:', err);
         }
-        // setCurrentCollaborators(prevCollaborators => new Set(prevCollaborators).add(user?.sub));
       }
     };
 
     getUserImageAndSendInfo();
 
     socket.on('userInfoReceived', ({ userId, collaborators, roomId }) => {
-      console.log('user info received');
-      console.log('collaborators', collaborators);
-      // setCurrentCollaborators(prevCollaborators => new Set(prevCollaborators).add(userId));
       setCurrentCollaborators(collaborators);
     });
   }, [user?.sub]);
-
-  // useEffect(() => {
-  //   if (currentCollaborators) {
-  //     getUserImage(currentCollaborators);
-  //   }
-  // }, [currentCollaborators]);
 
   const getUserImage = async (userId: string) => {
     try {
@@ -152,9 +123,6 @@ const VisualArt: React.FC = () => {
         userId,
         picture: data.picture
       }
-      // if (!currentCollaborators.some(user => user.userId === collaborator.userId)) {
-      //   setCurrentCollaborators(prevCollaborators => [...prevCollaborators, collaborator]);
-      // }
       return collaborator;
     } catch (err) {
       console.error('Failed to GET user images at client:', err);
