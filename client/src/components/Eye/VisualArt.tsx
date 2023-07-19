@@ -99,12 +99,18 @@ const VisualArt: React.FC = () => {
   useEffect(() => {
     if (user?.sub) {
       socket.emit('sendUserInfo', { userId: user?.sub, roomId });
+      setCurrentCollaborators(prevCollaborators => new Set(prevCollaborators).add(user?.sub));
     }
     socket.on('receiveUserInfo', ({ userId, roomId }) => {
-      console.log('user info received')
       setCurrentCollaborators(prevCollaborators => new Set(prevCollaborators).add(userId));
     });
   }, [user?.sub]);
+
+  useEffect(() => {
+    if (currentCollaborators) {
+      getUserImages(currentCollaborators);
+    }
+  }, [currentCollaborators]);
 
   const getUserImages = async (userIds: Set<string>) => {
     try {
@@ -114,18 +120,14 @@ const VisualArt: React.FC = () => {
           userId,
           picture: data.picture
         }
-        setUserImages(prevImages => [...prevImages, collaborator]);
+        if (!userImages.some(user => user.userId === collaborator.userId)) {
+          setUserImages(prevImages => [...prevImages, collaborator]);
+        }
       }
     } catch (err) {
       console.error('Failed to GET user images at client:', err);
     }
   }
-
-  useEffect(() => {
-    if (currentCollaborators) {
-      getUserImages(currentCollaborators);
-    }
-  }, [currentCollaborators])
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -176,8 +178,15 @@ const VisualArt: React.FC = () => {
   return (
     <>
       <SocketContext.Provider value={socket}>
-        <Modal isOpen={isModalOpen} onClose={handleCloseModal} roomId={roomId} userId={user?.sub} friendList={friendList} sendInvite={sendInvite} />
-        <Draw backgroundColor={backgroundColor}
+        <Modal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          roomId={roomId} userId={user?.sub}
+          friendList={friendList}
+          sendInvite={sendInvite}
+        />
+        <Draw
+          backgroundColor={backgroundColor}
           setBackgroundColor={setBackgroundColor}
           handleBackgroundColorChange={handleBackgroundColorChange}
           openModal={openModal}

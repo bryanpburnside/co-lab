@@ -372,11 +372,13 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
           <FaUserPlus />
         </Button>
         {userImages &&
-          userImages.map((user: Object, i: number) => <CollaboratorImage
-            key={i}
-            src={user.picture}
-            collaboratorColor={collaboratorColor}
-          />)
+          userImages.map((user: Object, i: number) =>
+            <CollaboratorImage
+              key={i}
+              src={user.picture}
+              collaboratorColor={collaboratorColor}
+            />
+          )
         }
       </ButtonContainerRight>
     </CanvasContainer>
