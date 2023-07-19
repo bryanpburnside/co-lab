@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import TTS from './TTS';
 import '../styles.css';
 import axios from 'axios';
@@ -6,13 +6,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import Dropzone from './DropZone';
 import {  StyledButtonStory, StyledFormStory, StyledInputStory,} from '../styled';
 import Switch  from 'react-switch';
-
-// interface Page {
-//   id?: number;
-//   page_number: number;
-//   content: string;
-//   story: string;
-// }
 
 interface Story {
   id?: number;
@@ -31,7 +24,6 @@ interface NewStoryFormProps {
 const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) => {
   const [title, setTitle] = useState('');
   // const [collaborators, setCollaborators] = useState('');
-  const [coverImage, setCoverImage] = useState<File | null>(null);
   const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
   const [numberOfPages, setNumberOfPages] = useState<number | null>(null);
   const [speakText, setSpeakText] = useState('');

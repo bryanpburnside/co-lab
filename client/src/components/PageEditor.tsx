@@ -1,9 +1,9 @@
-import React, { useState, useContext, createContext, useEffect } from "react";
+import React, { useState, createContext, useEffect } from "react";
 import STT from './STT';
 import '../styles.css';
 import { FaSave, FaTimesCircle, FaVolumeUp, FaEraser } from 'react-icons/fa';
 import TooltipIcon from './TooltipIcons';
-import { TTSToggleContext } from './Stories';
+// import { TTSToggleContext } from './Stories';
 import { GrammarlyEditorPlugin } from "@grammarly/editor-sdk-react";
 import { io, Socket } from 'socket.io-client';
 
@@ -17,16 +17,9 @@ interface Page {
   story: string;
 }
 
-interface Story {
-  id?: number;
-  title: string;
-  coverImage: any | null;
-  numberOfPages: number | null;
-}
-
 interface PageEditorProps {
   page: Page;
-  onSave: (content: string) => void;
+  onSave: (content: string, autoSave: boolean) => void;
   onCancel: () => void;
   TooltipIcon: typeof TooltipIcon;
   roomId: string | undefined;
@@ -34,9 +27,6 @@ interface PageEditorProps {
 
 const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, TooltipIcon, roomId }) => {
   const [content, setContent] = useState(page.content);
-
-  const { ttsOn } = useContext(TTSToggleContext);
-  // const { id: roomId } = useParams<{ id: string }>();
 
   const handleContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContent(event.target.value);
@@ -47,19 +37,19 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
 
   useEffect(() => {
     if (socket) {
-      socket.on('typing', content => {
+      const handleTyping = (content: string) => {
         setContent(content);
-      });
-
+      };
+      socket.on('typing', handleTyping);
       return () => {
         //cleanup from typing
-        socket.off('typing');
+        socket.off('typing', handleTyping);
       };
     }
-  }, [content]);
+  }, []);
 
   const handleSave = () => {
-    onSave(content);
+    onSave(content, false);
   };
 
   const handleCancel = () => {
@@ -86,6 +76,15 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
     setContent('');
   };
 
+  //auto save functionality for collaborative editing
+  useEffect(() => {
+    const autoSave = setInterval(() => {
+      onSave(content, true);
+    }, 30000);
+    return () => {
+      clearInterval(autoSave);
+    };
+  }, [onSave]);
 
   return (
     <div>

@@ -7,14 +7,6 @@ import styled from 'styled-components';
 import PageEditor from "./PageEditor";
 import TitlePage from './TitlePage';
 
-// const TitlePage: any = styled.div`
-//   data-density: hard;
-//   background-size: cover;
-//   background-position: center;
-//   height: 90%;
-//   width: 500px;
-// `;
-
 const PageContainer = styled.div`
   width: 500px;
   height: 90%;
@@ -49,6 +41,7 @@ interface Story {
   title: string;
   coverImage: any | null;
   numberOfPages: number | null;
+  originalCreatorId?: string | null;
 }
 
 interface FlipBookProps {
@@ -59,26 +52,25 @@ interface FlipBookProps {
   addNewPage: () => void;
   TooltipIcon: typeof TooltipIcon;
   roomId: string | undefined;
+  user: string | undefined;
+  titleColor: string;
 }
 
-const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPages, addNewPage, TooltipIcon, roomId }) => {
+const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPages, addNewPage, TooltipIcon, roomId, user, titleColor }) => {
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
   // const [isAutoReading, setIsAutoReading] = useState(false);
-  const [titleColor, setTitleColor] = useState('#000000');
-
 
   const flipBookRef = useRef<any>(null);
 
   const handlePageClick = (page: Page) => {
-    setSelectedPage(page);
-  };
-
-    const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTitleColor(event.target.value);
+    //only allow the creator to edit
+    if (user === story.originalCreatorId) {
+      setSelectedPage(page);
+    }
   };
 
   //save page after editing it
-  const handleSavePage = async (content: string) => {
+  const handleSavePage = async (content: string, autoSave = false) => {
     if (selectedPage && story) {
       const existingPage = selectedStoryPages.find(page => page.page_number === selectedPage.page_number);
       let response;
@@ -113,7 +105,10 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
         return page;
       });
       fetchPages();
-      setSelectedPage(null);
+      //only deselect the page if it's not an auto-save
+      if (!autoSave) {
+        setSelectedPage(null);
+      }
     }
   };
 
@@ -181,9 +176,8 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
             <TitlePage
               story={ story }
               addNewPage={ addNewPage }
-              handleColorChange={ handleColorChange }
-              titleColor={ titleColor }
               TooltipIcon={ TooltipIcon }
+              titleColor={ titleColor }
             />
           </PageContainer>
         </div>
@@ -231,7 +225,6 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
                     backgroundColor: 'white',
                     borderRadius: '50%',
                     margin: '10px',
-                    // marginBottom: '-0.25px',
                     padding: '3px',
                     height: '30px',
                     width: '30px'

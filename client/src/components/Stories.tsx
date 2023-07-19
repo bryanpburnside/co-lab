@@ -6,7 +6,7 @@ import FlipBook from "./FlipBook";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useParams } from 'react-router-dom'
 import { io, Socket } from 'socket.io-client';
-import { FaTty, FaHeadphones, FaPenSquare, FaMicrophone, FaMicrophoneSlash } from 'react-icons/fa';
+import { FaTty, FaPenSquare, FaMicrophone, FaMicrophoneSlash, FaMagic } from 'react-icons/fa';
 import TooltipIcon from './TooltipIcons';
 import TTS from "./TTS";
 import axios from 'axios';
@@ -16,7 +16,8 @@ export const socket = io('/');
 export const SocketContext = createContext<Socket | null>(null);
 import '../styles.css';
 import StoryCarousel from "./Carousel";
-// import SimpleSlider from "./Slider";
+import TitlePageEditor from './TitlePageEditor';
+import { SketchPicker } from 'react-color';
 
 interface Page {
   id?: number;
@@ -59,6 +60,8 @@ const StoryBook: React.FC = () => {
   const [peerId, setPeerId] = useState('');
   const [muted, setMuted] = useState(true);
   const [defaultStory, setDefaultStory] = useState(null);
+  const [titleColor, setTitleColor] = useState('#000000');
+  const [displayColorPicker, setDisplayColorPicker] = useState(false);
 
   const userStream = useRef<MediaStream | null>(null);
   const peerConnections = useRef<Record<string, MediaConnection>>({});
@@ -320,6 +323,14 @@ const StoryBook: React.FC = () => {
     fetchDefaultStory();
   }, []);
 
+  const handleColorPickerToggle = () => {
+    setDisplayColorPicker(!displayColorPicker);
+  };
+
+  const handleTitleColorChange = (color: any) => {
+    setTitleColor(color.hex);
+  };
+
 
   return (
     <TTSToggleContext.Provider value={{ ttsOn, setTtsOn }}>
@@ -364,6 +375,20 @@ const StoryBook: React.FC = () => {
               handleClick={ handleToggleMute }
               style={{ fontSize: '32px' }}
             />
+            <TooltipIcon
+              icon={ FaMagic }
+              tooltipText={ 'Edit Cover Page' }
+              handleClick={ handleColorPickerToggle }
+              style={{ fontSize: '32px', marginLeft: '20px' }}
+            />
+              <div>
+                {displayColorPicker ?
+                  <div style={{ position: 'absolute', zIndex: '2' }}>
+                    <SketchPicker color={ titleColor } onChange={ handleTitleColorChange } />
+                  </div>
+                  : null
+                }
+            </div>
           </div>
          </div>
          {showNewStoryForm && (
@@ -380,6 +405,8 @@ const StoryBook: React.FC = () => {
               TooltipIcon={ TooltipIcon }
               addNewPage={ addNewPage }
               roomId={ roomId }
+              user={ user?.sub }
+              titleColor={ titleColor }
             />
           </div>
         }
