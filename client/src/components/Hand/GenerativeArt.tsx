@@ -186,18 +186,7 @@ const GenerativeArt = ({ roomId }) => {
     <div className='canvas-container' style={{ position: 'relative' }}>
       <div ref={canvasRef} style={{ position: 'relative', zIndex: '1' }}>
         {user &&
-<<<<<<< HEAD
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '50px',
-              left: '-75px',
-              zIndex: '2',
-              cursor: 'pointer',
-            }}
-=======
           <SaveButton
->>>>>>> 8710e0647bd524d3e27f93a5a873c890dccbf98d
             onClick={handleSave}
           >
             <FaSave size={48} />
