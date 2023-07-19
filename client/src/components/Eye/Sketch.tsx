@@ -72,7 +72,7 @@ const Button = styled.button`
 const CollaboratorImage = styled.img`
   width: 48px;
   height: 48px;
-  margin-bottom: 12.5px;
+  margin-bottom: 15px;
   margin-left: -10px;
   object-fit: cover;
   object-position: center;
