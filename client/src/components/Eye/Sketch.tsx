@@ -5,6 +5,7 @@ import { Socket } from 'socket.io-client';
 import axios from 'axios';
 import paper, { Color } from 'paper';
 import styled from 'styled-components';
+import { FriendImage } from '../Profile/Profile';
 import { FaPen, FaPenFancy, FaPalette, FaEraser, FaSave, FaUserPlus } from 'react-icons/fa';
 interface DrawProps {
   backgroundColor: string;
@@ -50,6 +51,8 @@ const ButtonContainerRight = styled.div`
   margin-left: 1rem;
   margin-bottom: 1rem;
   display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-self: start;
 `;
 
@@ -66,6 +69,16 @@ const Button = styled.button`
   }
 `;
 
+const CollaboratorImage = styled.img`
+  width: 48px;
+  height: 48px;
+  margin-left: -10px;
+  object-fit: cover;
+  object-position: center;
+  clip-path: circle();
+  align-self: center;
+`
+
 const CollaboratorCursor = styled.div<{ x: number; y: number, collaboratorColor: Color }>`
   position: absolute;
   top: ${({ y }) => y}px;
@@ -77,7 +90,7 @@ const CollaboratorCursor = styled.div<{ x: number; y: number, collaboratorColor:
   pointer-events: none;
 `;
 
-const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handleBackgroundColorChange, openModal, roomId }) => {
+const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handleBackgroundColorChange, openModal, userImages, roomId }) => {
   const { user } = useAuth0();
   const socket = useContext(SocketContext) as Socket;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -356,6 +369,9 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
         >
           <FaUserPlus />
         </Button>
+        {userImages &&
+          userImages.map((user: Object, i: number) => <CollaboratorImage key={i} src={user.picture} />)
+        }
       </ButtonContainerRight>
     </CanvasContainer>
   );

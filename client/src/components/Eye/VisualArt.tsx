@@ -17,6 +17,8 @@ const VisualArt: React.FC = () => {
   const { roomId } = useParams<string>();
   const [peerId, setPeerId] = useState('');
   const [backgroundColor, setBackgroundColor] = useState('#3d3983');
+  const [currentCollaborators, setCurrentCollaborators] = useState<Set<string>>(new Set());
+  const [userImages, setUserImages] = useState<Array<Object>>([]);
   const [friendList, setFriendList] = useState<Object[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -71,7 +73,7 @@ const VisualArt: React.FC = () => {
 
     peer.on('open', (userId) => {
       socket.emit('joinRoom', userId, roomId);
-    })
+    });
 
     socket.on('roomCreated', (userId, roomId) => {
       console.log(`${userId} created room: ${roomId}`);
@@ -93,6 +95,37 @@ const VisualArt: React.FC = () => {
       peer.disconnect();
     };
   }, []);
+
+  useEffect(() => {
+    if (user?.sub) {
+      socket.emit('sendUserInfo', { userId: user?.sub, roomId });
+    }
+    socket.on('receiveUserInfo', ({ userId, roomId }) => {
+      console.log('user info received')
+      setCurrentCollaborators(prevCollaborators => new Set(prevCollaborators).add(userId));
+    });
+  }, [user?.sub]);
+
+  const getUserImages = async (userIds: Set<string>) => {
+    try {
+      for (const userId of userIds) {
+        const { data } = await axios.get(`/users/${userId}`);
+        const collaborator = {
+          userId,
+          picture: data.picture
+        }
+        setUserImages(prevImages => [...prevImages, collaborator]);
+      }
+    } catch (err) {
+      console.error('Failed to GET user images at client:', err);
+    }
+  }
+
+  useEffect(() => {
+    if (currentCollaborators) {
+      getUserImages(currentCollaborators);
+    }
+  }, [currentCollaborators])
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -144,7 +177,13 @@ const VisualArt: React.FC = () => {
     <>
       <SocketContext.Provider value={socket}>
         <Modal isOpen={isModalOpen} onClose={handleCloseModal} roomId={roomId} userId={user?.sub} friendList={friendList} sendInvite={sendInvite} />
-        <Draw backgroundColor={backgroundColor} setBackgroundColor={setBackgroundColor} handleBackgroundColorChange={handleBackgroundColorChange} openModal={openModal} roomId={roomId} />
+        <Draw backgroundColor={backgroundColor}
+          setBackgroundColor={setBackgroundColor}
+          handleBackgroundColorChange={handleBackgroundColorChange}
+          openModal={openModal}
+          userImages={userImages}
+          roomId={roomId}
+        />
       </SocketContext.Provider>
     </>
   )
