@@ -52,7 +52,7 @@ const ButtonContainerRight = styled.div`
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-self: start;
 `;
 
@@ -69,15 +69,16 @@ const Button = styled.button`
   }
 `;
 
-const CollaboratorImage = styled.img<{ collaboratorColor: Color }>`
+const CollaboratorImage = styled.img`
   width: 48px;
   height: 48px;
+  margin-bottom: 15px;
   margin-left: -10px;
   object-fit: cover;
   object-position: center;
   clip-path: circle();
   align-self: center;
-  border: 4px solid ${({ collaboratorColor }) => collaboratorColor.toCSS(true)};
+  border: 4px solid white;
   border-radius: 50%;
 `;
 
@@ -92,7 +93,7 @@ const CollaboratorCursor = styled.div<{ x: number; y: number, collaboratorColor:
   pointer-events: none;
 `;
 
-const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handleBackgroundColorChange, openModal, userImages, roomId }) => {
+const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handleBackgroundColorChange, openModal, currentCollaborators, roomId }) => {
   const { user } = useAuth0();
   const socket = useContext(SocketContext) as Socket;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -371,12 +372,11 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
         >
           <FaUserPlus />
         </Button>
-        {userImages &&
-          userImages.map((user: Object, i: number) =>
+        {currentCollaborators &&
+          currentCollaborators.map((user: Object, i: number) =>
             <CollaboratorImage
               key={i}
               src={user.picture}
-              collaboratorColor={collaboratorColor}
             />
           )
         }
