@@ -189,9 +189,11 @@ const Feed: React.FC = () => {
     return (
       <PostContainer className="post" key={index}>
         <div className="post-header">
-          <img src={item.picture} alt={item.name} className="user-pfp" />
-          <div className="username" onClick={() => item.id === user?.sub ? navigate(`/profile`) : navigate(`/profile/${item.id}`)}>
-            {item.name}
+          <div className="user-info">
+            <img src={item.picture} alt={item.name} className="user-pfp" />
+            <div className="username" onClick={() => item.id === user?.sub ? navigate(`/profile`) : navigate(`/profile/${item.id}`)}>
+              {item.name}
+            </div>
           </div>
           <p className="creation-time">{formatTimeDifference(item.createdAt)}</p>
         </div>
