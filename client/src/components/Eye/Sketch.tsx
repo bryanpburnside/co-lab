@@ -69,7 +69,7 @@ const Button = styled.button`
   }
 `;
 
-const CollaboratorImage = styled.img`
+const CollaboratorImage = styled.img<{ collaboratorColor: Color }>`
   width: 48px;
   height: 48px;
   margin-left: -10px;
@@ -77,7 +77,9 @@ const CollaboratorImage = styled.img`
   object-position: center;
   clip-path: circle();
   align-self: center;
-`
+  border: 4px solid ${({ collaboratorColor }) => collaboratorColor.toCSS(true)};
+  border-radius: 50%;
+`;
 
 const CollaboratorCursor = styled.div<{ x: number; y: number, collaboratorColor: Color }>`
   position: absolute;
@@ -370,7 +372,11 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
           <FaUserPlus />
         </Button>
         {userImages &&
-          userImages.map((user: Object, i: number) => <CollaboratorImage key={i} src={user.picture} />)
+          userImages.map((user: Object, i: number) => <CollaboratorImage
+            key={i}
+            src={user.picture}
+            collaboratorColor={collaboratorColor}
+          />)
         }
       </ButtonContainerRight>
     </CanvasContainer>
