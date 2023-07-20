@@ -74,7 +74,6 @@ const XIcon = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  align-self: flex-start;
   color: white;
   font-size: 1.25rem;
   cursor: pointer;
