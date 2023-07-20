@@ -291,7 +291,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
         ref={canvasRef}
         backgroundColor={backgroundColor}
       />
-      {collaboratorMouseX !== null && collaboratorMouseY !== null && (
+      {collaboratorMouseX && collaboratorMouseY && (
         <CollaboratorCursor
           x={collaboratorMouseX}
           y={collaboratorMouseY}
