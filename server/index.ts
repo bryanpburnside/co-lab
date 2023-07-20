@@ -154,6 +154,21 @@ io.on('connection', socket => {
     });
   });
 
+  socket.on('collaboratorDisconnect', (userId, roomId) => {
+    console.log('server recd collab disconnect');
+    console.log('user id', userId);
+    console.log('room id', roomId);
+    const room = collaboratorsMap.get(roomId);
+    const picture = room.get(userId);
+    console.log('room', room);
+    console.log('pic', picture);
+    if (room) {
+      room.delete(userId);
+    }
+    socket.emit('disconnection', userId, roomId);
+    socket.to(roomId).emit('disconnection', userId, roomId);
+  });
+
   // MESSAGES
   socket.on('directMessage', async ({ senderId, receiverId, message }) => {
     const sortedIds = [senderId, receiverId].sort(); // Sort the user IDs
@@ -200,9 +215,8 @@ io.on('connection', socket => {
     const roomCollaborators = collaboratorsMap.get(roomId) || new Map();
     roomCollaborators.set(userId, picture);
     collaboratorsMap.set(roomId, roomCollaborators);
-
     const roomCollaboratorsArray = Array.from(roomCollaborators, ([userId, picture]) => ({ userId, picture }));
-
+    console.log('collab array:', roomCollaboratorsArray);
     socket.emit('userInfoReceived', { userId, collaborators: roomCollaboratorsArray, roomId });
 
     socket.to(roomId).emit('userInfoReceived', { userId, collaborators: roomCollaboratorsArray, roomId });
