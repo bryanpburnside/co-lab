@@ -47,7 +47,7 @@ const ColorPicker = styled.input`
 const PenWidthSliderWrapper = styled.div`
   position: absolute;
   top: 12.5rem;
-  left: 2rem;
+  left: 1.75rem;
   transform: translateY(-50%) rotate(90deg);
   transform-origin: left center;
   display: flex;
