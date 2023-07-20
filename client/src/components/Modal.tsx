@@ -83,6 +83,7 @@ const FriendListItem = styled.li`
 const Modal = ({ isOpen, onClose, roomId, userId, friendList, sendInvite }) => {
   const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  const currentUrl = window.location.href;
 
   const handleInputChange = event => {
     const value = event.target.value;
@@ -95,7 +96,7 @@ const Modal = ({ isOpen, onClose, roomId, userId, friendList, sendInvite }) => {
   };
 
   const handleInvite = friendId => {
-    sendInvite(userId, friendId, `http://co-lab.group/visualart/${roomId}`);
+    sendInvite(userId, friendId, `${currentUrl}`);
     setInputValue('');
     setSuggestions([]);
   };
