@@ -85,7 +85,7 @@ const CollaboratorImage = styled.img`
 const CollaboratorLink = styled.a`
   cursor: pointer;
   text-decoration: none;
-  margin: 0;
+  margin: 0 auto;
 `;
 
 const CollaboratorCursor = styled.div<{ x: number; y: number, collaboratorColor: Color }>`
