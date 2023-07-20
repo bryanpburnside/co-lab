@@ -155,13 +155,7 @@ io.on('connection', socket => {
   });
 
   socket.on('collaboratorDisconnect', (userId, roomId) => {
-    console.log('server recd collab disconnect');
-    console.log('user id', userId);
-    console.log('room id', roomId);
     const room = collaboratorsMap.get(roomId);
-    const picture = room.get(userId);
-    console.log('room', room);
-    console.log('pic', picture);
     if (room) {
       room.delete(userId);
     }
