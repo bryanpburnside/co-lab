@@ -21,6 +21,7 @@ const VisualArt: React.FC = () => {
   const [userImages, setUserImages] = useState<Array<Object>>([]);
   const [friendList, setFriendList] = useState<Object[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  let currentUser: string;
 
   useEffect(() => {
     setPeerId(generatePeerId());
@@ -83,20 +84,23 @@ const VisualArt: React.FC = () => {
       console.log(`User ${userId} joined the room`);
     });
 
-    socket.on('disconnectUser', userId => {
-      if (peers[userId]) {
-        peers[userId].close();
-      }
-    })
+    // socket.on('disconnectUser', userId => {
+    //   if (peers[userId]) {
+    //     peers[userId].close();
+    //   }
+    // })
 
-    return () => {
-      socket.emit('disconnectUser', peerId, roomId);
-      socket.disconnect();
-      peer.disconnect();
-    };
+    // return () => {
+    //   socket.emit('disconnectUser', peerId, roomId);
+    //   socket.disconnect();
+    //   peer.disconnect();
+    // };
   }, []);
 
   useEffect(() => {
+    if (user?.sub) {
+      currentUser = user?.sub;
+    }
     const getUserImageAndSendInfo = async () => {
       if (user?.sub) {
         try {
@@ -113,7 +117,18 @@ const VisualArt: React.FC = () => {
 
     socket.on('userInfoReceived', ({ userId, collaborators, roomId }) => {
       setCurrentCollaborators(collaborators);
+      console.log(collaborators);
     });
+
+    socket.on('collaboratorDisconnected', (userId, roomId) => {
+      setCurrentCollaborators((prevCollaborators) =>
+        prevCollaborators.filter((collaborator) => collaborator['userId'] !== userId)
+      );
+    });
+
+    return () => {
+      socket.emit('collaboratorDisconnect', currentUser, roomId);
+    };
   }, [user?.sub]);
 
   const getUserImage = async (userId: string) => {
