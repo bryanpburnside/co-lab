@@ -67,7 +67,7 @@ const PenWidthSlider = styled.div`
   }
 `;
 
-const XIcon = styled.div`
+const XIcon = styled.button`
   position: absolute;
   top: 20%;
   left: 95%;
@@ -75,9 +75,12 @@ const XIcon = styled.div`
   justify-content: center;
   align-items: center;
   color: white;
+  background-color: #3d3983;
   font-size: 1.25rem;
   cursor: pointer;
   z-index: 2;
+  border: none;
+  padding: 0;
 `;
 
 const ButtonContainer = styled.div`
