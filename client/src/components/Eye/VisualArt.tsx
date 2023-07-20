@@ -195,7 +195,8 @@ const VisualArt: React.FC = () => {
         <Modal
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          roomId={roomId} userId={user?.sub}
+          roomId={roomId}
+          userId={user?.sub}
           friendList={friendList}
           sendInvite={sendInvite}
         />
