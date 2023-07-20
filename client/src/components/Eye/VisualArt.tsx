@@ -120,8 +120,7 @@ const VisualArt: React.FC = () => {
       console.log(collaborators);
     });
 
-    socket.on('disconnection', (userId, roomId) => {
-      console.log('client received collaborator disconnect');
+    socket.on('collaboratorDisconnected', (userId, roomId) => {
       setCurrentCollaborators((prevCollaborators) =>
         prevCollaborators.filter((collaborator) => collaborator['userId'] !== userId)
       );

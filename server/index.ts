@@ -165,8 +165,8 @@ io.on('connection', socket => {
     if (room) {
       room.delete(userId);
     }
-    socket.emit('disconnection', userId, roomId);
-    socket.to(roomId).emit('disconnection', userId, roomId);
+    socket.emit('collaboratorDisconnected', userId, roomId);
+    socket.to(roomId).emit('collaboratorDisconnected', userId, roomId);
   });
 
   // MESSAGES
