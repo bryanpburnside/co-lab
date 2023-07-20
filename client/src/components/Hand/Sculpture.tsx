@@ -197,8 +197,8 @@ const Sculpture = () => {
           friendList={friendList}
           sendInvite={sendInvite}
         />
-      <GenerativeArt 
-      roomId={roomId} 
+      <GenerativeArt
+      roomId={roomId}
       openModal={openModal}
       currentCollaborators={currentCollaborators}
       />

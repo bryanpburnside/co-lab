@@ -12,7 +12,7 @@ const SaveButton = styled.div`
   position: absolute;
   left: -78px;
   bottom: 4px;
-  z-index: 2;
+  z-index: 1;
   cursor: pointer;
 
   &:hover {
@@ -255,7 +255,7 @@ const GenerativeArt = ({ roomId, openModal, currentCollaborators }) => {
   return (
     <div style={{display: 'flex', width: '80vw', margin: '0 auto'}}>
     <div className='canvas-container' style={{ position: 'relative' }}>
-      <div ref={canvasRef} style={{ position: 'relative', zIndex: '1', alignSelf: 'center'}}>
+      <div ref={canvasRef} style={{ position: 'relative', alignSelf: 'center'}}>
           {collaboratorMouseX !== null && collaboratorMouseY !== null && (
             <CollaboratorCursor
               x={collaboratorMouseX}
