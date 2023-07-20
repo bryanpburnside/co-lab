@@ -82,6 +82,12 @@ const CollaboratorImage = styled.img`
   border-radius: 50%;
 `;
 
+const CollaboratorLink = styled.a`
+  cursor: pointer;
+  text-decoration: none;
+  margin: 0;
+`;
+
 const CollaboratorCursor = styled.div<{ x: number; y: number, collaboratorColor: Color }>`
   position: absolute;
   top: ${({ y }) => y}px;
@@ -374,14 +380,17 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
         </Button>
         {currentCollaborators &&
           currentCollaborators.map((user: Object, i: number) =>
-            <CollaboratorImage
+            <CollaboratorLink
               key={i}
-              src={user.picture}
-            />
+              href={`http://localhost:8000/profile/${user.userId}`}
+              target="_blank"
+            >
+              <CollaboratorImage src={user.picture} />
+            </CollaboratorLink>
           )
         }
       </ButtonContainerRight>
-    </CanvasContainer>
+    </CanvasContainer >
   );
 };
 
