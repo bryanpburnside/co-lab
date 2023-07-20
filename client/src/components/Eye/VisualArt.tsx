@@ -117,7 +117,6 @@ const VisualArt: React.FC = () => {
 
     socket.on('userInfoReceived', ({ userId, collaborators, roomId }) => {
       setCurrentCollaborators(collaborators);
-      console.log(collaborators);
     });
 
     socket.on('collaboratorDisconnected', (userId, roomId) => {
