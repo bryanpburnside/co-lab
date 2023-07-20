@@ -1,6 +1,6 @@
 import { Router } from 'express';
 const Ear = Router();
-import { Music, Artwork } from '../database/index.js'; // Replace with the path to your model file
+import { Music, Artwork } from '../database/index.js'; 
 
 
 

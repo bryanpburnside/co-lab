@@ -184,7 +184,7 @@ const Instrument = () => {
           if (albumCover) {
             const albumImageFormData = new FormData();
             albumImageFormData.append('file', albumCover);
-            albumImageFormData.append('upload_preset', 'e9ynzrtp'); // Use the same preset as the audio
+            albumImageFormData.append('upload_preset', 'e9ynzrtp'); 
   
             axios
               .post('https://api.cloudinary.com/v1_1/dkw6ksyvn/upload', albumImageFormData)
@@ -196,7 +196,7 @@ const Instrument = () => {
                 const requestBody = {
                   songTitle: musicTitle,
                   url: audioPublicURL,
-                  albumCover: albumImagePublicURL, // Save the Cloudinary URL to the albumCover field
+                  albumCover: albumImagePublicURL, 
                 };
   
                 axios
@@ -324,7 +324,7 @@ const Instrument = () => {
     }
   };
 
-  // New component to preview the selected album cover
+  //preview the album cover
   const AlbumCoverPreview = () => {
     return albumCover ? (
       <img
