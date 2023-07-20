@@ -9,6 +9,7 @@ import { FriendImage } from '../Profile/Profile';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FaPen, FaPenFancy, FaPalette, FaEraser, FaSave, FaUserPlus } from 'react-icons/fa';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { HuePicker } from 'react-color';
 interface DrawProps {
   backgroundColor: string;
   handleBackgroundColorChange: (color: string) => void;
@@ -42,6 +43,16 @@ const DrawContainer = styled.div`
 
 const ColorPicker = styled.input`
   display: none;
+`;
+
+const ColorPickerWrapper = styled.div`
+  display: flex:
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  top: 12.5rem;
+  left: 1.75rem;
 `;
 
 const PenWidthSliderWrapper = styled.div`
@@ -342,6 +353,15 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
         />
       )}
       <DrawContainer>
+        <ColorPickerWrapper>
+          <HuePicker
+            color={selectedColor}
+            onChange={(color) => handlePenColorChange({ target: { value: color.hex } })}
+            height={150}
+            width={10}
+            direction='vertical'
+          />
+        </ColorPickerWrapper>
         <PenWidthSliderWrapper>
           {showPenWidthSlider && (
             <PenWidthSlider>
@@ -380,12 +400,6 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
           </Button>
         </ButtonContainer>
         <ButtonContainer>
-          <ColorPicker
-            type="color"
-            id="pen-color"
-            value={selectedColor}
-            onChange={handlePenColorChange}
-          />
           <Button
             type="button"
             onClick={() => document.getElementById('pen-color')?.click()}
