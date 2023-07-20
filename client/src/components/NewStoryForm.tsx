@@ -14,6 +14,7 @@ interface Story {
   numberOfPages: number | null;
   originalCreatorId?: string;
   isPrivate: boolean | false;
+  titleColor: string;
 }
 
 interface NewStoryFormProps {
@@ -23,7 +24,6 @@ interface NewStoryFormProps {
 
 const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) => {
   const [title, setTitle] = useState('');
-  // const [collaborators, setCollaborators] = useState('');
   const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
   const [numberOfPages, setNumberOfPages] = useState<number | null>(null);
   const [speakText, setSpeakText] = useState('');
@@ -33,26 +33,6 @@ const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
   };
-
-  // const handleCollaboratorsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setCollaborators(event.target.value);
-  // };
-
-
-  // const handleCoverImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (event.target.files && event.target.files.length > 0) {
-  //     const file = event.target.files[0];
-  //     const formData = new FormData();
-  //     formData.append('coverImage', file);
-  //     try {
-  //       const response = await axios.post('/api/stories/upload', formData);
-  //       setCoverImage(file);
-  //       setCoverImageUrl(response.data.imageUrl);
-  //     } catch (error) {
-  //       console.error('Error uploading image to server:', error);
-  //     }
-  //   }
-  // };
 
   //for privacy settings
   const setPrivateStory = (checked: boolean) => {
@@ -75,7 +55,8 @@ const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) 
       coverImage: coverImageUrl,
       numberOfPages,
       originalCreatorId: user?.sub,
-      isPrivate: privacy
+      isPrivate: privacy,
+      titleColor: '#000000'
     };
 
     try {
@@ -136,10 +117,6 @@ const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) 
           onMouseLeave={() => handleLeave()}
         />
       </div>
-      {/* <div>
-        <label htmlFor="collaborators">Collaborators:</label>
-        <input type="text" id="collaborators" value={ collaborators } onChange={ handleCollaboratorsChange } />
-      </div> */}
       <Dropzone onImageUpload={ setCoverImageUrl } />
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
       <div>

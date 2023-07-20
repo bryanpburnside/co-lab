@@ -13,6 +13,7 @@ interface Story {
   numberOfPages: number | null;
   originalCreatorId?: string;
   isPrivate: boolean;
+  titleColor: string;
 }
 
 interface CarouselProps {

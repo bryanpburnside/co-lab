@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef, createContext } from "react";
 import NewStoryForm from "./NewStoryForm";
 import FlipBook from "./FlipBook";
-// import STT from  './STT';
-// import TranscriptLog from "./Transcript";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useParams } from 'react-router-dom'
 import { io, Socket } from 'socket.io-client';
@@ -16,7 +14,6 @@ export const socket = io('/');
 export const SocketContext = createContext<Socket | null>(null);
 import '../styles.css';
 import StoryCarousel from "./Carousel";
-import TitlePageEditor from './TitlePageEditor';
 import { SketchPicker } from 'react-color';
 
 interface Page {
@@ -33,6 +30,7 @@ interface Story {
   numberOfPages: number | null;
   originalCreatorId?: string;
   isPrivate: boolean;
+  titleColor: string;
 }
 
 export const TTSToggleContext = createContext<{
@@ -60,7 +58,7 @@ const StoryBook: React.FC = () => {
   const [peerId, setPeerId] = useState('');
   const [muted, setMuted] = useState(true);
   const [defaultStory, setDefaultStory] = useState(null);
-  const [titleColor, setTitleColor] = useState('#000000');
+  const [titleCol, setTitleCol] = useState('#000000');
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
 
   const userStream = useRef<MediaStream | null>(null);
@@ -227,21 +225,44 @@ const StoryBook: React.FC = () => {
     }, 1000);
   };
 
-  //might need
-  // const handleStoryLeave = () => {
-  //   setSpeakText('');
-  // };
-
   //create a new story should show the form
   //add the story to the list of stories
   //and set the created story as the current working story
-  const handleCreateStory = (createdStory: Story) => {
-    if (createdStory.isPrivate === true) {
-    setStories([...stories, createdStory]);
+  const handleCreateStory = async (createdStory: Story) => {
+    if (createdStory.isPrivate === false) {
+      setStories([...stories, createdStory]);
+    }
     setSelectedStory(createdStory);
     setShowNewStoryForm(false);
+
+    //add two empty pages to the new story
+    for (let i = 1; i <= 3; i++) {
+      const newPage: Page = {
+        page_number: i,
+        content: '',
+        story: createdStory.title,
+      };
+
+      try {
+        const response = await fetch('/api/pages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            page_number: newPage.page_number,
+            content: newPage.content,
+            storyId: createdStory.id,
+          }),
+        });
+
+        const savedPage = await response.json();
+        newPage.id = savedPage.id;
+        setPages((prevPages) => [...prevPages, newPage]);
+      } catch (error) {
+        console.error('Failed to add new page', error);
+      }
     }
   };
+
 
   //in case of cancel
   const handleCancelCreateStory = () => {
@@ -327,8 +348,28 @@ const StoryBook: React.FC = () => {
     setDisplayColorPicker(!displayColorPicker);
   };
 
-  const handleTitleColorChange = (color: any) => {
-    setTitleColor(color.hex);
+  const handleTitleColorChange = async (color: any) => {
+    setTitleCol(color.hex);
+
+    if (selectedStory) {
+      const updatedStory = { ...selectedStory, titleColor: color.hex };
+      setSelectedStory(updatedStory);
+
+      try {
+        const response = await fetch(`/api/stories/${selectedStory.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ titleColor: color.hex }),
+        });
+
+        if (!response.ok) {
+          throw new Error("response was not ok");
+        }
+
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
   };
 
 
@@ -384,7 +425,7 @@ const StoryBook: React.FC = () => {
               <div>
                 {displayColorPicker ?
                   <div style={{ position: 'absolute', zIndex: '2' }}>
-                    <SketchPicker color={ titleColor } onChange={ handleTitleColorChange } />
+                    <SketchPicker color={ titleCol } onChange={ handleTitleColorChange } />
                   </div>
                   : null
                 }
@@ -406,7 +447,7 @@ const StoryBook: React.FC = () => {
               addNewPage={ addNewPage }
               roomId={ roomId }
               user={ user?.sub }
-              titleColor={ titleColor }
+              titleColor={ selectedStory ? titleCol : '#000000' }
             />
           </div>
         }

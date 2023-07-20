@@ -7,16 +7,18 @@ interface Story {
   title: string;
   coverImage: any | null;
   numberOfPages: number | null;
+  originalCreatorId?: string | null;
+  isPrivate: boolean;
+  titleColor: string;
 }
 
 interface TitlePageProps {
   story: Story;
   TooltipIcon: typeof TooltipIcon;
   addNewPage: () => void;
-  titleColor: string;
 }
 
-const TitlePage: React.FC<TitlePageProps> = ({ story, TooltipIcon, addNewPage, titleColor }) => {
+const TitlePage: React.FC<TitlePageProps> = ({ story, TooltipIcon, addNewPage }) => {
 
   return (
     <div
@@ -40,7 +42,7 @@ const TitlePage: React.FC<TitlePageProps> = ({ story, TooltipIcon, addNewPage, t
           justifyContent: 'center',
           alignItems: 'center',
           padding: '0 10px',
-          color: titleColor,
+          color: story.titleColor,
           fontWeight: 'bolder',
           fontSize: '32px',
           textAlign: 'center',

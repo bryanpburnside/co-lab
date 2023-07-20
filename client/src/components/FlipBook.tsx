@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import HTMLFlipBook from "react-pageflip";
 import '../styles.css';
 import { FaPlusCircle, FaVolumeUp } from 'react-icons/fa';
@@ -42,6 +42,8 @@ interface Story {
   coverImage: any | null;
   numberOfPages: number | null;
   originalCreatorId?: string | null;
+  isPrivate: boolean;
+  titleColor: string;
 }
 
 interface FlipBookProps {
@@ -58,7 +60,6 @@ interface FlipBookProps {
 
 const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPages, addNewPage, TooltipIcon, roomId, user, titleColor }) => {
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
-  // const [isAutoReading, setIsAutoReading] = useState(false);
 
   const flipBookRef = useRef<any>(null);
 
@@ -153,6 +154,7 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
       startPage={1}
       showCover={true}
       useMouseEvents={true}
+      // onFlip={() => handleBookOpen()}
       style={{
         backgroundColor: '#3d3983',
         overflow: "visible",
@@ -177,7 +179,6 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
               story={ story }
               addNewPage={ addNewPage }
               TooltipIcon={ TooltipIcon }
-              titleColor={ titleColor }
             />
           </PageContainer>
         </div>
@@ -194,7 +195,7 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
             margin: 'auto',
             }}>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              { index === selectedStoryPages.length - 1 && (
+              { index === selectedStoryPages.length - 2 && (
                 <TooltipIcon
                   icon={ FaPlusCircle }
                   tooltipText="Add New Page"
@@ -235,17 +236,30 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
             </div>
             <Pages data-density="hard">
               {page.content}
-              <span
-                style={{
-                  position: 'absolute',
-                  bottom: '68px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  color: 'black'
-                }}
-              >
-                {page.page_number}
-              </span>
+              {index === selectedStoryPages.length - 1 ? (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '50%', left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    fontSize: '30px',
+                    fontWeight: 'bold'
+                  }}>
+                  The End
+                </div>
+              ) : (
+                <span
+                  style={{
+                    position: 'absolute',
+                    bottom: '68px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    color: 'black'
+                  }}
+                >
+                  {page.page_number}
+                </span>
+              )}
             </Pages>
           </PageContainer>
         </div>

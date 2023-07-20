@@ -143,7 +143,11 @@ const Story = sequelize.define('stories', {
   isPrivate: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
-  }
+  },
+  titleColor: {
+    type: DataTypes.STRING,
+  },
+
 });
 
 const Pages = sequelize.define('pages', {
