@@ -1,6 +1,6 @@
 import { Router } from 'express';
 const CreateStoryRouter = Router();
-import { Story, User } from '../database/index.js';
+import { Story } from '../database/index.js';
 import multer from 'multer';
 import fs from 'fs';
 const upload = multer({ dest: 'uploads/' });
@@ -50,7 +50,6 @@ CreateStoryRouter.get('/', async (req, res) => {
 CreateStoryRouter.delete('/:id', async (req, res) => {
   const { id } = req.params;
   const { userId } = req.query;
-  console.log(userId);
 
   try {
     const story = await Story.findOne({ where: { id } });
@@ -78,10 +77,10 @@ CreateStoryRouter.delete('/:id', async (req, res) => {
 CreateStoryRouter.put('/:id', async (req, res) => {
   const { id } = req.params;
   const { titleColor } = req.body;
-console.log('id', id, 'titleColor', titleColor);
+
   try {
     const story = await Story.findOne({ where: { id } });
-    console.log(story);
+
     //check for story
     if (!story) {
       return res.status(404).json({ message: 'Story not found-router' });

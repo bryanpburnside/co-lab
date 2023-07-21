@@ -32,7 +32,7 @@ const TitlePage: React.FC<TitlePageProps> = ({ story, TooltipIcon, addNewPage })
         position: 'relative'
       }}
     >
-      {/* Title and Color Picker */}
+      {/* Title */}
       <div
         style={{
           backgroundColor: 'transparent',

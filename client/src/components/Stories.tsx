@@ -165,18 +165,18 @@ const StoryBook: React.FC = () => {
     });
   }, [muted]);
 
+  const fetchStories = async () => {
+    try {
+      const response = await fetch('/api/stories');
+      const data = await response.json();
+      setStories(data);
+    } catch (error) {
+      console.error('Failed to fetch stories-client', error);
+    }
+  };
 
   //fetch stories from the server
   useEffect(() => {
-    const fetchStories = async () => {
-      try {
-        const response = await fetch('/api/stories');
-        const data = await response.json();
-        setStories(data);
-      } catch (error) {
-        console.error('Failed to fetch stories-client', error);
-      }
-    };
     fetchStories();
   }, []);
 
@@ -338,7 +338,6 @@ const StoryBook: React.FC = () => {
     const fetchDefaultStory = async () => {
       const res = await axios.get('/api/stories');
       const defaultStory = res.data.filter((story: any) => story.title === 'pickles')
-      console.log(defaultStory[0]);
       setSelectedStory(defaultStory[0]);
     };
     fetchDefaultStory();
@@ -354,7 +353,6 @@ const StoryBook: React.FC = () => {
     if (selectedStory) {
       const updatedStory = { ...selectedStory, titleColor: color.hex };
       setSelectedStory(updatedStory);
-
       try {
         const response = await fetch(`/api/stories/${selectedStory.id}`, {
           method: 'PUT',
@@ -366,11 +364,26 @@ const StoryBook: React.FC = () => {
           throw new Error("response was not ok");
         }
 
+        //fetch the updated story from the server
+        const updatedStoryResponse = await fetch(`/api/stories/${selectedStory.id}`);
+        if (!updatedStoryResponse.ok) {
+          throw new Error("Error fetching the updated story");
+        }
+
+        const updatedStory = await updatedStoryResponse.json();
+        //set the state with the updated story
+        setSelectedStory(updatedStory);
+
       } catch (error) {
         console.error('Error:', error);
       }
     }
   };
+
+  useEffect(() => {
+    // fetch stories data from the server
+    fetchStories();
+  }, [selectedStory]);
 
 
   return (
