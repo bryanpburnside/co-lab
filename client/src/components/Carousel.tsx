@@ -124,7 +124,7 @@ const StoryCarousel: React.FC<CarouselProps> = ({ items, handleStoryClick, handl
                 <div style={{ marginTop: '10px', fontSize: '0.8em', color: 'white', textAlign: 'center', marginBottom: '30px' }}>
                   {story.title}
                 </div>
-                {userIsCreator && (
+                { (
                   <div
                     style={{
                       top: '-20px',

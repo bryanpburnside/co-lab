@@ -337,11 +337,14 @@ const StoryBook: React.FC = () => {
   useEffect(() => {
     const fetchDefaultStory = async () => {
       const res = await axios.get('/api/stories');
-      const defaultStory = res.data.filter((story: any) => story.title === 'pickles')
+      const defaultStory = res.data.filter((story: Story) => {
+        return story.title === 'Instructions';
+      })
       setSelectedStory(defaultStory[0]);
     };
     fetchDefaultStory();
   }, []);
+
 
   const handleColorPickerToggle = () => {
     setDisplayColorPicker(!displayColorPicker);
