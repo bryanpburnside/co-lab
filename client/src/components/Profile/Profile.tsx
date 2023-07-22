@@ -441,7 +441,7 @@ const Profile: React.FC = () => {
                       key={art.id}
                       id={art.id}
                       type={art.type}
-                      content={art[art.type.replace(' ', '')]?.content || art[art.type]?.content || art[art.type]?.coverImage}
+                      content={art[art.type.replace(' ', '')]?.content || art[art.type]?.content || art[art.type]?.albumCover || art[art.type]?.coverImage}
                       isOwnProfile={isOwnProfile}
                       onClick={handleArtworkClick}
                       deleteArtwork={deleteArtwork}
