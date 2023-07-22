@@ -6,7 +6,9 @@ import axios from 'axios';
 import paper, { Color } from 'paper';
 import styled from 'styled-components';
 import { FriendImage } from '../Profile/Profile';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FaPen, FaPenFancy, FaPalette, FaEraser, FaSave, FaUserPlus } from 'react-icons/fa';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 interface DrawProps {
   backgroundColor: string;
   handleBackgroundColorChange: (color: string) => void;
@@ -31,6 +33,8 @@ const StyledCanvas = styled.canvas<{ backgroundColor: string }>`
 
 const DrawContainer = styled.div`
   position: absolute;
+  display: flex;
+  flex-direction: column;
   top: 50%;
   left: 5%;
   transform: translateY(-50%);
@@ -38,6 +42,45 @@ const DrawContainer = styled.div`
 
 const ColorPicker = styled.input`
   display: none;
+`;
+
+const PenWidthSliderWrapper = styled.div`
+  position: absolute;
+  top: 12.5rem;
+  left: 1.75rem;
+  transform: translateY(-50%) rotate(90deg);
+  transform-origin: left center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`;
+
+const PenWidthSlider = styled.div`
+  background-color: #3d3983;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  button[type="button"] {
+    font-size: 6px;
+  }
+`;
+
+const XIcon = styled.button`
+  position: absolute;
+  top: 20%;
+  left: 95%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  background-color: #3d3983;
+  font-size: 1.25rem;
+  cursor: pointer;
+  z-index: 2;
+  border: none;
+  padding: 0;
 `;
 
 const ButtonContainer = styled.div`
@@ -80,6 +123,12 @@ const CollaboratorImage = styled.img`
   align-self: center;
   border: 4px solid white;
   border-radius: 50%;
+`;
+
+const CollaboratorLink = styled.a`
+  cursor: pointer;
+  text-decoration: none;
+  margin: 0 auto;
 `;
 
 const CollaboratorCursor = styled.div<{ x: number; y: number, collaboratorColor: Color }>`
@@ -285,7 +334,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
         ref={canvasRef}
         backgroundColor={backgroundColor}
       />
-      {collaboratorMouseX !== null && collaboratorMouseY !== null && (
+      {collaboratorMouseX && collaboratorMouseY && (
         <CollaboratorCursor
           x={collaboratorMouseX}
           y={collaboratorMouseY}
@@ -293,6 +342,29 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
         />
       )}
       <DrawContainer>
+        <PenWidthSliderWrapper>
+          {showPenWidthSlider && (
+            <PenWidthSlider>
+              <input
+                type="range"
+                value={penWidth.toString()}
+                onChange={handlePenWidthSliderChange}
+                min={1}
+                max={100}
+                className="slider is-small"
+              />
+              {/* <Button
+                  type="button"
+                  onClick={handlePenWidthSliderClose}
+                >
+                  Close
+                </Button> */}
+              <XIcon onClick={handlePenWidthSliderClose}>
+                <FontAwesomeIcon icon={faXmark} />
+              </XIcon>
+            </PenWidthSlider>
+          )}
+        </PenWidthSliderWrapper>
         <ButtonContainer style={{ marginTop: '25rem' }}>
           <ColorPicker
             type="color"
@@ -328,24 +400,6 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
           >
             <FaPenFancy />
           </Button>
-          {showPenWidthSlider && (
-            <div className="pen-width-slider">
-              <input
-                type="range"
-                value={penWidth.toString()}
-                onChange={handlePenWidthSliderChange}
-                min={1}
-                max={100}
-                className="slider is-small"
-              />
-              <Button
-                type="button"
-                onClick={handlePenWidthSliderClose}
-              >
-                Close
-              </Button>
-            </div>
-          )}
         </ButtonContainer>
         <ButtonContainer>
           <Button
@@ -374,14 +428,17 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
         </Button>
         {currentCollaborators &&
           currentCollaborators.map((user: Object, i: number) =>
-            <CollaboratorImage
+            <CollaboratorLink
               key={i}
-              src={user.picture}
-            />
+              href={`http://localhost:8000/profile/${user.userId}`}
+              target="_blank"
+            >
+              <CollaboratorImage src={user.picture} />
+            </CollaboratorLink>
           )
         }
       </ButtonContainerRight>
-    </CanvasContainer>
+    </CanvasContainer >
   );
 };
 

@@ -117,7 +117,6 @@ const VisualArt: React.FC = () => {
 
     socket.on('userInfoReceived', ({ userId, collaborators, roomId }) => {
       setCurrentCollaborators(collaborators);
-      console.log(collaborators);
     });
 
     socket.on('collaboratorDisconnected', (userId, roomId) => {
@@ -196,7 +195,8 @@ const VisualArt: React.FC = () => {
         <Modal
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          roomId={roomId} userId={user?.sub}
+          roomId={roomId}
+          userId={user?.sub}
           friendList={friendList}
           sendInvite={sendInvite}
         />
