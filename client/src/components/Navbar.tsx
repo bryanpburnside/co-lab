@@ -4,9 +4,9 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleUser, faNewspaper, faMessage } from '@fortawesome/free-regular-svg-icons';
 import { faArrowRightToBracket, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
-import TooltipIcon from './TooltipIcons';
+
 import '../styles.css';
-import TTS from "./TTS";
+// import TTS from "./TTS";
 
 const Navbar = () => {
   const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
@@ -35,32 +35,17 @@ const Navbar = () => {
       <ul className="navbar-links-right">
         <li className="navbar-item-right">
           <Link to="/feed">
-            <TooltipIcon
-              icon={ faNewspaper }
-              tooltipText="Feed"
-              handleClick={() => {}}
-              style={{ fontSize: '50px'}}
-            />
+            <FontAwesomeIcon icon={faNewspaper} size='lg' />
           </Link>
         </li>
         <li className="navbar-item-right">
           <Link to="/messages">
-            <TooltipIcon
-              icon={ faMessage }
-              tooltipText="Messages"
-              handleClick={() => {}}
-              style={{ fontSize: '45px'}}
-            />
+            <FontAwesomeIcon icon={faMessage} size='lg' />
           </Link>
         </li>
         <li className="navbar-item-right" onMouseEnter={() => handleHover('Profile')}>
           <Link to="/profile">
-            <TooltipIcon
-              icon={ faCircleUser }
-              tooltipText="Profile"
-              handleClick={() => {}}
-              style={{ fontSize: '49px'}}
-            />
+            <FontAwesomeIcon icon={faCircleUser} size='lg' />
           </Link>
         </li>
         {!isAuthenticated ?
@@ -70,12 +55,7 @@ const Navbar = () => {
             style={{ cursor: 'pointer' }}
             onMouseEnter={() => handleHover('Login')}
           >
-            <TooltipIcon
-              icon={ faArrowRightToBracket }
-              tooltipText="Logout"
-              handleClick={() => {}}
-              style={{ fontSize: '50px'}}
-            />
+            <FontAwesomeIcon icon={faArrowRightToBracket} size='lg' />
           </li>
           :
           <li
@@ -84,12 +64,7 @@ const Navbar = () => {
             style={{ cursor: 'pointer' }}
             onMouseEnter={() => handleHover('Logout')}
           >
-            <TooltipIcon
-              icon={ faArrowRightFromBracket }
-              tooltipText="Login"
-              handleClick={() => {}}
-              style={{ fontSize: '50px'}}
-            />
+            <FontAwesomeIcon icon={faArrowRightFromBracket} size='lg' />
           </li>
         }
       </ul>

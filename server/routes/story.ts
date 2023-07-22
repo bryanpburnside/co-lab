@@ -87,7 +87,7 @@ CreateStoryRouter.put('/:id', async (req, res) => {
     }
 
     //update story title color
-    story.dataValues.titleColor = titleColor;
+    await story.update({ titleColor });
     await story.save();
 
     res.status(200).json({ message: 'Story title color updated successfully-router', story });

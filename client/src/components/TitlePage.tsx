@@ -52,32 +52,6 @@ const TitlePage: React.FC<TitlePageProps> = ({ story, TooltipIcon, addNewPage })
       >
         { story.title }
         </div>
-      {/* Add New Page Icon */}
-      <div
-        style={{
-          position: 'absolute',
-          left: '50%',
-          bottom: '10px',
-          transform: 'translate(-50%, 0)',
-        }}
-      >
-        <TooltipIcon
-          icon={ FaPlusCircle }
-          tooltipText="Add New Page"
-          handleClick={(e: React.MouseEvent) => {
-            e.stopPropagation();
-            addNewPage();
-          }}
-          style={{
-            color: '#3d3983',
-            backgroundColor: 'white',
-            borderRadius: '50%',
-            padding: '5px',
-            paddingBottom: '2px',
-            margin: '5px'
-          }}
-        />
-      </div>
     </div>
   );
 };

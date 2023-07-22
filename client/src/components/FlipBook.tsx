@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 import '../styles.css';
 import { FaPlusCircle, FaVolumeUp } from 'react-icons/fa';
@@ -55,10 +55,9 @@ interface FlipBookProps {
   TooltipIcon: typeof TooltipIcon;
   roomId: string | undefined;
   user: string | undefined;
-  titleColor: string;
 }
 
-const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPages, addNewPage, TooltipIcon, roomId, user, titleColor }) => {
+const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPages, addNewPage, TooltipIcon, roomId, user }) => {
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
 
   const flipBookRef = useRef<any>(null);

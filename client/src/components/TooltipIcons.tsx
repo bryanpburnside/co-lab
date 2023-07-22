@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import FontAwesomeIcon here if not already imported
 import '../styles.css';
 
+
+interface IconProps {
+  size?: number;
+  className?: string;
+}
 interface TooltipIconProps {
   children?: React.ReactNode;
-  icon: any; // You can keep the icon prop type as 'any' if FontAwesomeIcon component is causing type issues
+  icon: React.ComponentType<IconProps>;
   tooltipText: string;
   handleClick: (e: React.MouseEvent) => void;
   style?: React.CSSProperties;
   size?: number;
 }
 
-const TooltipIcon: React.FC<TooltipIconProps> = ({ icon, tooltipText, handleClick, style }) => {
+
+
+const TooltipIcon: React.FC<TooltipIconProps> = ({ icon: Icon, tooltipText, handleClick, style }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const handleMouseEnter = () => {
@@ -24,17 +30,16 @@ const TooltipIcon: React.FC<TooltipIconProps> = ({ icon, tooltipText, handleClic
 
   return (
     <div
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onClick={handleClick}
+      onMouseEnter={ handleMouseEnter }
+      onMouseLeave={ handleMouseLeave }
+      onClick={ handleClick }
       style={{ ...style, position: 'relative' }}
     >
-      <FontAwesomeIcon icon={icon} />
-      {isHovered && <div className="tooltip-text">{tooltipText}</div>}
+      <Icon size={30} />
+      {isHovered && <div className="tooltip-text">{ tooltipText }</div>}
     </div>
   );
 };
 
 export default TooltipIcon;
-
 

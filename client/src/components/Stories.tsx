@@ -367,16 +367,6 @@ const StoryBook: React.FC = () => {
           throw new Error("response was not ok");
         }
 
-        //fetch the updated story from the server
-        const updatedStoryResponse = await fetch(`/api/stories/${selectedStory.id}`);
-        if (!updatedStoryResponse.ok) {
-          throw new Error("Error fetching the updated story");
-        }
-
-        const updatedStory = await updatedStoryResponse.json();
-        //set the state with the updated story
-        setSelectedStory(updatedStory);
-
       } catch (error) {
         console.error('Error:', error);
       }
@@ -463,7 +453,6 @@ const StoryBook: React.FC = () => {
               addNewPage={ addNewPage }
               roomId={ roomId }
               user={ user?.sub }
-              titleColor={ selectedStory ? titleCol : '#000000' }
             />
           </div>
         }
