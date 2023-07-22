@@ -366,22 +366,14 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, setSho
         />
       )}
       <DrawContainer>
-        {selectedColorPicker === 'pen' &&
+        {selectedColorPicker &&
           <ColorPickerWrapper>
             <HuePicker
               color={selectedColor}
-              onChange={(color) => handlePenColorChange({ target: { value: color.hex } })}
-              height={150}
-              width={10}
-              direction='vertical'
-            />
-          </ColorPickerWrapper>
-        }
-        {selectedColorPicker === 'bg' &&
-          <ColorPickerWrapper>
-            <HuePicker
-              color={selectedColor}
-              onChange={(color) => handleBackgroundColorChange({ target: { value: color.hex } })}
+              onChange={(color) =>
+                selectedColorPicker === 'pen'
+                  ? handlePenColorChange({ target: { value: color.hex } })
+                  : handleBackgroundColorChange({ target: { value: color.hex } })}
               height={150}
               width={10}
               direction='vertical'
