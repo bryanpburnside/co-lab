@@ -7,7 +7,7 @@ import paper, { Color } from 'paper';
 import styled from 'styled-components';
 import { FriendImage } from '../Profile/Profile';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { FaPen, FaPenFancy, FaPalette, FaEraser, FaSave, FaUserPlus } from 'react-icons/fa';
+import { FaPen, FaPencilRuler, FaPalette, FaEraser, FaSave, FaUserPlus } from 'react-icons/fa';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { HuePicker } from 'react-color';
 interface DrawProps {
@@ -60,7 +60,7 @@ const PenWidthSliderWrapper = styled.div`
   position: absolute;
   top: 12.5rem;
   left: 1.75rem;
-  transform: translateY(-50%) rotate(90deg);
+  transform: translateY(-50%) rotate(-90deg);
   transform-origin: left center;
   display: flex;
   justify-content: center;
@@ -430,7 +430,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, setSho
             type="button"
             onClick={handlePenWidthButtonClick}
           >
-            <FaPenFancy />
+            <FaPencilRuler />
           </Button>
         </ButtonContainer>
         <ButtonContainer>
