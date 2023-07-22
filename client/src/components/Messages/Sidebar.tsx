@@ -23,6 +23,8 @@ const Inbox = styled.h1`
 const MessageList = styled.div`
   flex: 1;
   width: 25%;
+  overflow-y: auto;
+  scrollbar-color: transparent transparent;
 
   ul {
     list-style: none;
