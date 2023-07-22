@@ -35,22 +35,31 @@ artworkRouter.delete('/byId/:artworkId', async (req, res) => {
   }
 })
 
-artworkRouter.get('/byId/originalImage/:artworkId', async (req, res) => {
+artworkRouter.get('/byId/popupContent/:artworkId', async (req, res) => {
   const { artworkId } = req.params;
   try {
     const artworkEntry = await Artwork.findByPk(artworkId);
     if (artworkEntry) {
-      const artPiece = await getArtByType(artworkEntry.type, artworkEntry.id);
-      if (artPiece) {
-        res.send(artPiece.content).status(200);
-      } else {
-        res.sendStatus(404);
+      const { id, type } = artworkEntry;
+      const artPiece = await getArtByType(type, id);
+      const { content, url, coverImage } = artPiece;
+      switch (type) {
+        case 'visual art':
+        case 'sculpture':
+          res.send(content);
+          break;
+        case 'music':
+          res.send(url);
+          break;
+        case 'story':
+          res.send(coverImage);
+          break;
+        default:
+          res.sendStatus(404);
       }
-    } else {
-      res.sendStatus(404);
     }
   } catch (err) {
-    console.error('Failed to GET original image BY ARTWORK ID', err);
+    console.error('Failed to GET popup content BY ARTWORK ID', err);
     res.sendStatus(500);
   }
 });
@@ -77,11 +86,14 @@ const getArtByType = async (type: string, artworkId?: number) => {
     case 'visual art':
       model = VisualArt;
       break;
+    case 'music':
+      model = Music;
+      break;
     case 'sculpture':
       model = Sculpture;
       break;
-    case 'music':
-      model = Music;
+    case 'story':
+      model = Story;
       break;
     default:
       return null;

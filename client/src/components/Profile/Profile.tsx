@@ -233,12 +233,14 @@ const Profile: React.FC = () => {
     }
   };
 
-  const getFullSizeImage = async (artworkId: string) => {
+  const getPopupContent = async (artworkId: string) => {
     try {
-      const { data } = await axios.get(`/artwork/byId/originalImage/${artworkId}`);
-      setSelectedArtwork(data);
+      const { data } = await axios.get(`/artwork/byId/popupContent/${artworkId}`);
+      if (data) {
+        setSelectedArtwork(data);
+      }
     } catch (err) {
-      console.error('Failed to GET original image at client:', err);
+      console.error('Failed to GET popup content at client:', err);
     }
   }
 
@@ -287,7 +289,7 @@ const Profile: React.FC = () => {
     if (isTrashIconClicked) {
       deleteArtwork(artworkId);
     } else {
-      getFullSizeImage(artworkId);
+      getPopupContent(artworkId);
       setShowPopup(true);
     }
   };
@@ -434,22 +436,26 @@ const Profile: React.FC = () => {
           <Name>Artwork</Name>
           <ArtworkContainer ref={artworkContainerRef} containerHeight={artworkContainerHeight}>
             {artwork &&
-              artwork.map((art) => {
-                if (art.type) {
-                  return (
-                    <ArtItem
-                      key={art.id}
-                      id={art.id}
-                      type={art.type}
-                      content={art[art.type.replace(' ', '')]?.content || art[art.type]?.content || art[art.type]?.coverImage}
-                      isOwnProfile={isOwnProfile}
-                      onClick={handleArtworkClick}
-                      deleteArtwork={deleteArtwork}
-                    />
-                  );
-                }
-                return null;
-              })}
+              artwork
+                .sort(
+                  (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                ).map((art) => {
+                  if (art.type) {
+                    console.log(art)
+                    return (
+                      <ArtItem
+                        key={art.id}
+                        id={art.id}
+                        type={art.type}
+                        content={art[art.type.replace(' ', '')]?.content || art[art.type]?.content || art[art.type]?.albumCover || art[art.type]?.coverImage}
+                        isOwnProfile={isOwnProfile}
+                        onClick={handleArtworkClick}
+                        deleteArtwork={deleteArtwork}
+                      />
+                    );
+                  }
+                  return null;
+                })}
           </ArtworkContainer>
         </div>
       </RightContainer>
@@ -480,7 +486,12 @@ const Profile: React.FC = () => {
       </FriendContainer>
       {showPopup && (
         <Popup onClick={() => setShowPopup(false)}>
-          <PopupImage src={selectedArtwork} alt="Full-size artwork" />
+          {selectedArtwork?.includes('video') ?
+            <audio controls>
+              <source src={selectedArtwork} type="audio/mp3" />
+              Your browser does not support the audio tag.
+            </audio>
+            : <PopupImage src={selectedArtwork} alt="Full-size artwork" />}
         </Popup>
       )}
     </ProfileContainer >

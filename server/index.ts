@@ -210,7 +210,6 @@ io.on('connection', socket => {
     roomCollaborators.set(userId, picture);
     collaboratorsMap.set(roomId, roomCollaborators);
     const roomCollaboratorsArray = Array.from(roomCollaborators, ([userId, picture]) => ({ userId, picture }));
-    console.log('collab array:', roomCollaboratorsArray);
     socket.emit('userInfoReceived', { userId, collaborators: roomCollaboratorsArray, roomId });
 
     socket.to(roomId).emit('userInfoReceived', { userId, collaborators: roomCollaboratorsArray, roomId });

@@ -35,6 +35,7 @@ interface Music {
   updatedAt: string;
   artworkId: number;
   name: string;
+  albumCover: string;
 }
 
 type FeedItem = ArtItem | PageItem | Music;
@@ -217,6 +218,11 @@ const Feed: React.FC = () => {
         {isMusic && (
           <div className="music" key={index + 42}>
             <MusicHeader>{item.songTitle}</MusicHeader>
+            <img
+              src={item.albumCover}
+              alt=""
+              style={{ maxWidth: '300px', maxHeight: '200px' }} // Adjust the values as needed
+            />
             <audio controls>
               <source src={item.url} type="audio/mp3" />
               Your browser does not support the audio tag.
@@ -238,3 +244,20 @@ const Feed: React.FC = () => {
 };
 
 export default Feed;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import React, { useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import axios from 'axios';
 import { Socket } from 'socket.io-client';
 import { SocketContext } from './Sculpture';
@@ -19,10 +19,31 @@ const SaveButton = styled.div`
   }
 `
 
+const CollaboratorCursor = styled.div<{ x: number; y: number }>`
+  position: absolute;
+  top: ${({ y }) => y}px;
+  left: ${({ x }) => x}px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: yellow;
+  pointer-events: none;
+  z-index: 3;
+`;
+
 const GenerativeArt = ({ roomId }) => {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const canvasRef = useRef(null);
   const socket = useContext(SocketContext) as Socket;
+  const [collaboratorMouseX, setCollaboratorMouseX] = useState<number | null>(null);
+  const [collaboratorMouseY, setCollaboratorMouseY] = useState<number | null>(null);
+
+  const handleMouseMove = (event: MouseEvent) => {
+    const { clientX, clientY } = event;
+    const data = { x: clientX, y: clientY, roomId };
+    socket.emit('mouseMove', data);
+  };
+
   useEffect(() => {
     // Create p5 sketch
     const sketch = (p: any) => {
@@ -58,6 +79,13 @@ const GenerativeArt = ({ roomId }) => {
           }
         });
       };
+
+      socket.on('mouseMove', ({ x, y }) => {
+        setCollaboratorMouseX(x);
+        setCollaboratorMouseY(y);
+      });
+
+      document.addEventListener('mousemove', handleMouseMove);
 
       p.draw = () => {
         p.background(61, 57, 131); // Set background color to #3d3983
@@ -166,6 +194,7 @@ const GenerativeArt = ({ roomId }) => {
     new p5(sketch);
 
     return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
       socket.disconnect();
     }
 
@@ -185,6 +214,12 @@ const GenerativeArt = ({ roomId }) => {
   return (
     <div className='canvas-container' style={{ position: 'relative' }}>
       <div ref={canvasRef} style={{ position: 'relative', zIndex: '1' }}>
+          {collaboratorMouseX !== null && collaboratorMouseY !== null && (
+            <CollaboratorCursor
+              x={collaboratorMouseX}
+              y={collaboratorMouseY}
+            />
+            )}
         {user &&
           <SaveButton
             onClick={handleSave}
