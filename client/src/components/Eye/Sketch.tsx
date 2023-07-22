@@ -13,6 +13,7 @@ import { HuePicker } from 'react-color';
 interface DrawProps {
   backgroundColor: string;
   handleBackgroundColorChange: (color: string) => void;
+  selectedColorPicker: 'pen' | 'bg';
   sendInvite: () => void;
   roomId: string | undefined;
 }
@@ -153,7 +154,7 @@ const CollaboratorCursor = styled.div<{ x: number; y: number, collaboratorColor:
   pointer-events: none;
 `;
 
-const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handleBackgroundColorChange, openModal, currentCollaborators, roomId }) => {
+const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, setShowPenColorPicker, setShowBgColorPicker, handleBackgroundColorChange, selectedColorPicker, openModal, currentCollaborators, roomId }) => {
   const { user } = useAuth0();
   const socket = useContext(SocketContext) as Socket;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -164,6 +165,8 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
   const penWidthRef = useRef<number>(penWidth);
   const [eraseMode, setEraseMode] = useState(false);
   const [showPenWidthSlider, setShowPenWidthSlider] = useState(false);
+  // const [showPenColorPicker, setShowPenColorPicker] = useState(false);
+  // const [showBgColorPicker, setShowBgColorPicker] = useState(false);
   const [collaboratorMouseX, setCollaboratorMouseX] = useState<number | null>(null);
   const [collaboratorMouseY, setCollaboratorMouseY] = useState<number | null>(null);
   const [collaboratorColor, setCollaboratorColor] = useState<Color>(new Color('white'));
@@ -177,6 +180,16 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
       pathRef.current.strokeColor = penColorRef.current;
       paper.view.update();
     }
+  };
+
+  const togglePenColorPicker = () => {
+    setShowPenColorPicker((prevState) => !prevState);
+    setShowBgColorPicker(false);
+  };
+
+  const toggleBgColorPicker = () => {
+    setShowBgColorPicker((prevState) => !prevState);
+    setShowPenColorPicker(false);
   };
 
   const handlePenWidthButtonClick = () => {
@@ -353,15 +366,28 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
         />
       )}
       <DrawContainer>
-        <ColorPickerWrapper>
-          <HuePicker
-            color={selectedColor}
-            onChange={(color) => handlePenColorChange({ target: { value: color.hex } })}
-            height={150}
-            width={10}
-            direction='vertical'
-          />
-        </ColorPickerWrapper>
+        {selectedColorPicker === 'pen' &&
+          <ColorPickerWrapper>
+            <HuePicker
+              color={selectedColor}
+              onChange={(color) => handlePenColorChange({ target: { value: color.hex } })}
+              height={150}
+              width={10}
+              direction='vertical'
+            />
+          </ColorPickerWrapper>
+        }
+        {selectedColorPicker === 'bg' &&
+          <ColorPickerWrapper>
+            <HuePicker
+              color={selectedColor}
+              onChange={(color) => handleBackgroundColorChange({ target: { value: color.hex } })}
+              height={150}
+              width={10}
+              direction='vertical'
+            />
+          </ColorPickerWrapper>
+        }
         <PenWidthSliderWrapper>
           {showPenWidthSlider && (
             <PenWidthSlider>
@@ -394,7 +420,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
           />
           <Button
             type="button"
-            onClick={() => document.getElementById('bg-color')?.click()}
+            onClick={toggleBgColorPicker}
           >
             <FaPalette />
           </Button>
@@ -402,7 +428,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
         <ButtonContainer>
           <Button
             type="button"
-            onClick={() => document.getElementById('pen-color')?.click()}
+            onClick={togglePenColorPicker}
           >
             <FaPen />
           </Button>

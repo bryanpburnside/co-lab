@@ -21,6 +21,8 @@ const VisualArt: React.FC = () => {
   const [userImages, setUserImages] = useState<Array<Object>>([]);
   const [friendList, setFriendList] = useState<Object[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [showPenColorPicker, setShowPenColorPicker] = useState(false);
+  const [showBgColorPicker, setShowBgColorPicker] = useState(false);
   let currentUser: string;
 
   useEffect(() => {
@@ -152,9 +154,9 @@ const VisualArt: React.FC = () => {
   };
 
   const handleBackgroundColorChange = (e: any) => {
-    const { value } = e.target;
-    setBackgroundColor(value);
-    socket.emit('changeBackgroundColor', { color: value, roomId });
+    const { value: color } = e.target;
+    setBackgroundColor(color);
+    socket.emit('changeBackgroundColor', { color, roomId });
   };
 
   const openModal = async () => {
@@ -203,7 +205,10 @@ const VisualArt: React.FC = () => {
         <Draw
           backgroundColor={backgroundColor}
           setBackgroundColor={setBackgroundColor}
+          setShowPenColorPicker={setShowPenColorPicker}
+          setShowBgColorPicker={setShowBgColorPicker}
           handleBackgroundColorChange={handleBackgroundColorChange}
+          selectedColorPicker={showPenColorPicker ? 'pen' : showBgColorPicker ? 'bg' : undefined}
           openModal={openModal}
           currentCollaborators={currentCollaborators}
           roomId={roomId}
