@@ -436,22 +436,26 @@ const Profile: React.FC = () => {
           <Name>Artwork</Name>
           <ArtworkContainer ref={artworkContainerRef} containerHeight={artworkContainerHeight}>
             {artwork &&
-              artwork.map((art) => {
-                if (art.type) {
-                  return (
-                    <ArtItem
-                      key={art.id}
-                      id={art.id}
-                      type={art.type}
-                      content={art[art.type.replace(' ', '')]?.content || art[art.type]?.content || art[art.type]?.albumCover || art[art.type]?.coverImage}
-                      isOwnProfile={isOwnProfile}
-                      onClick={handleArtworkClick}
-                      deleteArtwork={deleteArtwork}
-                    />
-                  );
-                }
-                return null;
-              })}
+              artwork
+                .sort(
+                  (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                ).map((art) => {
+                  if (art.type) {
+                    console.log(art)
+                    return (
+                      <ArtItem
+                        key={art.id}
+                        id={art.id}
+                        type={art.type}
+                        content={art[art.type.replace(' ', '')]?.content || art[art.type]?.content || art[art.type]?.albumCover || art[art.type]?.coverImage}
+                        isOwnProfile={isOwnProfile}
+                        onClick={handleArtworkClick}
+                        deleteArtwork={deleteArtwork}
+                      />
+                    );
+                  }
+                  return null;
+                })}
           </ArtworkContainer>
         </div>
       </RightContainer>
