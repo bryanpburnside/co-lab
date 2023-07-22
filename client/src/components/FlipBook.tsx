@@ -6,6 +6,8 @@ import TooltipIcon from './TooltipIcons';
 import styled from 'styled-components';
 import PageEditor from "./PageEditor";
 import TitlePage from './TitlePage';
+import { useParams } from 'react-router-dom';
+
 
 const PageContainer = styled.div`
   width: 500px;
@@ -46,6 +48,10 @@ interface Story {
   titleColor: string;
 }
 
+interface RouteParams {
+  roomId: string;
+}
+
 interface FlipBookProps {
   story: Story;
   selectedStoryPages: Page[];
@@ -61,10 +67,11 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
 
   const flipBookRef = useRef<any>(null);
+  const { roomId: urlRoomId } = useParams<RouteParams>();
 
   const handlePageClick = (page: Page) => {
-    //only allow the creator to edit
-    if (user === story.originalCreatorId) {
+    //only allow the people in the same room to edit
+    if (urlRoomId === roomId) {
       setSelectedPage(page);
     }
   };

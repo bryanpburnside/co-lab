@@ -1,14 +1,9 @@
-import React, { useState, createContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import STT from './STT';
 import '../styles.css';
 import { FaSave, FaTimesCircle, FaVolumeUp, FaEraser } from 'react-icons/fa';
 import TooltipIcon from './TooltipIcons';
-// import { TTSToggleContext } from './Stories';
 import { GrammarlyEditorPlugin } from "@grammarly/editor-sdk-react";
-import { io, Socket } from 'socket.io-client';
-
-export const socket = io('/');
-export const SocketContext = createContext<Socket | null>(null)
 
 interface Page {
   id?: number;
@@ -25,28 +20,13 @@ interface PageEditorProps {
   roomId: string | undefined;
 }
 
+
 const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, TooltipIcon, roomId }) => {
   const [content, setContent] = useState(page.content);
 
   const handleContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContent(event.target.value);
-    if(socket) {
-      socket.emit('typing', {roomId, content: event.target.value});
-    }
   };
-
-  useEffect(() => {
-    if (socket) {
-      const handleTyping = (content: string) => {
-        setContent(content);
-      };
-      socket.on('typing', handleTyping);
-      return () => {
-        //cleanup from typing
-        socket.off('typing', handleTyping);
-      };
-    }
-  }, []);
 
   const handleSave = () => {
     onSave(content, false);
@@ -80,7 +60,7 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
   useEffect(() => {
     const autoSave = setInterval(() => {
       onSave(content, true);
-    }, 30000);
+    }, 1000);
     return () => {
       clearInterval(autoSave);
     };

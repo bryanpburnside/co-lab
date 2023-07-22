@@ -338,7 +338,7 @@ const StoryBook: React.FC = () => {
     const fetchDefaultStory = async () => {
       const res = await axios.get('/api/stories');
       const defaultStory = res.data.filter((story: Story) => {
-        return story.title === 'Instructions';
+        return story.title === 'Pumpkin';
       })
       setSelectedStory(defaultStory[0]);
     };
@@ -380,6 +380,7 @@ const StoryBook: React.FC = () => {
 
 
   return (
+    <SocketContext.Provider value={socket}>
     <TTSToggleContext.Provider value={{ ttsOn, setTtsOn }}>
       <div style={{ display: 'flex' }}>
         {/* Column 2: FlipBook and PageEditor and NewStoryForm */}
@@ -479,6 +480,7 @@ const StoryBook: React.FC = () => {
       {/* TTS */}
       {speakText && <TTS text={ speakText } />}
     </TTSToggleContext.Provider>
+    </SocketContext.Provider>
   );
 };
 
