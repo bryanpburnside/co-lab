@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FaPen, FaPencilRuler, FaPalette, FaEraser, FaSave, FaUserPlus } from 'react-icons/fa';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { HuePicker } from 'react-color';
+const cursor = 'https://res.cloudinary.com/dtnq6yr17/raw/upload/v1690061567/cursor_bmteo3.cur';
 interface DrawProps {
   backgroundColor: string;
   handleBackgroundColorChange: (color: string) => void;
@@ -31,6 +32,7 @@ const StyledCanvas = styled.canvas<{ backgroundColor: string }>`
   border-radius: 10px;
   box-shadow:  5px 5px 13px #343171,
                -5px -5px 13px #464195;
+  cursor: url('https://res.cloudinary.com/dtnq6yr17/raw/upload/v1690061567/cursor_bmteo3.cur'), auto;
 `;
 
 const DrawContainer = styled.div`
