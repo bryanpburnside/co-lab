@@ -213,10 +213,11 @@ const Instrument = () => {
                 console.error('Error uploading album image:', error);
               });
           } else {
-            // If no album image is uploaded, save only the audio URL to the database
+            // If no album image is uploaded, save default image and audio URL to the database
             const requestBody = {
               songTitle: musicTitle,
               url: audioPublicURL,
+              albumCover: 'https://res.cloudinary.com/dtnq6yr17/image/upload/v1690047781/cassette_svgfin.png',
               userId: user?.sub
             };
 
