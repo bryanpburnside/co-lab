@@ -21,8 +21,9 @@ const VisualArt: React.FC = () => {
   const [userImages, setUserImages] = useState<Array<Object>>([]);
   const [friendList, setFriendList] = useState<Object[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [showPenColorPicker, setShowPenColorPicker] = useState(false);
   const [showBgColorPicker, setShowBgColorPicker] = useState(false);
+  const [showPenColorPicker, setShowPenColorPicker] = useState(false);
+  const [showPenWidthSlider, setShowPenWidthSlider] = useState(false);
   let currentUser: string;
 
   useEffect(() => {
@@ -205,8 +206,10 @@ const VisualArt: React.FC = () => {
         <Draw
           backgroundColor={backgroundColor}
           setBackgroundColor={setBackgroundColor}
-          setShowPenColorPicker={setShowPenColorPicker}
+          showPenWidthSlider={showPenWidthSlider}
           setShowBgColorPicker={setShowBgColorPicker}
+          setShowPenColorPicker={setShowPenColorPicker}
+          setShowPenWidthSlider={setShowPenWidthSlider}
           handleBackgroundColorChange={handleBackgroundColorChange}
           selectedColorPicker={showPenColorPicker ? 'pen' : showBgColorPicker ? 'bg' : undefined}
           openModal={openModal}

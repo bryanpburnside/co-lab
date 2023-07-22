@@ -52,15 +52,15 @@ const ColorPickerWrapper = styled.div`
   align-items: center;
   flex-direction: column;
   position: absolute;
-  top: 12.5rem;
-  left: 1.75rem;
+  top: 13rem;
+  left: 1.5rem;
 `;
 
 const PenWidthSliderWrapper = styled.div`
   position: absolute;
-  top: 12.5rem;
+  top: 22.5rem;
   left: 1.75rem;
-  transform: translateY(-50%) rotate(-90deg);
+  transform: rotate(-90deg);
   transform-origin: left center;
   display: flex;
   justify-content: center;
@@ -71,28 +71,27 @@ const PenWidthSliderWrapper = styled.div`
 const PenWidthSlider = styled.div`
   background-color: #3d3983;
   padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 
-  button[type="button"] {
-    font-size: 6px;
+  input[type="range"] {
+    height: 7.5px;
+    width: 155px;
+    -webkit-appearance: none;
+    border: 2px solid white;
   }
-`;
 
-const XIcon = styled.button`
-  position: absolute;
-  top: 20%;
-  left: 95%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  background-color: #3d3983;
-  font-size: 1.25rem;
-  cursor: pointer;
-  z-index: 2;
-  border: none;
-  padding: 0;
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    background-color: white;
+    height: 1.25rem;
+    width: 1.25rem;
+    border: 2px solid #3d3983;
+    border-radius: 50%;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    width: 5px;
+  }
 `;
 
 const ButtonContainer = styled.div`
@@ -154,7 +153,7 @@ const CollaboratorCursor = styled.div<{ x: number; y: number, collaboratorColor:
   pointer-events: none;
 `;
 
-const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, setShowPenColorPicker, setShowBgColorPicker, handleBackgroundColorChange, selectedColorPicker, openModal, currentCollaborators, roomId }) => {
+const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, showPenWidthSlider, setShowBgColorPicker, setShowPenColorPicker, setShowPenWidthSlider, handleBackgroundColorChange, selectedColorPicker, openModal, currentCollaborators, roomId }) => {
   const { user } = useAuth0();
   const socket = useContext(SocketContext) as Socket;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -164,7 +163,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, setSho
   const [penWidth, setPenWidth] = useState(5);
   const penWidthRef = useRef<number>(penWidth);
   const [eraseMode, setEraseMode] = useState(false);
-  const [showPenWidthSlider, setShowPenWidthSlider] = useState(false);
+  // const [showPenWidthSlider, setShowPenWidthSlider] = useState(false);
   // const [showPenColorPicker, setShowPenColorPicker] = useState(false);
   // const [showBgColorPicker, setShowBgColorPicker] = useState(false);
   const [collaboratorMouseX, setCollaboratorMouseX] = useState<number | null>(null);
@@ -182,19 +181,27 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, setSho
     }
   };
 
-  const togglePenColorPicker = () => {
-    setShowPenColorPicker((prevState) => !prevState);
-    setShowBgColorPicker(false);
-  };
-
   const toggleBgColorPicker = () => {
     setShowBgColorPicker((prevState) => !prevState);
     setShowPenColorPicker(false);
+    setShowPenWidthSlider(false);
   };
 
-  const handlePenWidthButtonClick = () => {
-    setShowPenWidthSlider(true);
+  const togglePenColorPicker = () => {
+    setShowPenColorPicker((prevState) => !prevState);
+    setShowBgColorPicker(false);
+    setShowPenWidthSlider(false);
   };
+
+  const togglePenWidthSlider = () => {
+    setShowPenWidthSlider((prevState) => !prevState);
+    setShowBgColorPicker(false);
+    setShowPenColorPicker(false);
+  };
+
+  // const handlePenWidthButtonClick = () => {
+  //   setShowPenWidthSlider(true);
+  // };
 
   const handlePenWidthSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -391,15 +398,6 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, setSho
                 max={100}
                 className="slider is-small"
               />
-              {/* <Button
-                  type="button"
-                  onClick={handlePenWidthSliderClose}
-                >
-                  Close
-                </Button> */}
-              <XIcon onClick={handlePenWidthSliderClose}>
-                <FontAwesomeIcon icon={faXmark} />
-              </XIcon>
             </PenWidthSlider>
           )}
         </PenWidthSliderWrapper>
@@ -428,7 +426,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, setSho
         <ButtonContainer>
           <Button
             type="button"
-            onClick={handlePenWidthButtonClick}
+            onClick={togglePenWidthSlider}
           >
             <FaPencilRuler />
           </Button>
