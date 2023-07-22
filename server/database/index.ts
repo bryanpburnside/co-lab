@@ -115,6 +115,9 @@ const Music = sequelize.define('music', {
   songTitle: {
     type: DataTypes.STRING,
   },
+  albumCover: {
+    type: DataTypes.STRING,
+  },
   content: {
     type: DataTypes.TEXT,
     allowNull: true

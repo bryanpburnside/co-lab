@@ -57,8 +57,7 @@ app.use('/visualart', VisualArtwork);
 app.use('/api/stories', CreateStoryRouter);
 app.use('/api/pages', pagesRouter);
 app.use('/sculpture', sculptureRouter);
-
-app.use('/music', Ear)
+app.use('/api/music', Ear)
 app.use(express.static(staticFilesPath));
 
 app.get('*', (req, res) => {
@@ -133,6 +132,8 @@ Rooms.post('/', (req, res) => {
   res.json({ roomId });
 })
 
+const collaboratorsMap = new Map();
+
 io.on('connection', socket => {
   // Handle create room event
   socket.on('createRoom', (userId, roomId) => {
@@ -141,7 +142,7 @@ io.on('connection', socket => {
     console.log(`${userId} created room: ${roomId}`);
   });
 
-  // // Handle join room event
+  // Handle join room event
   socket.on('joinRoom', (userId, roomId) => {
     socket.join(roomId); // Join the room with the provided ID
     socket.to(roomId).emit('userJoined', userId); // Emit the userJoined event to the participants in the room
@@ -153,6 +154,16 @@ io.on('connection', socket => {
     });
   });
 
+  socket.on('collaboratorDisconnect', (userId, roomId) => {
+    const room = collaboratorsMap.get(roomId);
+    if (room) {
+      room.delete(userId);
+    }
+    socket.emit('collaboratorDisconnected', userId, roomId);
+    socket.to(roomId).emit('collaboratorDisconnected', userId, roomId);
+  });
+
+  // MESSAGES
   socket.on('directMessage', async ({ senderId, receiverId, message }) => {
     const sortedIds = [senderId, receiverId].sort(); // Sort the user IDs
     const room = `user-${sortedIds[0]}-${sortedIds[1]}`; // Concatenate the sorted IDs
@@ -174,16 +185,18 @@ io.on('connection', socket => {
     const sortedIds = [userId, receiverId].sort();
     const thread = `user-${sortedIds[0]}-${sortedIds[1]}`;
     socket.join(thread);
-    console.log(`User ${userId} joined the message thread ${thread}. Recipient is ${receiverId}`);
   });
 
   socket.on('disconnectThread', (userId, receiverId) => {
     const sortedIds = [userId, receiverId].sort();
     const thread = `user-${sortedIds[0]}-${sortedIds[1]}`;
     socket.leave(thread);
-    console.log(`${userId} left the message thread`);
   });
 
+  //for the storybook page editor text area
+  socket.on('typing', ({ roomId, content }) => {
+    socket.to(roomId).emit('typing', content);
+  });
 
   // // Handle key press event
   // socket.on('keyPress', (key: string, roomId: string) => {
@@ -191,13 +204,28 @@ io.on('connection', socket => {
   //   socket.to(roomId).emit('keyPress', key);
   // });
 
-  socket.on('drawing', (data: any) => {
-    socket.to(data.roomId).emit('drawing', data);
-  })
+  // VISUAL ART
+  socket.on('sendUserInfo', ({ userId, picture, roomId }) => {
+    const roomCollaborators = collaboratorsMap.get(roomId) || new Map();
+    roomCollaborators.set(userId, picture);
+    collaboratorsMap.set(roomId, roomCollaborators);
+    const roomCollaboratorsArray = Array.from(roomCollaborators, ([userId, picture]) => ({ userId, picture }));
+    console.log('collab array:', roomCollaboratorsArray);
+    socket.emit('userInfoReceived', { userId, collaborators: roomCollaboratorsArray, roomId });
 
-  //for the storybook page editor text area
-  socket.on('typing', ({ roomId, content }) => {
-    socket.to(roomId).emit('typing', content);
+    socket.to(roomId).emit('userInfoReceived', { userId, collaborators: roomCollaboratorsArray, roomId });
+  });
+
+  socket.on('mouseMove', ({ x, y, roomId }) => {
+    socket.to(roomId).emit('mouseMove', { x, y });
+  });
+
+  socket.on('drawing', (data) => {
+    socket.to(data.roomId).emit('drawing', data);
+  });
+
+  socket.on('changeBackgroundColor', ({ color, roomId }) => {
+    socket.to(roomId).emit('changeBackgroundColor', color);
   });
 
   socket.on('startDrawing', (data) => {
@@ -215,5 +243,4 @@ io.on('connection', socket => {
 
 server.listen(PORT, () => {
   console.log(`Server listening on http://127.0.0.1:${PORT}`);
-  console.log(process.env.DB_USER, process.env.DB_PW);
 });

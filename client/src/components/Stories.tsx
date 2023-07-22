@@ -14,6 +14,7 @@ import {v4 as generatePeerId} from 'uuid';
 import Peer, { MediaConnection } from 'peerjs';
 export const socket = io('/');
 export const SocketContext = createContext<Socket | null>(null);
+import '../styles.css';
 
 interface Page {
   id?: number;
@@ -367,18 +368,7 @@ const StoryBook: React.FC = () => {
             />
           </div>
           <div className="story-list" style={{
-              // border: '1px solid #ccc',
-              // borderRadius: '5px',
-              padding: '10px',
-              overflow: 'auto',
-              height: '620px',
-              width: '250px',
-              margin: '20px',
               marginTop: '40px',
-              display: 'flex',
-              flexWrap: 'wrap',
-              flexDirection: 'row',
-              justifyContent: 'space-evenly'
             }}>
             {stories.map((story, index) => (
               <div
@@ -403,7 +393,7 @@ const StoryBook: React.FC = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  backgroundColor: story.coverImage ? 'transparent' : 'white'
+                  backgroundColor: story.coverImage ? 'transparent' : 'white',
                 }}>
                   {story.coverImage ? (
                     <img

@@ -1,7 +1,9 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import React, { useState, useEffect, createContext } from 'react';
 import Draw from './Sketch';
+import Modal from '../Modal';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import { io, Socket } from 'socket.io-client';
 import Peer, { MediaConnection } from 'peerjs';
 import { v4 as generatePeerId } from 'uuid';
@@ -15,6 +17,11 @@ const VisualArt: React.FC = () => {
   const { roomId } = useParams<string>();
   const [peerId, setPeerId] = useState('');
   const [backgroundColor, setBackgroundColor] = useState('#3d3983');
+  const [currentCollaborators, setCurrentCollaborators] = useState<Array<Object>>([]);
+  const [userImages, setUserImages] = useState<Array<Object>>([]);
+  const [friendList, setFriendList] = useState<Object[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  let currentUser: string;
 
   useEffect(() => {
     setPeerId(generatePeerId());
@@ -67,7 +74,7 @@ const VisualArt: React.FC = () => {
 
     peer.on('open', (userId) => {
       socket.emit('joinRoom', userId, roomId);
-    })
+    });
 
     socket.on('roomCreated', (userId, roomId) => {
       console.log(`${userId} created room: ${roomId}`);
@@ -77,28 +84,130 @@ const VisualArt: React.FC = () => {
       console.log(`User ${userId} joined the room`);
     });
 
-    socket.on('disconnectUser', userId => {
-      if (peers[userId]) {
-        peers[userId].close();
+    // socket.on('disconnectUser', userId => {
+    //   if (peers[userId]) {
+    //     peers[userId].close();
+    //   }
+    // })
+
+    // return () => {
+    //   socket.emit('disconnectUser', peerId, roomId);
+    //   socket.disconnect();
+    //   peer.disconnect();
+    // };
+  }, []);
+
+  useEffect(() => {
+    if (user?.sub) {
+      currentUser = user?.sub;
+    }
+    const getUserImageAndSendInfo = async () => {
+      if (user?.sub) {
+        try {
+          const { userId, picture } = await getUserImage(user?.sub);
+          setCurrentCollaborators(prevCollaborators => [...prevCollaborators, { userId, picture }])
+          socket.emit('sendUserInfo', { userId, picture, roomId });
+        } catch (err) {
+          console.error('Failed to GET user image at client:', err);
+        }
       }
-    })
+    };
+
+    getUserImageAndSendInfo();
+
+    socket.on('userInfoReceived', ({ userId, collaborators, roomId }) => {
+      setCurrentCollaborators(collaborators);
+    });
+
+    socket.on('collaboratorDisconnected', (userId, roomId) => {
+      setCurrentCollaborators((prevCollaborators) =>
+        prevCollaborators.filter((collaborator) => collaborator['userId'] !== userId)
+      );
+    });
 
     return () => {
-      socket.emit('disconnectUser', peerId, roomId);
-      socket.disconnect();
-      peer.disconnect();
+      socket.emit('collaboratorDisconnect', currentUser, roomId);
     };
-  }, []);
+  }, [user?.sub]);
+
+  const getUserImage = async (userId: string) => {
+    try {
+      const { data } = await axios.get(`/users/${userId}`);
+      const collaborator = {
+        userId,
+        picture: data.picture
+      }
+      return collaborator;
+    } catch (err) {
+      console.error('Failed to GET user images at client:', err);
+    }
+  }
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   const handleBackgroundColorChange = (e: any) => {
     const { value } = e.target;
     setBackgroundColor(value);
+    socket.emit('changeBackgroundColor', { color: value, roomId });
   };
+
+  const openModal = async () => {
+    try {
+      setIsModalOpen(true);
+      await getFriends();
+    } catch (err) {
+      console.error('Failed to send invite at client:', err);
+    }
+  }
+
+  const getFriends = async () => {
+    try {
+      setIsModalOpen(true);
+      const { data } = await axios.get(`/users/${user?.sub}`);
+      const friends = await Promise.all(
+        data.friends.map(async (friendId: string) => {
+          const userObj = await axios.get(`/users/${friendId}`);
+          return { name: userObj.data.name, id: friendId };
+        }))
+      setFriendList(friends);
+    } catch (err) {
+      console.error('Failed to GET user friends at client:', err);
+    }
+  }
+
+  const sendInvite = async (senderId: string, receiverId: string, message: string) => {
+    socket.emit('directMessage', {
+      senderId,
+      receiverId,
+      message,
+    });
+  }
 
   return (
     <>
       <SocketContext.Provider value={socket}>
-        <Draw backgroundColor={backgroundColor} handleBackgroundColorChange={handleBackgroundColorChange} roomId={roomId} />
+        <Modal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          roomId={roomId}
+          userId={user?.sub}
+          friendList={friendList}
+          sendInvite={sendInvite}
+        />
+        <Draw
+          backgroundColor={backgroundColor}
+          setBackgroundColor={setBackgroundColor}
+          handleBackgroundColorChange={handleBackgroundColorChange}
+          openModal={openModal}
+          currentCollaborators={currentCollaborators}
+          roomId={roomId}
+        />
       </SocketContext.Provider>
     </>
   )
