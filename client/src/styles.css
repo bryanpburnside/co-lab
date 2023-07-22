@@ -65,9 +65,7 @@ html {
   justify-content: space-between;
   align-items: center;
   width: 80vw;
-  /* Adjust the width as desired */
   margin: 0 auto;
-  /* Center the container horizontally */
   height: 60vh;
 }
 
@@ -82,10 +80,8 @@ html {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 80vw;
-  /* Adjust the width as desired */
+  width: 75vw;
   margin: 0 auto;
-  /* Center the container horizontally */
   height: 75vh;
   border-radius: 10px;
   box-shadow: 5px 5px 13px #343171,

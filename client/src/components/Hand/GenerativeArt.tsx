@@ -5,19 +5,55 @@ import { Socket } from 'socket.io-client';
 import { SocketContext } from './Sculpture';
 import p5 from 'p5';
 import styled from 'styled-components';
-import { FaSave } from 'react-icons/fa';
+import { FriendImage } from '../Profile/Profile';
+import { FaSave, FaUserPlus } from 'react-icons/fa';
 
 const SaveButton = styled.div`
   position: absolute;
   left: -78px;
   bottom: 4px;
-  z-index: 2;
+  z-index: 1;
   cursor: pointer;
 
   &:hover {
     color: #8b88b5;
   }
-`
+`;
+
+const Button = styled.button`
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: white;
+  font-size: 48px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+
+  &:hover {
+    color: #8b88b5;
+  }
+`;
+
+const ButtonContainerRight = styled.div`
+  margin-left: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-self: start;
+`;
+
+const CollaboratorImage = styled.img`
+  width: 48px;
+  height: 48px;
+  margin-bottom: 15px;
+  margin-left: -10px;
+  object-fit: cover;
+  object-position: center;
+  clip-path: circle();
+  align-self: center;
+  border: 4px solid white;
+  border-radius: 50%;
+`;
 
 const CollaboratorCursor = styled.div<{ x: number; y: number }>`
   position: absolute;
@@ -31,7 +67,7 @@ const CollaboratorCursor = styled.div<{ x: number; y: number }>`
   z-index: 3;
 `;
 
-const GenerativeArt = ({ roomId }) => {
+const GenerativeArt = ({ roomId, openModal, currentCollaborators }) => {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const canvasRef = useRef(null);
   const socket = useContext(SocketContext) as Socket;
@@ -40,7 +76,12 @@ const GenerativeArt = ({ roomId }) => {
 
   const handleMouseMove = (event: MouseEvent) => {
     const { clientX, clientY } = event;
-    const data = { x: clientX, y: clientY, roomId };
+    const canvasContainer = document.querySelector('.canvas-container');
+    const canvasRect = canvasContainer?.getBoundingClientRect();
+    const canvasX = clientX - canvasRect!.left;
+    const canvasY = clientY - canvasRect!.top;
+
+    const data = { x: canvasX, y: canvasY, roomId };
     socket.emit('mouseMove', data);
   };
 
@@ -212,8 +253,9 @@ const GenerativeArt = ({ roomId }) => {
   };
 
   return (
+    <div style={{display: 'flex', width: '80vw', margin: '0 auto'}}>
     <div className='canvas-container' style={{ position: 'relative' }}>
-      <div ref={canvasRef} style={{ position: 'relative', zIndex: '1' }}>
+      <div ref={canvasRef} style={{ position: 'relative', alignSelf: 'center'}}>
           {collaboratorMouseX !== null && collaboratorMouseY !== null && (
             <CollaboratorCursor
               x={collaboratorMouseX}
@@ -229,6 +271,23 @@ const GenerativeArt = ({ roomId }) => {
         }
       </div>
     </div>
+      <ButtonContainerRight>
+        <Button
+          type="button"
+          onClick={openModal}
+        >
+          <FaUserPlus />
+        </Button>
+        {currentCollaborators &&
+          currentCollaborators.map((user: Object, i: number) =>
+            <CollaboratorImage
+              key={i}
+              src={user.picture}
+            />
+          )
+        }
+      </ButtonContainerRight>
+      </div>
   );
 };
 
