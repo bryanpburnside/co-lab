@@ -233,12 +233,14 @@ const Profile: React.FC = () => {
     }
   };
 
-  const getFullSizeImage = async (artworkId: string) => {
+  const getPopupContent = async (artworkId: string) => {
     try {
-      const { data } = await axios.get(`/artwork/byId/originalImage/${artworkId}`);
-      setSelectedArtwork(data);
+      const { data } = await axios.get(`/artwork/byId/popupContent/${artworkId}`);
+      if (data) {
+        setSelectedArtwork(data);
+      }
     } catch (err) {
-      console.error('Failed to GET original image at client:', err);
+      console.error('Failed to GET popup content at client:', err);
     }
   }
 
@@ -287,7 +289,7 @@ const Profile: React.FC = () => {
     if (isTrashIconClicked) {
       deleteArtwork(artworkId);
     } else {
-      getFullSizeImage(artworkId);
+      getPopupContent(artworkId);
       setShowPopup(true);
     }
   };
@@ -480,7 +482,12 @@ const Profile: React.FC = () => {
       </FriendContainer>
       {showPopup && (
         <Popup onClick={() => setShowPopup(false)}>
-          <PopupImage src={selectedArtwork} alt="Full-size artwork" />
+          {selectedArtwork?.includes('video') ?
+            <audio controls>
+              <source src={selectedArtwork} type="audio/mp3" />
+              Your browser does not support the audio tag.
+            </audio>
+            : <PopupImage src={selectedArtwork} alt="Full-size artwork" />}
         </Popup>
       )}
     </ProfileContainer >
