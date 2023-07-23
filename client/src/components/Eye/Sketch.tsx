@@ -8,7 +8,6 @@ import styled from 'styled-components';
 import { FriendImage } from '../Profile/Profile';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FaPen, FaPencilRuler, FaPalette, FaEraser, FaSave, FaUserPlus } from 'react-icons/fa';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { HuePicker } from 'react-color';
 const cursor = 'https://res.cloudinary.com/dtnq6yr17/raw/upload/v1690061567/cursor_bmteo3.cur';
 interface DrawProps {
@@ -27,7 +26,7 @@ const CanvasContainer = styled.div`
 
 const StyledCanvas = styled.canvas<{ backgroundColor: string }>`
   width: 75vw;
-  height: 75vh;
+  height: 70vh;
   background-color: ${({ backgroundColor }) => backgroundColor};
   border-radius: 10px;
   box-shadow:  5px 5px 13px #343171,
@@ -39,7 +38,7 @@ const DrawContainer = styled.div`
   position: absolute;
   display: flex;
   flex-direction: column;
-  top: 50%;
+  top: 75%;
   left: 5%;
   transform: translateY(-50%);
 `;
@@ -100,6 +99,7 @@ const ButtonContainer = styled.div`
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
+  flex-direction: column;
   z-index: -1;
 `;
 
@@ -117,8 +117,9 @@ const Button = styled.button`
   background: none;
   cursor: pointer;
   color: white;
-  font-size: 48px;
+  font-size: 40px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  margin: 5% 5%;
 
   &:hover {
     color: #8b88b5;
@@ -165,9 +166,6 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, showPe
   const [penWidth, setPenWidth] = useState(5);
   const penWidthRef = useRef<number>(penWidth);
   const [eraseMode, setEraseMode] = useState(false);
-  // const [showPenWidthSlider, setShowPenWidthSlider] = useState(false);
-  // const [showPenColorPicker, setShowPenColorPicker] = useState(false);
-  // const [showBgColorPicker, setShowBgColorPicker] = useState(false);
   const [collaboratorMouseX, setCollaboratorMouseX] = useState<number | null>(null);
   const [collaboratorMouseY, setCollaboratorMouseY] = useState<number | null>(null);
   const [collaboratorColor, setCollaboratorColor] = useState<Color>(new Color('white'));
@@ -200,10 +198,6 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, showPe
     setShowBgColorPicker(false);
     setShowPenColorPicker(false);
   };
-
-  // const handlePenWidthButtonClick = () => {
-  //   setShowPenWidthSlider(true);
-  // };
 
   const handlePenWidthSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -403,53 +397,31 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, showPe
             </PenWidthSlider>
           )}
         </PenWidthSliderWrapper>
-        <ButtonContainer style={{ marginTop: '25rem' }}>
+        <ButtonContainer>
           <ColorPicker
             type="color"
             id="bg-color"
             value={backgroundColor}
             onChange={handleBackgroundColorChange}
           />
-          <Button
-            type="button"
-            onClick={toggleBgColorPicker}
-          >
+          <Button type="button" onClick={toggleBgColorPicker}>
             <FaPalette />
           </Button>
-        </ButtonContainer>
-        <ButtonContainer>
-          <Button
-            type="button"
-            onClick={togglePenColorPicker}
-          >
+          <Button type="button" onClick={togglePenColorPicker}>
             <FaPen />
           </Button>
-        </ButtonContainer>
-        <ButtonContainer>
-          <Button
-            type="button"
-            onClick={togglePenWidthSlider}
-          >
+          <Button type="button" onClick={togglePenWidthSlider}>
             <FaPencilRuler />
           </Button>
-        </ButtonContainer>
-        <ButtonContainer>
-          <Button
-            onClick={handleEraserClick}
-          >
+          <Button onClick={handleEraserClick}>
             <FaEraser />
           </Button>
-        </ButtonContainer>
-        {user &&
-          <ButtonContainer>
-            <Button
-              type="submit"
-              onClick={handleSaveClick}
-            >
+          {user && (
+            <Button type="submit" onClick={handleSaveClick}>
               <FaSave />
             </Button>
-          </ButtonContainer>
-        }
+          )}
+        </ButtonContainer>
       </DrawContainer>
       <ButtonContainerRight>
         <Button
