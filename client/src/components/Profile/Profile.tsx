@@ -106,7 +106,7 @@ const UserInfoContainer = styled.div`
 `;
 
 const FriendContainer = styled.div`
-  width: 20%;
+  width: 25%;
   display: flex;
   flex-direction: column;
   border-radius: 10px;
