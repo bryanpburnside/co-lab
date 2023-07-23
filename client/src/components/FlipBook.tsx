@@ -2,11 +2,10 @@ import React, { useState, useRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 import '../styles.css';
 import { FaPlusCircle, FaVolumeUp } from 'react-icons/fa';
-import TooltipIcon from './TooltipIcons';
 import styled from 'styled-components';
 import PageEditor from "./PageEditor";
 import TitlePage from './TitlePage';
-
+import TooltipIcon from "./TooltipIcons";
 
 const PageContainer = styled.div`
   width: 500px;
@@ -54,12 +53,11 @@ interface FlipBookProps {
   onUpdatePage: (updatedPage: Page) => void;
   fetchPages: () => void;
   addNewPage: () => void;
-  TooltipIcon: typeof TooltipIcon;
   roomId: string | undefined;
   user: string | undefined;
 }
 
-const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPages, addNewPage, TooltipIcon, roomId, user }) => {
+const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPages, addNewPage, roomId, user }) => {
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
 
   const flipBookRef = useRef<any>(null);
@@ -179,7 +177,6 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
             <TitlePage
               story={ story }
               addNewPage={ addNewPage }
-              TooltipIcon={ TooltipIcon }
             />
           </PageContainer>
         </div>
@@ -271,7 +268,6 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
           page={ selectedPage }
           onSave={ handleSavePage }
           onCancel={ handleCancelEdit }
-          TooltipIcon={ TooltipIcon }
           roomId={ roomId }
         />
       )}

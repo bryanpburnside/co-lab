@@ -1,7 +1,4 @@
 import React from "react";
-import { FaPlusCircle } from 'react-icons/fa';
-import TooltipIcon from './TooltipIcons';
-
 interface Story {
   id?: number;
   title: string;
@@ -15,11 +12,10 @@ interface Story {
 
 interface TitlePageProps {
   story: Story;
-  TooltipIcon: typeof TooltipIcon;
   addNewPage: () => void;
 }
 
-const TitlePage: React.FC<TitlePageProps> = ({ story, TooltipIcon, addNewPage }) => {
+const TitlePage: React.FC<TitlePageProps> = ({ story, addNewPage }) => {
 
   return (
     <div

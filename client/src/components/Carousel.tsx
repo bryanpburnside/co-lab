@@ -3,7 +3,6 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import { FaTrash } from 'react-icons/fa';
-import TooltipIcon from './TooltipIcons';
 import styled from 'styled-components';
 
 interface Story {
@@ -56,6 +55,25 @@ const StoryCarousel: React.FC<CarouselProps> = ({ items, handleStoryClick, handl
     autoplaySpeed: 2000,
     afterChange: (current: any) => setCurrent(current),
   };
+
+  const DeleteStoryButton = ({ onClick }) => (
+    <button
+      onClick={() => {
+        if (window.confirm('Are you sure you want to delete this story?')) {
+          onClick();
+          console.log('story deleted');
+        }
+      }}
+      style={{
+        background: 'transparent',
+        border: 'none',
+        cursor: 'pointer',
+        marginTop: '7px',
+      }}
+    >
+      <FaTrash size={20} color="white" />
+    </button>
+  );
 
   return (
     <div id='carousel' style={{ height: '300px', overflow: 'hidden', marginRight: '30px' }}>
@@ -134,19 +152,7 @@ const StoryCarousel: React.FC<CarouselProps> = ({ items, handleStoryClick, handl
                       alignItems: 'center',
                       justifyContent: 'center'
                     }}>
-                    <TooltipIcon
-                      icon={() => <FaTrash size={20} color="white" />}
-                      tooltipText="Delete story"
-                      handleClick={() => {
-                        if (window.confirm('Are you sure you want to delete this story?')) {
-                          deleteStory(story.id!, story.originalCreatorId!);
-                          console.log('story deleted');
-                        }
-                      }}
-                      style={{
-                        marginTop: '7px',
-                      }}
-                    />
+                    <DeleteStoryButton onClick={() => deleteStory(story.id!, story.originalCreatorId!)} />
                   </div>
                 )}
               </div>

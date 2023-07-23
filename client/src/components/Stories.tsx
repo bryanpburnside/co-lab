@@ -366,7 +366,7 @@ const StoryBook: React.FC = () => {
     const fetchDefaultStory = async () => {
       const res = await axios.get('/api/stories');
       const defaultStory = res.data.filter((story: Story) => {
-        return story.title === 'Pumpkin';
+        return story.title === 'Instructions' && story.originalCreatorId === 'fakeID';
       })
       setSelectedStory(defaultStory[0]);
     };
@@ -518,7 +518,7 @@ const StoryBook: React.FC = () => {
               icon={ FaUserPlus }
               tooltipText={ 'Invite Friends' }
               handleClick={ openModal }
-              style={{ fontSize: '32px', marginLeft: '20px' }}
+              style={{ fontSize: '33px', marginLeft: '20px' }}
             />
 
             {isModalOpen && <ModalStory
@@ -551,7 +551,6 @@ const StoryBook: React.FC = () => {
               selectedStoryPages={ pages }
               onUpdatePage={ handleUpdatePage }
               fetchPages={ fetchPages }
-              TooltipIcon={ TooltipIcon }
               addNewPage={ addNewPage }
               roomId={ roomId }
               user={ user?.sub }

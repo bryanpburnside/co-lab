@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import '../styles.css';
 import { FaMicrophoneAlt } from 'react-icons/fa';
-import TooltipIcon from "./TooltipIcons";
 
 interface STTProps {
   updateTranscript: (newTranscript: string) => void;
 }
 
+interface SpeechToTextButtonProps {
+  onClick: () => void;
+}
+
 const STT: React.FC<STTProps> = ({ updateTranscript }) => {
-  const isListening = useState(false);
+  // const isListening = useState(false);
 
   //functionality to start the web speech api listening
   const startListening = () => {
@@ -32,14 +35,19 @@ const STT: React.FC<STTProps> = ({ updateTranscript }) => {
     recognition.start();
   };
 
+  const SpeechToTextButton: React.FC<SpeechToTextButtonProps> = ({ onClick }) => (
+    <button
+      onClick={onClick}
+      style={{ marginTop: '2px', background: 'transparent', border: 'none', cursor: 'pointer', color: 'white', fontSize: '30px' }}
+    >
+      <FaMicrophoneAlt />
+    </button>
+  );
+
+
   return(
     <div className="stt">
-      <TooltipIcon
-        icon={ FaMicrophoneAlt }
-        tooltipText="Speech to text"
-        handleClick={ startListening }
-        style={{ marginTop: '2px'}}
-         />
+      <SpeechToTextButton onClick={ startListening } />
     </div>
   );
 };
