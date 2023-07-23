@@ -142,7 +142,7 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
               {msg.senderId === userId ? (
                 <TimestampSender>
                   <SenderBubble>
-                    {msg.message.includes('http://co-lab.group/') ?
+                    {msg.message.includes('http://') || msg.message.includes('https://') ?
                       <InviteLink href={msg.message}>Let's collab!</InviteLink>
                       : msg.message}
                   </SenderBubble>
@@ -151,7 +151,7 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
               ) : (
                 <TimestampRecipient>
                   <RecipientBubble>
-                    {msg.message.includes('http://co-lab.group/') ?
+                    {msg.message.includes('http://') || msg.message.includes('https://') ?
                       <InviteLink href={msg.message}>Let's collab!</InviteLink>
                       : msg.message}
                   </RecipientBubble>
@@ -176,7 +176,7 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
                 <STT updateTranscript={updateContentWithTranscript} />
               </STTButton>
             </TextInputContainer>
-            <SendButton type="submit" onClick={sendMessage}>
+            <SendButton onClick={sendMessage}>
               <FontAwesomeIcon icon={faPaperPlane} size='lg' />
             </SendButton>
           </SendMessageContainer>

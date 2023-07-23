@@ -160,6 +160,8 @@ Rooms.post('/', (req, res) => {
   res.json({ roomId });
 })
 
+const collaboratorsMap = new Map();
+
 io.on('connection', socket => {
   // Handle create room event
   socket.on('createRoom', (userId, roomId) => {
@@ -178,6 +180,15 @@ io.on('connection', socket => {
       socket.to(roomId).emit('disconnectUser', userId)
       console.log(`${userId} left the room`);
     });
+  });
+
+  socket.on('collaboratorDisconnect', (userId, roomId) => {
+    const room = collaboratorsMap.get(roomId);
+    if (room) {
+      room.delete(userId);
+    }
+    socket.emit('collaboratorDisconnected', userId, roomId);
+    socket.to(roomId).emit('collaboratorDisconnected', userId, roomId);
   });
 
   // MESSAGES
@@ -238,6 +249,16 @@ io.on('connection', socket => {
   // });
 
   // VISUAL ART
+  socket.on('sendUserInfo', ({ userId, picture, roomId }) => {
+    const roomCollaborators = collaboratorsMap.get(roomId) || new Map();
+    roomCollaborators.set(userId, picture);
+    collaboratorsMap.set(roomId, roomCollaborators);
+    const roomCollaboratorsArray = Array.from(roomCollaborators, ([userId, picture]) => ({ userId, picture }));
+    socket.emit('userInfoReceived', { userId, collaborators: roomCollaboratorsArray, roomId });
+
+    socket.to(roomId).emit('userInfoReceived', { userId, collaborators: roomCollaboratorsArray, roomId });
+  });
+
   socket.on('mouseMove', ({ x, y, roomId }) => {
     socket.to(roomId).emit('mouseMove', { x, y });
   });

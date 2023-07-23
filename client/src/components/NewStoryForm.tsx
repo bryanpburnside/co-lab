@@ -57,7 +57,8 @@ const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) 
       numberOfPages,
       originalCreatorId: user?.sub,
       isPrivate: privacy,
-      titleColor: '#000000'
+      titleColor: '#000000',
+      collaborators: [],
     };
 
     try {
@@ -112,8 +113,8 @@ const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) 
           placeholder='Title'
           type="text"
           id="title"
-          value={ title }
-          onChange={ handleTitleChange }
+          value={title}
+          onChange={handleTitleChange}
           onMouseEnter={() => handleHover('Title')}
           onMouseLeave={() => handleLeave()}
         />
@@ -142,7 +143,7 @@ const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) 
       <StyledButtonStory
         style={{ marginTop: '20px' }}
         type="button"
-        onClick={ handleCancel }
+        onClick={handleCancel}
         onMouseEnter={() => handleHover('Cancel')}
         onMouseLeave={() => handleLeave()}
       >

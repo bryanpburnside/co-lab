@@ -20,7 +20,7 @@ const TitlePage: React.FC<TitlePageProps> = ({ story, addNewPage }) => {
   return (
     <div
       style={{
-        backgroundImage: `url(${story.coverImage || 'https://res.cloudinary.com/dhin8tgv1/image/upload/v1689349895/cgdztp7ma8eqxivjsd5r.png'})`,
+        backgroundImage: `url(${story.coverImage || 'https://res.cloudinary.com/dtnq6yr17/image/upload/v1690048298/book_wr0o6r.png'})`,
         height: '100%',
         width: '500px',
         backgroundSize: '100% 100%',

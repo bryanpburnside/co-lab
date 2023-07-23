@@ -5,10 +5,15 @@ import { Socket } from 'socket.io-client';
 import axios from 'axios';
 import paper, { Color } from 'paper';
 import styled from 'styled-components';
-import { FaPen, FaPenFancy, FaPalette, FaEraser, FaSave, FaUserPlus } from 'react-icons/fa';
+import { FriendImage } from '../Profile/Profile';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FaPen, FaPencilRuler, FaPalette, FaEraser, FaSave, FaUserPlus } from 'react-icons/fa';
+import { HuePicker } from 'react-color';
+const cursor = 'https://res.cloudinary.com/dtnq6yr17/raw/upload/v1690061567/cursor_bmteo3.cur';
 interface DrawProps {
   backgroundColor: string;
   handleBackgroundColorChange: (color: string) => void;
+  selectedColorPicker: 'pen' | 'bg';
   sendInvite: () => void;
   roomId: string | undefined;
 }
@@ -21,16 +26,19 @@ const CanvasContainer = styled.div`
 
 const StyledCanvas = styled.canvas<{ backgroundColor: string }>`
   width: 75vw;
-  height: 75vh;
+  height: 70vh;
   background-color: ${({ backgroundColor }) => backgroundColor};
   border-radius: 10px;
   box-shadow:  5px 5px 13px #343171,
                -5px -5px 13px #464195;
+  cursor: url('https://res.cloudinary.com/dtnq6yr17/raw/upload/v1690061567/cursor_bmteo3.cur'), auto;
 `;
 
 const DrawContainer = styled.div`
   position: absolute;
-  top: 50%;
+  display: flex;
+  flex-direction: column;
+  top: 75%;
   left: 5%;
   transform: translateY(-50%);
 `;
@@ -39,10 +47,57 @@ const ColorPicker = styled.input`
   display: none;
 `;
 
+const ColorPickerWrapper = styled.div`
+  display: flex:
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  top: -11rem;
+  left: 1.25rem;
+`;
+
+const PenWidthSliderWrapper = styled.div`
+  position: absolute;
+  top: -2.1rem;
+  left: 1.5rem;
+  transform: rotate(-90deg);
+  transform-origin: left center;
+  display: flex;
+  flex-direction: column;
+`;
+
+const PenWidthSlider = styled.div`
+  background-color: #3d3983;
+
+  input[type="range"] {
+    height: 5px;
+    width: 145px;
+    -webkit-appearance: none;
+    border: 2px solid white;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    background-color: white;
+    height: 1.25rem;
+    width: 1.25rem;
+    margin-left: -1rem;
+    border: 1px solid #3d3983;
+    border-radius: 50%;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    width: 5px;
+  }
+`;
+
 const ButtonContainer = styled.div`
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
+  flex-direction: column;
   z-index: -1;
 `;
 
@@ -50,6 +105,8 @@ const ButtonContainerRight = styled.div`
   margin-left: 1rem;
   margin-bottom: 1rem;
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   align-self: start;
 `;
 
@@ -58,12 +115,32 @@ const Button = styled.button`
   background: none;
   cursor: pointer;
   color: white;
-  font-size: 48px;
+  font-size: 40px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  margin: 5% 5%;
 
   &:hover {
     color: #8b88b5;
   }
+`;
+
+const CollaboratorImage = styled.img`
+  width: 48px;
+  height: 48px;
+  margin-bottom: 15px;
+  margin-left: -10px;
+  object-fit: cover;
+  object-position: center;
+  clip-path: circle();
+  align-self: center;
+  border: 4px solid white;
+  border-radius: 50%;
+`;
+
+const CollaboratorLink = styled.a`
+  cursor: pointer;
+  text-decoration: none;
+  margin: 0 auto;
 `;
 
 const CollaboratorCursor = styled.div<{ x: number; y: number, collaboratorColor: Color }>`
@@ -77,7 +154,7 @@ const CollaboratorCursor = styled.div<{ x: number; y: number, collaboratorColor:
   pointer-events: none;
 `;
 
-const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handleBackgroundColorChange, openModal, roomId }) => {
+const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, showPenWidthSlider, setShowBgColorPicker, setShowPenColorPicker, setShowPenWidthSlider, handleBackgroundColorChange, selectedColorPicker, openModal, currentCollaborators, roomId }) => {
   const { user } = useAuth0();
   const socket = useContext(SocketContext) as Socket;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -87,7 +164,6 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
   const [penWidth, setPenWidth] = useState(5);
   const penWidthRef = useRef<number>(penWidth);
   const [eraseMode, setEraseMode] = useState(false);
-  const [showPenWidthSlider, setShowPenWidthSlider] = useState(false);
   const [collaboratorMouseX, setCollaboratorMouseX] = useState<number | null>(null);
   const [collaboratorMouseY, setCollaboratorMouseY] = useState<number | null>(null);
   const [collaboratorColor, setCollaboratorColor] = useState<Color>(new Color('white'));
@@ -103,8 +179,22 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
     }
   };
 
-  const handlePenWidthButtonClick = () => {
-    setShowPenWidthSlider(true);
+  const toggleBgColorPicker = () => {
+    setShowBgColorPicker((prevState) => !prevState);
+    setShowPenColorPicker(false);
+    setShowPenWidthSlider(false);
+  };
+
+  const togglePenColorPicker = () => {
+    setShowPenColorPicker((prevState) => !prevState);
+    setShowBgColorPicker(false);
+    setShowPenWidthSlider(false);
+  };
+
+  const togglePenWidthSlider = () => {
+    setShowPenWidthSlider((prevState) => !prevState);
+    setShowBgColorPicker(false);
+    setShowPenColorPicker(false);
   };
 
   const handlePenWidthSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -269,7 +359,7 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
         ref={canvasRef}
         backgroundColor={backgroundColor}
       />
-      {collaboratorMouseX !== null && collaboratorMouseY !== null && (
+      {collaboratorMouseX && collaboratorMouseY && (
         <CollaboratorCursor
           x={collaboratorMouseX}
           y={collaboratorMouseY}
@@ -277,43 +367,23 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
         />
       )}
       <DrawContainer>
-        <ButtonContainer style={{ marginTop: '25rem' }}>
-          <ColorPicker
-            type="color"
-            id="bg-color"
-            value={backgroundColor}
-            onChange={handleBackgroundColorChange}
-          />
-          <Button
-            type="button"
-            onClick={() => document.getElementById('bg-color')?.click()}
-          >
-            <FaPalette />
-          </Button>
-        </ButtonContainer>
-        <ButtonContainer>
-          <ColorPicker
-            type="color"
-            id="pen-color"
-            value={selectedColor}
-            onChange={handlePenColorChange}
-          />
-          <Button
-            type="button"
-            onClick={() => document.getElementById('pen-color')?.click()}
-          >
-            <FaPen />
-          </Button>
-        </ButtonContainer>
-        <ButtonContainer>
-          <Button
-            type="button"
-            onClick={handlePenWidthButtonClick}
-          >
-            <FaPenFancy />
-          </Button>
+        {selectedColorPicker &&
+          <ColorPickerWrapper>
+            <HuePicker
+              color={selectedColor}
+              onChange={(color) =>
+                selectedColorPicker === 'pen'
+                  ? handlePenColorChange({ target: { value: color.hex } })
+                  : handleBackgroundColorChange({ target: { value: color.hex } })}
+              height={150}
+              width={10}
+              direction='vertical'
+            />
+          </ColorPickerWrapper>
+        }
+        <PenWidthSliderWrapper>
           {showPenWidthSlider && (
-            <div className="pen-width-slider">
+            <PenWidthSlider>
               <input
                 type="range"
                 value={penWidth.toString()}
@@ -322,32 +392,34 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
                 max={100}
                 className="slider is-small"
               />
-              <Button
-                type="button"
-                onClick={handlePenWidthSliderClose}
-              >
-                Close
-              </Button>
-            </div>
+            </PenWidthSlider>
           )}
-        </ButtonContainer>
+        </PenWidthSliderWrapper>
         <ButtonContainer>
-          <Button
-            onClick={handleEraserClick}
-          >
+          <ColorPicker
+            type="color"
+            id="bg-color"
+            value={backgroundColor}
+            onChange={handleBackgroundColorChange}
+          />
+          <Button type="button" onClick={toggleBgColorPicker}>
+            <FaPalette />
+          </Button>
+          <Button type="button" onClick={togglePenColorPicker}>
+            <FaPen />
+          </Button>
+          <Button type="button" onClick={togglePenWidthSlider}>
+            <FaPencilRuler />
+          </Button>
+          <Button onClick={handleEraserClick}>
             <FaEraser />
           </Button>
-        </ButtonContainer>
-        {user &&
-          <ButtonContainer>
-            <Button
-              type="submit"
-              onClick={handleSaveClick}
-            >
+          {user && (
+            <Button type="submit" onClick={handleSaveClick}>
               <FaSave />
             </Button>
-          </ButtonContainer>
-        }
+          )}
+        </ButtonContainer>
       </DrawContainer>
       <ButtonContainerRight>
         <Button
@@ -356,8 +428,19 @@ const Draw: React.FC<DrawProps> = ({ backgroundColor, setBackgroundColor, handle
         >
           <FaUserPlus />
         </Button>
+        {currentCollaborators &&
+          currentCollaborators.map((user: Object, i: number) =>
+            <CollaboratorLink
+              key={i}
+              href={`http://localhost:8000/profile/${user.userId}`}
+              target="_blank"
+            >
+              <CollaboratorImage src={user.picture} />
+            </CollaboratorLink>
+          )
+        }
       </ButtonContainerRight>
-    </CanvasContainer>
+    </CanvasContainer >
   );
 };
 
