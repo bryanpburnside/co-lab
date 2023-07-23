@@ -53,29 +53,26 @@ const ColorPickerWrapper = styled.div`
   align-items: center;
   flex-direction: column;
   position: absolute;
-  top: 13rem;
-  left: 1.5rem;
+  top: -11rem;
+  left: 1.25rem;
 `;
 
 const PenWidthSliderWrapper = styled.div`
   position: absolute;
-  top: 22.5rem;
-  left: 1.75rem;
+  top: -2.1rem;
+  left: 1.5rem;
   transform: rotate(-90deg);
   transform-origin: left center;
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
 `;
 
 const PenWidthSlider = styled.div`
   background-color: #3d3983;
-  padding: 10px;
 
   input[type="range"] {
-    height: 7.5px;
-    width: 155px;
+    height: 5px;
+    width: 145px;
     -webkit-appearance: none;
     border: 2px solid white;
   }
@@ -85,7 +82,8 @@ const PenWidthSlider = styled.div`
     background-color: white;
     height: 1.25rem;
     width: 1.25rem;
-    border: 2px solid #3d3983;
+    margin-left: -1rem;
+    border: 1px solid #3d3983;
     border-radius: 50%;
   }
 
