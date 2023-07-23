@@ -10,11 +10,13 @@
     "target": "es6",
     "allowJs": true,
     "jsx": "react",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "resolveJsonModule": true
   },
   "include": [
     "client/src/**/*",
-    "server/**/*.ts"],
+    "server/**/*.ts"
+  ],
   "exclude": [
     "dist",
     "node_modules"

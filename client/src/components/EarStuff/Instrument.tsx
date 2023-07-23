@@ -158,7 +158,7 @@ const Instrument = () => {
 
   const startRecording = () => {
     audio.current!.pause();
-  
+
     // Create the MediaRecorder instance and handle audio data
     mediaRecorderRef.current = new MediaRecorder(mediaStreamDestinationRef.current!.stream);
     const recordedChunks: Blob[] = [];
@@ -167,38 +167,39 @@ const Instrument = () => {
         recordedChunks.push(event.data);
       }
     });
-  
+
     mediaRecorderRef.current.addEventListener('stop', () => {
       // Upload the recorded audio to Cloudinary
       const formData = new FormData();
       formData.append('file', new Blob(recordedChunks), { type: 'audio/wav' });
       formData.append('upload_preset', 'e9ynzrtp');
-  
+
       axios
         .post('https://api.cloudinary.com/v1_1/dkw6ksyvn/upload', formData)
         .then((response) => {
           const audioPublicURL = response.data.secure_url;
           console.log('Audio uploaded:', audioPublicURL);
-  
+
           // If album image is uploaded, upload it to Cloudinary
           if (albumCover) {
             const albumImageFormData = new FormData();
             albumImageFormData.append('file', albumCover);
-            albumImageFormData.append('upload_preset', 'e9ynzrtp'); 
-  
+            albumImageFormData.append('upload_preset', 'e9ynzrtp');
+
             axios
               .post('https://api.cloudinary.com/v1_1/dkw6ksyvn/upload', albumImageFormData)
               .then((albumImageResponse) => {
                 const albumImagePublicURL = albumImageResponse.data.secure_url;
                 console.log('Album Image uploaded:', albumImagePublicURL);
-  
+
                 // Save both the audio URL and album cover URL to the database
                 const requestBody = {
                   songTitle: musicTitle,
                   url: audioPublicURL,
-                  albumCover: albumImagePublicURL, 
+                  albumCover: albumImagePublicURL,
+                  userId: user?.sub
                 };
-  
+
                 axios
                   .post('/api/music', requestBody)
                   .then((serverResponse) => {
@@ -212,12 +213,14 @@ const Instrument = () => {
                 console.error('Error uploading album image:', error);
               });
           } else {
-            // If no album image is uploaded, save only the audio URL to the database
+            // If no album image is uploaded, save default image and audio URL to the database
             const requestBody = {
               songTitle: musicTitle,
               url: audioPublicURL,
+              albumCover: 'https://res.cloudinary.com/dtnq6yr17/image/upload/v1690047781/cassette_svgfin.png',
+              userId: user?.sub
             };
-  
+
             axios
               .post('/api/music', requestBody)
               .then((serverResponse) => {
@@ -232,12 +235,12 @@ const Instrument = () => {
           console.error('Error uploading audio:', error);
         });
     });
-  
+
     // Start recording
     mediaRecorderRef.current.start();
     setRecording(true);
   };
-  
+
 
   const stopRecording = () => {
     mediaRecorderRef.current!.stop();
@@ -276,6 +279,7 @@ const Instrument = () => {
             const requestBody = {
               songTitle: musicTitle,
               url: audioPublicURL,
+              userId: user?.sub
             };
 
             axios

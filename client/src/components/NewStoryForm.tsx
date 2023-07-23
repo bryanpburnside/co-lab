@@ -29,7 +29,8 @@ const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) 
   const [title, setTitle] = useState('');
   // const [collaborators, setCollaborators] = useState('');
   const [coverImage, setCoverImage] = useState<File | null>(null);
-  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
+  const defaultCover = 'https://res.cloudinary.com/dtnq6yr17/image/upload/v1690048298/book_wr0o6r.png';
+  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(defaultCover);
   const [numberOfPages, setNumberOfPages] = useState<number | null>(null);
   const [speakText, setSpeakText] = useState('');
   const { user } = useAuth0();
@@ -122,15 +123,15 @@ const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) 
   };
 
   return (
-    <form onSubmit={ handleSubmit } className="new-story-form">
+    <form onSubmit={handleSubmit} className="new-story-form">
       <div>
         <label htmlFor="title">Title:</label>
         <input
           placeholder='Title'
           type="text"
           id="title"
-          value={ title }
-          onChange={ handleTitleChange }
+          value={title}
+          onChange={handleTitleChange}
           onMouseEnter={() => handleHover('Title')}
           onMouseLeave={() => handleLeave()} />
       </div>
@@ -138,7 +139,7 @@ const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) 
         <label htmlFor="collaborators">Collaborators:</label>
         <input type="text" id="collaborators" value={ collaborators } onChange={ handleCollaboratorsChange } />
       </div> */}
-      <Dropzone onImageUpload={ setCoverImageUrl } />
+      <Dropzone onImageUpload={setCoverImageUrl} />
       <button
         type="submit"
         onMouseEnter={() => handleHover('Create Story')}
@@ -146,14 +147,14 @@ const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) 
         Create Story
       </button>
       <button
-        style={{ marginTop: '20px'}}
+        style={{ marginTop: '20px' }}
         type="button"
-        onClick={ handleCancel }
+        onClick={handleCancel}
         onMouseEnter={() => handleHover('Cancel')}
         onMouseLeave={() => handleLeave()}>
         Cancel
       </button>
-      {speakText && <TTS text={ speakText } />}
+      {speakText && <TTS text={speakText} />}
     </form>
   );
 };

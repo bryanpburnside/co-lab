@@ -25,6 +25,7 @@ const ModalContent = styled.div`
   background-color: #3d3983;
   width: 35%;
   height: 35%;
+  overflow-y: hidden;
   padding: 1rem;
   border-radius: 10px;
 `;
@@ -66,7 +67,8 @@ const FriendList = styled.ul`
   margin: 0;
   padding: 0;
   overflow-y: auto;
-  max-height: 70%;
+  scrollbar-color: transparent transparent;
+  max-height: 75%;
 `;
 
 const FriendListItem = styled.li`
@@ -80,9 +82,15 @@ const FriendListItem = styled.li`
   }
 `;
 
+const Invited = styled.p`
+  align: center;
+`;
+
 const Modal = ({ isOpen, onClose, roomId, userId, friendList, sendInvite }) => {
   const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  const [invitedMessage, setInvitedMessage] = useState<string>('');
+  const currentUrl = window.location.href;
 
   const handleInputChange = event => {
     const value = event.target.value;
@@ -94,11 +102,18 @@ const Modal = ({ isOpen, onClose, roomId, userId, friendList, sendInvite }) => {
     setSuggestions(filteredSuggestions);
   };
 
-  const handleInvite = friendId => {
-    sendInvite(userId, friendId, `http://co-lab.group/visualart/${roomId}`);
+  const handleInvite = (friendId, friendName) => {
+    sendInvite(userId, friendId, `${currentUrl}`);
+    setInvitedMessage(`${friendName} was invited!`);
     setInputValue('');
     setSuggestions([]);
   };
+
+  const clearInputs = () => {
+    setInvitedMessage('');
+    setInputValue('');
+    setSuggestions([]);
+  }
 
   if (!isOpen) {
     return null;
@@ -108,7 +123,9 @@ const Modal = ({ isOpen, onClose, roomId, userId, friendList, sendInvite }) => {
     <ModalContainer>
       <ModalContent>
         <XIcon onClick={onClose}>
-          <FontAwesomeIcon icon={faXmark} />
+          <FontAwesomeIcon
+            icon={faXmark}
+            onClick={clearInputs} />
         </XIcon>
         <h2>Invite Friends</h2>
         <FriendInputContainer>
@@ -118,12 +135,15 @@ const Modal = ({ isOpen, onClose, roomId, userId, friendList, sendInvite }) => {
             onChange={handleInputChange}
             placeholder="Type a friend's name"
           />
+          {invitedMessage && !suggestions.length &&
+            <Invited>{invitedMessage}</Invited>
+          }
           {suggestions.length > 0 && (
             <FriendList>
               {suggestions.map((friend) => (
                 <FriendListItem
                   key={friend.id}
-                  onClick={() => handleInvite(friend.id)}
+                  onClick={() => handleInvite(friend.id, friend.name)}
                 >
                   {friend.name}
                 </FriendListItem>

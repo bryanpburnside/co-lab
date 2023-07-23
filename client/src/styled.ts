@@ -4,8 +4,7 @@ const ConversationContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  overflow-y: auto;
-  height: 80%;
+  height: 78%;
   overflow: auto;
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
@@ -88,7 +87,7 @@ const TextInputContainer = styled.div`
 `;
 
 const TextInput = styled.input`
-  height: 40px;
+  height: 35px;
   width: 100%;
   padding: 5px 10px;
   font-size: 16px;
@@ -119,7 +118,7 @@ const SendButton = styled.button`
   margin-left: 10px;
   border: 2px solid white;
   border-radius: 20px;
-  padding: 10px 20px;
+  padding: 7.5px 15px;
   font-size: 20px;
   cursor: pointer;
 `;

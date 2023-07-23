@@ -63,13 +63,13 @@ const config = {
   plugins: [
     new HtmlWebpackPlugin({
       title: 'co-lab',
+      favicon: './client/src/assets/images/favicon.ico',
       templateContent: ({ htmlWebpackPlugin }) => `
       <!DOCTYPE html>
         <html>
         <head>
           <meta charset="utf-8">
           <title>${htmlWebpackPlugin.options.title}</title>
-          <link rel='icon' type='image/x-icon' href='assets/images/favicon.ico'>
         </head>
         <body>
           <div id="app"></div>
