@@ -141,6 +141,11 @@ const FriendImage = styled.img`
   object-fit: cover;
   object-position: center;
   clip-path: circle();
+
+  &:hover {
+    border: 2px solid white;
+    border-radius: 50%;
+   }
 `;
 
 const ArtworkContainer = styled.div`
