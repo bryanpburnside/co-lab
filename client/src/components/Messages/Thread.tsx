@@ -183,7 +183,7 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
                 <STT updateTranscript={updateContentWithTranscript} />
               </STTButton>
             </TextInputContainer>
-            <SendButton type="submit" onClick={sendMessage}>
+            <SendButton onClick={sendMessage}>
               <FontAwesomeIcon icon={faPaperPlane} size='lg' />
             </SendButton>
           </SendMessageContainer>
