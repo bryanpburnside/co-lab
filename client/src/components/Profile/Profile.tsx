@@ -59,20 +59,24 @@ const PencilIcon = styled.div`
 
 const FriendButton = styled.div`
   position: absolute;
-  top: 95%;
-  left: 75%;
+  top: 80%;
+  left: 80%;
   transform: translate(-50%, -50%);
   display: flex;
   justify-content: center;
   align-items: center;
   color: white;
-  font-size: 20px;
   cursor: pointer;
   z-index: 2;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   clip-path: circle();
   background-color: #F06b80;
+
+  &:hover {
+    border: 2px solid white;
+    border-radius: 50%;
+   }
 `;
 
 const Name = styled.div`
@@ -426,7 +430,7 @@ const Profile: React.FC = () => {
       <LeftContainer>
         {profileUser ? (
           <UserInfoContainer>
-            <Name>{profileUser.name}</Name>
+            <Name>{profileUser.name?.split(' ')[0]}</Name>
             <ProfilePicContainer>
               <ProfilePic src={profilePic || profileUser.picture} alt={profileUser.name} />
               {isOwnProfile && <PencilIcon onClick={handlePicClick}>
