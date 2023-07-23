@@ -36,8 +36,8 @@ const ProfilePicContainer = styled.div`
 
 const PencilIcon = styled.div`
   position: absolute;
-  top: 95%;
-  left: 75%;
+  top: 80%;
+  left: 80%;
   transform: translate(-50%, -50%);
   display: flex;
   justify-content: center;
@@ -46,10 +46,15 @@ const PencilIcon = styled.div`
   font-size: 20px;
   cursor: pointer;
   z-index: 2;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   clip-path: circle();
   background-color: #F06b80;
+
+  &:hover {
+    border: 2px solid white;
+    border-radius: 50%;
+   }
 `;
 
 const FriendButton = styled.div`
