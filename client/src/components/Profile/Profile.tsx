@@ -30,6 +30,8 @@ const ProfilePicContainer = styled.div`
   margin-top: 10px;
   object-fit: cover;
   object-position: center;
+  display: flex;
+  justify-content: center;
 `;
 
 const PencilIcon = styled.div`
@@ -73,12 +75,11 @@ const Name = styled.div`
   font-size: 32px;
   margin-top: 20px;
   border-radius: 10px;
-`
+`;
 
 const ProfilePic = styled.img`
   display: block;
-  width: 100%;
-  height: 15vw;
+  height: 12.5vw;
   margin-top: 10px;
   object-fit: cover;
   object-position: center;
@@ -86,7 +87,7 @@ const ProfilePic = styled.img`
 `;
 
 const LeftContainer = styled.div`
-  width: 20%;
+  width: 17.5%;
   border-radius: 10px;
 `;
 
@@ -145,6 +146,7 @@ const ArtworkContainer = styled.div`
   align-items: center;
   overflow: auto;
   max-height: ${({ containerHeight }) => `${containerHeight}px`};
+  width: 100%;
 
   &::-webkit-scrollbar {
     display: none;
