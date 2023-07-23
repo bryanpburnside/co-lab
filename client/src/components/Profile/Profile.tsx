@@ -112,7 +112,7 @@ const UserInfoContainer = styled.div`
 `;
 
 const FriendContainer = styled.div`
-  width: 25%;
+  width: 22.5%;
   display: flex;
   flex-direction: column;
   border-radius: 10px;
@@ -136,8 +136,8 @@ const FriendLink = styled.a`
 `;
 
 const FriendImage = styled.img`
-  width: 100%;
-  height: 100%;
+  width: 95%;
+  height: 95%;
   object-fit: cover;
   object-position: center;
   clip-path: circle();
