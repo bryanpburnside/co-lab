@@ -148,6 +148,22 @@ html {
   border-radius: 10px;
 }
 
+.sticky {
+  height: 55px;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  font-size: 36px;
+  background-color: #3d3983;
+  display: flex;
+  align-items: center;
+  width: 80vw;
+  margin: 0 auto 0 8.80vw;
+  padding-top: 20px;
+  border-radius: 10px;
+  z-index: 100;
+}
+
 .navbar-links {
   list-style: none;
   padding: 0;
@@ -207,7 +223,7 @@ html {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-top: 20px;
+  /* margin-top: 20px; */
   margin-bottom: 20px;
   width: 100%;
   background-color: #3d3983;
