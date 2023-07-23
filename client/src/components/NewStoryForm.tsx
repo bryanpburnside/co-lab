@@ -15,6 +15,7 @@ interface Story {
   originalCreatorId?: string;
   isPrivate: boolean | false;
   titleColor: string;
+  collaborators: Array<string>
 }
 
 interface NewStoryFormProps {

@@ -115,6 +115,9 @@ const Music = sequelize.define('music', {
   songTitle: {
     type: DataTypes.STRING,
   },
+  albumCover: {
+    type: DataTypes.STRING,
+  },
   content: {
     type: DataTypes.TEXT,
     allowNull: true
@@ -147,7 +150,9 @@ const Story = sequelize.define('stories', {
   titleColor: {
     type: DataTypes.STRING,
   },
-
+  collaborators: {
+    type: DataTypes.ARRAY(DataTypes.STRING)
+  }
 });
 
 const Pages = sequelize.define('pages', {

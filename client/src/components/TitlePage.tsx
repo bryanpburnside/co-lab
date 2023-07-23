@@ -10,6 +10,7 @@ interface Story {
   originalCreatorId?: string | null;
   isPrivate: boolean;
   titleColor: string;
+  collaborators: Array<string>
 }
 
 interface TitlePageProps {

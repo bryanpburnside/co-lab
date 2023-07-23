@@ -4,7 +4,7 @@ import FlipBook from "./FlipBook";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useParams } from 'react-router-dom'
 import { io, Socket } from 'socket.io-client';
-import { FaTty, FaPenSquare, FaMicrophone, FaMicrophoneSlash, FaMagic } from 'react-icons/fa';
+import { FaTty, FaPenSquare, FaMicrophone, FaMicrophoneSlash, FaMagic, FaUserPlus } from 'react-icons/fa';
 import TooltipIcon from './TooltipIcons';
 import TTS from "./TTS";
 import axios from 'axios';
@@ -15,6 +15,7 @@ export const SocketContext = createContext<Socket | null>(null);
 import '../styles.css';
 import StoryCarousel from "./Carousel";
 import { SketchPicker } from 'react-color';
+import ModalStory from "./ModalStory";
 
 interface Page {
   id?: number;
@@ -31,6 +32,12 @@ interface Story {
   originalCreatorId?: string;
   isPrivate: boolean;
   titleColor: string;
+  collaborators: Array<string>;
+}
+
+interface Friend {
+  id: string;
+  name: string;
 }
 
 export const TTSToggleContext = createContext<{
@@ -42,8 +49,6 @@ export const TTSToggleContext = createContext<{
 });
 
 const peers: Record<string, MediaConnection> = {};
-
-
 
 const StoryBook: React.FC = () => {
   const { user } = useAuth0();
@@ -60,6 +65,8 @@ const StoryBook: React.FC = () => {
   const [defaultStory, setDefaultStory] = useState(null);
   const [titleCol, setTitleCol] = useState('#000000');
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [friendList, setFriendList] = useState<Friend[]>([]);
 
   const userStream = useRef<MediaStream | null>(null);
   const peerConnections = useRef<Record<string, MediaConnection>>({});
@@ -142,6 +149,23 @@ const StoryBook: React.FC = () => {
 
     socket.on('userJoined', (userId) => {
       console.log(`User ${userId} joined the room`);
+    });
+
+    socket.on('storyCreated', async () => {
+      await fetchStories();
+    });
+
+    socket.on('newPageAdded', async (pageId) => {
+      const page = await fetchPages();
+      // Update the state or the UI with the new page
+    });
+
+    socket.on('storyDeleted', (storyId) => {
+      // Update the state or the UI to reflect the deletion
+    });
+
+    socket.on('titleColorChanged', async ({ color, storyId }) => {
+      await fetchStories();
     });
 
     socket.on('disconnectUser', userId => {
@@ -231,6 +255,7 @@ const StoryBook: React.FC = () => {
   const handleCreateStory = async (createdStory: Story) => {
     if (createdStory.isPrivate === false) {
       setStories([...stories, createdStory]);
+      socket.emit('newStory', createdStory);
     }
     setSelectedStory(createdStory);
     setShowNewStoryForm(false);
@@ -282,6 +307,7 @@ const StoryBook: React.FC = () => {
         page.page_number === updatedPage.page_number ? updatedPage : page
       )
     );
+    socket.emit('pageUpdated', { page: updatedPage, roomId });
   };
 
   //functionality to add new page
@@ -306,6 +332,7 @@ const StoryBook: React.FC = () => {
         //update the new page with the id
         newPage.id = savedPage.id;
         setPages(prevPages => [...prevPages, newPage]);
+        socket.emit('newPageAdded', { page: newPage, roomId });
       } catch (error) {
         console.error('Failed to add new page', error);
       }
@@ -326,6 +353,7 @@ const StoryBook: React.FC = () => {
       if (response.ok) {
         // remove the deleted story from the list
         setStories(stories.filter(story => story.id !== storyId));
+        socket.emit('storyDeleted', { storyId, roomId });
       } else {
         console.error('Failed to delete story-client');
       }
@@ -356,6 +384,7 @@ const StoryBook: React.FC = () => {
     if (selectedStory) {
       const updatedStory = { ...selectedStory, titleColor: color.hex };
       setSelectedStory(updatedStory);
+      socket.emit('titleColorChanged', { color: color.hex, storyId: selectedStory?.id, roomId });
       try {
         const response = await fetch(`/api/stories/${selectedStory.id}`, {
           method: 'PUT',
@@ -378,6 +407,61 @@ const StoryBook: React.FC = () => {
     fetchStories();
   }, [selectedStory]);
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const openModal = async () => {
+    try {
+      setIsModalOpen(true);
+      await getFriends();
+    } catch (err) {
+      console.error('Failed to send invite at client:', err);
+    }
+  }
+
+  const getFriends = async () => {
+    try {
+      setIsModalOpen(true);
+      const { data } = await axios.get(`/users/${user?.sub}`);
+
+      if (data.friends && Array.isArray(data.friends)) {
+        const friends = await Promise.all(
+          data.friends.map(async (friendId: string) => {
+            const userObj = await axios.get(`/users/${friendId}`);
+            return { name: userObj.data.name, id: friendId };
+          })
+        );
+
+        setFriendList(friends);
+      } else {
+        console.log('Friends data is not available or not an array');
+        setFriendList([]);
+      }
+
+    } catch (err) {
+      console.error('Failed to GET user friends at client:', err);
+    }
+  }
+
+
+  const sendInvite = async (senderId: string, receiverId: string, message: string) => {
+    try {
+      socket.emit('directMessage', {
+        senderId,
+        receiverId,
+        message,
+      });
+
+    const response = await axios.put(`/stories/${selectedStory?.id}/collaborators`, { collaboratorId: receiverId });
+
+    if (response.status !== 200) {
+      throw new Error("Failed to update story collaborators");
+    }
+  } catch (err) {
+    console.error(err);
+  }
+  }
 
   return (
     <SocketContext.Provider value={socket}>
@@ -429,6 +513,23 @@ const StoryBook: React.FC = () => {
               handleClick={ handleColorPickerToggle }
               style={{ fontSize: '32px', marginLeft: '20px' }}
             />
+          <div>
+          <TooltipIcon
+              icon={ FaUserPlus }
+              tooltipText={ 'Invite Friends' }
+              handleClick={ openModal }
+              style={{ fontSize: '32px', marginLeft: '20px' }}
+            />
+
+            {isModalOpen && <ModalStory
+              isOpen={ isModalOpen }
+              onClose={ handleCloseModal }
+              roomId={ roomId! }
+              userId={ user?.sub! }
+              friendList={ friendList }
+              sendInvite={ sendInvite }
+            />}
+          </div>
               <div>
                 {displayColorPicker ?
                   <div style={{ position: 'absolute', zIndex: '2' }}>

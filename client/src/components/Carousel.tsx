@@ -14,6 +14,7 @@ interface Story {
   originalCreatorId?: string;
   isPrivate: boolean;
   titleColor: string;
+  collaborators: Array<string>
 }
 
 interface CarouselProps {

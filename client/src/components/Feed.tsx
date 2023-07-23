@@ -35,6 +35,7 @@ interface Music {
   updatedAt: string;
   artworkId: number;
   name: string;
+  albumCover: string;
 }
 
 type FeedItem = ArtItem | PageItem | Music;
@@ -189,9 +190,11 @@ const Feed: React.FC = () => {
     return (
       <PostContainer className="post" key={index}>
         <div className="post-header">
-          <img src={item.picture} alt={item.name} className="user-pfp" />
-          <div className="username" onClick={() => item.id === user?.sub ? navigate(`/profile`) : navigate(`/profile/${item.id}`)}>
-            {item.name}
+          <div className="user-info">
+            <img src={item.picture} alt={item.name} className="user-pfp" />
+            <div className="username" onClick={() => item.id === user?.sub ? navigate(`/profile`) : navigate(`/profile/${item.id}`)}>
+              {item.name}
+            </div>
           </div>
           <p className="creation-time">{formatTimeDifference(item.createdAt)}</p>
         </div>
@@ -215,6 +218,11 @@ const Feed: React.FC = () => {
         {isMusic && (
           <div className="music" key={index + 42}>
             <MusicHeader>{item.songTitle}</MusicHeader>
+            <img
+              src={item.albumCover}
+              alt=""
+              style={{ maxWidth: '300px', maxHeight: '200px' }} // Adjust the values as needed
+            />
             <audio controls>
               <source src={item.url} type="audio/mp3" />
               Your browser does not support the audio tag.
@@ -236,3 +244,20 @@ const Feed: React.FC = () => {
 };
 
 export default Feed;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -97,6 +97,24 @@ CreateStoryRouter.put('/:id', async (req, res) => {
   }
 });
 
+CreateStoryRouter.put('/stories/:id/collaborators', async (req, res) => {
+  const { collaboratorName } = req.body;
+  const { id } = req.params;
+  try {
+    const story = await Story.findOne({ where: { id } });
+    if (!story) {
+      return res.status(404).json({ message: 'Story not found' });
+    }
 
+    if (!story.collaborators.includes(collaboratorName)) {
+      story.collaborators.push(collaboratorName);
+      await story.save();
+    }
+
+    res.status(200).json({ message: 'Collaborators updated successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 export default CreateStoryRouter;
