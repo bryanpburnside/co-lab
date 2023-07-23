@@ -76,7 +76,7 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
             maxLength={3000}
             rows={10}
             cols={50}
-            style={{ width: '100%', height: '450px', padding: '15px' }}
+            style={{ width: '300px', height: '400px', padding: '15px' }}
           />
         </GrammarlyEditorPlugin>
         <FaTimesCircle

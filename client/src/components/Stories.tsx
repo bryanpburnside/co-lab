@@ -446,21 +446,21 @@ const StoryBook: React.FC = () => {
 
 
   const sendInvite = async (senderId: string, receiverId: string, message: string) => {
-    try {
+    // try {
       socket.emit('directMessage', {
         senderId,
         receiverId,
         message,
       });
 
-    const response = await axios.put(`/stories/${selectedStory?.id}/collaborators`, { collaboratorId: receiverId });
+  //   const response = await axios.put(`/stories/${selectedStory?.id}/collaborators`, { collaboratorId: receiverId });
 
-    if (response.status !== 200) {
-      throw new Error("Failed to update story collaborators");
-    }
-  } catch (err) {
-    console.error(err);
-  }
+  //   if (response.status !== 200) {
+  //     throw new Error("Failed to update story collaborators");
+  //   }
+  // } catch (err) {
+  //   console.error(err);
+  // }
   }
 
   return (

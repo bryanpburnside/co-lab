@@ -120,6 +120,34 @@ app.post('/api/grammar', async (req, res) => {
   }
 });
 
+app.put('/api/stories/:id/collaborators', async (req, res) => {
+  try {
+    const storyId = req.params.id;
+    const newCollaboratorId = req.body.collaborator;
+    console.log(newCollaboratorId);
+    const story = await Story.findByPk(storyId);
+    if (!story) {
+      res.status(404).send('Story not found');
+      return;
+    }
+
+    if (story.collaborators.includes(newCollaboratorId)) {
+      res.status(400).send('User is already a collaborator');
+      return;
+    }
+
+    //add the new collaborator to the array and save
+    story.collaborators.push(newCollaboratorId);
+    await story.save();
+
+    res.status(200).json({ message: 'Collaborator added successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error: Could not add collaborator');
+  }
+});
+
+
 sequelize.authenticate()
   .then(() => console.info('Connected to the database'))
   .catch((err) => console.warn('Cannot connect to database:\n', err));

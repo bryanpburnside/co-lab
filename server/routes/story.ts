@@ -98,7 +98,8 @@ CreateStoryRouter.put('/:id', async (req, res) => {
 });
 
 CreateStoryRouter.put('/stories/:id/collaborators', async (req, res) => {
-  const { collaboratorName } = req.body;
+  const { collaboratorId } = req.body;
+  console.log(collaboratorId);
   const { id } = req.params;
   try {
     const story = await Story.findOne({ where: { id } });
@@ -106,8 +107,8 @@ CreateStoryRouter.put('/stories/:id/collaborators', async (req, res) => {
       return res.status(404).json({ message: 'Story not found' });
     }
 
-    if (!story.collaborators.includes(collaboratorName)) {
-      story.collaborators.push(collaboratorName);
+    if (!story.collaborators.includes(collaboratorId)) {
+      story.collaborators.push(collaboratorId);
       await story.save();
     }
 
