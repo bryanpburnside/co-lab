@@ -66,6 +66,7 @@ const FriendList = styled.ul`
   margin: 0;
   padding: 0;
   overflow-y: auto;
+  scrollbar-color: transparent transparent;
   max-height: 70%;
 `;
 
