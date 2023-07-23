@@ -1,49 +1,61 @@
-import React, { useState } from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleUser, faNewspaper, faMessage } from '@fortawesome/free-regular-svg-icons';
 import { faArrowRightToBracket, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 
-import '../styles.css';
-import TTS from "./TTS";
+interface NavbarProps {
+  activeComponent: string;
+  setActiveComponent: (component: string) => void;
+}
 
-const Navbar = () => {
+const Navbar: React.FC<NavbarProps> = ({ activeComponent, setActiveComponent }) => {
   const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
-  const [speakText, setSpeakText] = useState('');
-  const hoverTimeout = React.useRef<any>(null);
+  const [isNavbarFixed, setIsNavbarFixed] = useState(false);
 
-  const handleHover = (text: string) => {
-    if (hoverTimeout.current) {
-      clearTimeout(hoverTimeout.current);
-    }
-    hoverTimeout.current = setTimeout(() => {
-      setSpeakText(text);
-    }, 1000);
+  const location = useLocation();
+
+  useEffect(() => {
+    const pathname = location.pathname;
+    const currentComponent = pathname.substring(1);
+    setActiveComponent(currentComponent);
+  }, [location]);
+
+  const handleScroll = () => {
+    const scrollTop = window.scrollY;
+    const navbarHeight = 55;
+    setIsNavbarFixed(scrollTop >= navbarHeight);
   };
 
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${activeComponent === 'feed' ? (isNavbarFixed ? 'sticky' : '') : ''}`}>
       <ul className="navbar-links">
-        <li className="navbar-item" onMouseEnter={() => handleHover('Home')}>
+      <li className={'navbar-item'}>
           <Link to="/">
             <img id="logo" src="https://res.cloudinary.com/dtnq6yr17/image/upload/v1688346963/co-lab_logo_no_BG_600X200_pagctf.png" alt="Home" />
           </Link>
         </li>
       </ul>
       <ul className="navbar-links-right">
-        <li className="navbar-item-right">
+      <li className={'navbar-item-right'}>
           <Link to="/feed">
             <FontAwesomeIcon icon={faNewspaper} size='lg' />
           </Link>
         </li>
-        <li className="navbar-item-right">
+        <li className={'navbar-item-right'}>
           <Link to="/messages">
             <FontAwesomeIcon icon={faMessage} size='lg' />
           </Link>
         </li>
-        <li className="navbar-item-right" onMouseEnter={() => handleHover('Profile')}>
+        <li className={'navbar-item-right'}>
           <Link to="/profile">
             <FontAwesomeIcon icon={faCircleUser} size='lg' />
           </Link>
@@ -53,7 +65,6 @@ const Navbar = () => {
             className="navbar-item-right"
             onClick={() => loginWithRedirect()}
             style={{ cursor: 'pointer' }}
-            onMouseEnter={() => handleHover('Login')}
           >
             <FontAwesomeIcon icon={faArrowRightToBracket} size='lg' />
           </li>
@@ -62,13 +73,11 @@ const Navbar = () => {
             className="navbar-item-right"
             onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
             style={{ cursor: 'pointer' }}
-            onMouseEnter={() => handleHover('Logout')}
           >
             <FontAwesomeIcon icon={faArrowRightFromBracket} size='lg' />
           </li>
         }
       </ul>
-      {/* {speakText && <TTS text={speakText} />} */}
     </nav>
   );
 };
