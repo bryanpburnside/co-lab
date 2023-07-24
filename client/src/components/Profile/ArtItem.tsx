@@ -51,7 +51,7 @@ const TrashIcon = styled.div`
   color: white;
   font-size: 20px;
   cursor: pointer;
-  z-index: 2;
+  z-index: 3;
   width: 40px;
   height: 40px;
   clip-path: circle();
