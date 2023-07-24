@@ -12,6 +12,7 @@ interface TooltipIconProps {
   tooltipText: string;
   handleClick: (e: React.MouseEvent) => void;
   style?: React.CSSProperties;
+  size?: number;
 }
 
 

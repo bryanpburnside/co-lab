@@ -1,6 +1,7 @@
-import { Sequelize, DataTypes, Model } from 'sequelize';
+import { Sequelize, DataTypes, Model, QueryTypes } from 'sequelize';
 const { DB_NAME, DB_USER, DB_PW } = process.env;
 import createSeedData from '../seeds/storySeeds.js';
+import { FaTruckMonster } from 'react-icons/fa';
 
 const sequelize = new Sequelize(DB_NAME || 'colab', DB_USER as string, DB_PW as string, {
   host: 'localhost',
@@ -25,8 +26,21 @@ interface ArtworkAttributes {
   type: string;
 }
 
+interface StoryAttributes {
+  id?: number;
+  title: string;
+  coverImage: string | null;
+  numberOfPages: number | null;
+  originalCreatorId?: string;
+  isPrivate: boolean;
+  titleColor: string;
+  collaborators: Array<string>;
+  artworkId?: number | undefined;
+}
+
 interface UserModel extends Model<UserAttributes>, UserAttributes { }
 interface ArtworkModel extends Model<ArtworkAttributes>, ArtworkAttributes { }
+interface StoryModel extends Model<StoryAttributes>, StoryAttributes { }
 
 const User = sequelize.define<UserModel>('users', {
   id: {
@@ -127,7 +141,7 @@ const Music = sequelize.define('music', {
   },
 });
 
-const Story = sequelize.define('stories', {
+const Story = sequelize.define<StoryModel>('stories', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -141,6 +155,19 @@ const Story = sequelize.define('stories', {
     type: DataTypes.STRING,
   },
   numberOfPages: {
+    type: DataTypes.INTEGER,
+  },
+  isPrivate: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  titleColor: {
+    type: DataTypes.STRING,
+  },
+  collaborators: {
+    type: DataTypes.ARRAY(DataTypes.STRING)
+  },
+  artworkId: {
     type: DataTypes.INTEGER,
   }
 });
@@ -214,16 +241,25 @@ UserCollaboration.belongsTo(Collaboration, { foreignKey: 'collaborationId' });
 UserCollaboration.belongsTo(User, { foreignKey: 'userId' });
 Message.belongsTo(User, { foreignKey: 'senderId', as: 'sender' });
 Message.belongsTo(User, { foreignKey: 'receiverId', as: 'receiver' });
-Pages.belongsTo(Story, { foreignKey: 'storyId' })
+Pages.belongsTo(Story, { foreignKey: 'storyId' });
 
 const initialize = async () => {
   try {
-    // const seedStories = await Story.findAll();
-    // await createSeedData();
     await sequelize.sync({ alter: true });
-    console.log('Tables successfully created!');
-  } catch (error) {
-    console.error('Error creating tables :(', error);
+    const tablesToReset = ['users', 'artwork', 'messages', 'visualart', 'music', 'stories', 'pages', 'sculptures'];
+    await Promise.all(
+      tablesToReset.map(async (table) => {
+        const sequenceName = `"${table}_id_seq"`;
+        const query = `SELECT setval('${sequenceName}', (SELECT MAX(id) FROM "${table}") + 1);`;
+        await sequelize.query(query, {
+          type: QueryTypes.RAW,
+        });
+      })
+    );
+    console.log('Tables successfully created! Auto-increment sequences reset based on seed data');
+    await createSeedData();
+  } catch (err) {
+    console.error('Error creating tables or resetting auto-increment sequences:', err);
   }
 };
 

@@ -4,8 +4,7 @@ const ConversationContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  overflow-y: auto;
-  height: 80%;
+  height: 78%;
   overflow: auto;
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
@@ -88,7 +87,7 @@ const TextInputContainer = styled.div`
 `;
 
 const TextInput = styled.input`
-  height: 40px;
+  height: 35px;
   width: 100%;
   padding: 5px 10px;
   font-size: 16px;
@@ -119,10 +118,62 @@ const SendButton = styled.button`
   margin-left: 10px;
   border: 2px solid white;
   border-radius: 20px;
-  padding: 10px 20px;
+  padding: 7.5px 15px;
   font-size: 20px;
   cursor: pointer;
 `;
+
+//Storybook
+const StyledFormStory = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 600px;
+  width: 500px;
+  background-color: #fff;
+`;
+
+const StyledInputStory = styled.input`
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 40px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  background-color: #f3f3f3;
+  color: #3d3983;
+  transition: background-color 0.3s ease;
+
+  &::placeholder {
+    color: #aaa;
+  }
+
+  &:focus {
+    background-color: #e1e1e1;
+  }
+`;
+
+const StyledButtonStory = styled.button`
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  background-color: #3d3983;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #5e5a9e;
+  }
+`;
+
+
+
+
 
 export {
   ConversationContainer,
@@ -133,5 +184,9 @@ export {
   TextInputContainer,
   STTButton,
   SendMessageContainer,
-  SendButton
+  SendButton,
+  StyledButtonStory,
+  StyledFormStory,
+  StyledInputStory,
+
 };

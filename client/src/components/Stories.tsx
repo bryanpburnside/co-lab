@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef, createContext } from "react";
 import NewStoryForm from "./NewStoryForm";
 import FlipBook from "./FlipBook";
-// import STT from  './STT';
-// import TranscriptLog from "./Transcript";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useParams } from 'react-router-dom'
 import { io, Socket } from 'socket.io-client';
-import { FaTty, FaHeadphones, FaBookMedical, FaTrash } from 'react-icons/fa';
+import { FaTty, FaPenSquare, FaMicrophone, FaMicrophoneSlash, FaMagic, FaUserPlus } from 'react-icons/fa';
 import TooltipIcon from './TooltipIcons';
 import TTS from "./TTS";
 import axios from 'axios';
@@ -15,6 +13,9 @@ import Peer, { MediaConnection } from 'peerjs';
 export const socket = io('/');
 export const SocketContext = createContext<Socket | null>(null);
 import '../styles.css';
+import StoryCarousel from "./Carousel";
+import { SketchPicker } from 'react-color';
+import ModalStory from "./ModalStory";
 
 interface Page {
   id?: number;
@@ -29,6 +30,14 @@ interface Story {
   coverImage: string | null;
   numberOfPages: number | null;
   originalCreatorId?: string;
+  isPrivate: boolean;
+  titleColor: string;
+  collaborators: Array<string>;
+}
+
+interface Friend {
+  id: string;
+  name: string;
 }
 
 export const TTSToggleContext = createContext<{
@@ -40,8 +49,6 @@ export const TTSToggleContext = createContext<{
 });
 
 const peers: Record<string, MediaConnection> = {};
-
-
 
 const StoryBook: React.FC = () => {
   const { user } = useAuth0();
@@ -56,6 +63,10 @@ const StoryBook: React.FC = () => {
   const [peerId, setPeerId] = useState('');
   const [muted, setMuted] = useState(true);
   const [defaultStory, setDefaultStory] = useState(null);
+  const [titleCol, setTitleCol] = useState('#000000');
+  const [displayColorPicker, setDisplayColorPicker] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [friendList, setFriendList] = useState<Friend[]>([]);
 
   const userStream = useRef<MediaStream | null>(null);
   const peerConnections = useRef<Record<string, MediaConnection>>({});
@@ -74,8 +85,6 @@ const StoryBook: React.FC = () => {
       return !prevMuted;
     });
 };
-
-
 
   useEffect(() => {
     setPeerId(generatePeerId());
@@ -142,6 +151,23 @@ const StoryBook: React.FC = () => {
       console.log(`User ${userId} joined the room`);
     });
 
+    socket.on('storyCreated', async () => {
+      await fetchStories();
+    });
+
+    socket.on('newPageAdded', async (pageId) => {
+      const page = await fetchPages();
+      // Update the state or the UI with the new page
+    });
+
+    socket.on('storyDeleted', (storyId) => {
+      // Update the state or the UI to reflect the deletion
+    });
+
+    socket.on('titleColorChanged', async ({ color, storyId }) => {
+      await fetchStories();
+    });
+
     socket.on('disconnectUser', userId => {
       if (peers[userId]) {
         peers[userId].close();
@@ -163,18 +189,18 @@ const StoryBook: React.FC = () => {
     });
   }, [muted]);
 
+  const fetchStories = async () => {
+    try {
+      const response = await fetch('/api/stories');
+      const data = await response.json();
+      setStories(data);
+    } catch (error) {
+      console.error('Failed to fetch stories-client', error);
+    }
+  };
 
   //fetch stories from the server
   useEffect(() => {
-    const fetchStories = async () => {
-      try {
-        const response = await fetch('/api/stories');
-        const data = await response.json();
-        setStories(data);
-      } catch (error) {
-        console.error('Failed to fetch stories-client', error);
-      }
-    };
     fetchStories();
   }, []);
 
@@ -223,19 +249,45 @@ const StoryBook: React.FC = () => {
     }, 1000);
   };
 
-  //might need
-  // const handleStoryLeave = () => {
-  //   setSpeakText('');
-  // };
-
   //create a new story should show the form
   //add the story to the list of stories
   //and set the created story as the current working story
-  const handleCreateStory = (createdStory: Story) => {
-    setStories([...stories, createdStory]);
+  const handleCreateStory = async (createdStory: Story) => {
+    if (createdStory.isPrivate === false) {
+      setStories([...stories, createdStory]);
+      socket.emit('newStory', createdStory);
+    }
     setSelectedStory(createdStory);
     setShowNewStoryForm(false);
+
+    //add two empty pages to the new story
+    for (let i = 1; i <= 3; i++) {
+      const newPage: Page = {
+        page_number: i,
+        content: '',
+        story: createdStory.title,
+      };
+
+      try {
+        const response = await fetch('/api/pages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            page_number: newPage.page_number,
+            content: newPage.content,
+            storyId: createdStory.id,
+          }),
+        });
+
+        const savedPage = await response.json();
+        newPage.id = savedPage.id;
+        setPages((prevPages) => [...prevPages, newPage]);
+      } catch (error) {
+        console.error('Failed to add new page', error);
+      }
+    }
   };
+
 
   //in case of cancel
   const handleCancelCreateStory = () => {
@@ -255,6 +307,7 @@ const StoryBook: React.FC = () => {
         page.page_number === updatedPage.page_number ? updatedPage : page
       )
     );
+    socket.emit('pageUpdated', { page: updatedPage, roomId });
   };
 
   //functionality to add new page
@@ -279,6 +332,7 @@ const StoryBook: React.FC = () => {
         //update the new page with the id
         newPage.id = savedPage.id;
         setPages(prevPages => [...prevPages, newPage]);
+        socket.emit('newPageAdded', { page: newPage, roomId });
       } catch (error) {
         console.error('Failed to add new page', error);
       }
@@ -299,6 +353,7 @@ const StoryBook: React.FC = () => {
       if (response.ok) {
         // remove the deleted story from the list
         setStories(stories.filter(story => story.id !== storyId));
+        socket.emit('storyDeleted', { storyId, roomId });
       } else {
         console.error('Failed to delete story-client');
       }
@@ -309,134 +364,223 @@ const StoryBook: React.FC = () => {
 
   useEffect(() => {
     const fetchDefaultStory = async () => {
-      const res = await axios.get('/api/books?title=Instructions&userId=fakeId');
-      setDefaultStory(res.data);
+      const res = await axios.get('/api/stories');
+      const defaultStory = res.data.filter((story: Story) => {
+        return story.title === 'Instructions' && story.originalCreatorId === 'fakeID';
+      })
+      setSelectedStory(defaultStory[0]);
     };
     fetchDefaultStory();
   }, []);
 
 
+  const handleColorPickerToggle = () => {
+    setDisplayColorPicker(!displayColorPicker);
+  };
+
+  const handleTitleColorChange = async (color: any) => {
+    setTitleCol(color.hex);
+
+    if (selectedStory) {
+      const updatedStory = { ...selectedStory, titleColor: color.hex };
+      setSelectedStory(updatedStory);
+      socket.emit('titleColorChanged', { color: color.hex, storyId: selectedStory?.id, roomId });
+      try {
+        const response = await fetch(`/api/stories/${selectedStory.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ titleColor: color.hex }),
+        });
+
+        if (!response.ok) {
+          throw new Error("response was not ok");
+        }
+
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    // fetch stories data from the server
+    fetchStories();
+  }, [selectedStory]);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const openModal = async () => {
+    try {
+      setIsModalOpen(true);
+      await getFriends();
+    } catch (err) {
+      console.error('Failed to send invite at client:', err);
+    }
+  }
+
+  const getFriends = async () => {
+    try {
+      setIsModalOpen(true);
+      const { data } = await axios.get(`/users/${user?.sub}`);
+
+      if (data.friends && Array.isArray(data.friends)) {
+        const friends = await Promise.all(
+          data.friends.map(async (friendId: string) => {
+            const userObj = await axios.get(`/users/${friendId}`);
+            return { name: userObj.data.name, id: friendId };
+          })
+        );
+
+        setFriendList(friends);
+      } else {
+        console.log('Friends data is not available or not an array');
+        setFriendList([]);
+      }
+
+    } catch (err) {
+      console.error('Failed to GET user friends at client:', err);
+    }
+  }
+
+
+  const sendInvite = async (senderId: string, receiverId: string, message: string) => {
+    // try {
+      socket.emit('directMessage', {
+        senderId,
+        receiverId,
+        message,
+      });
+
+  //   const response = await axios.put(`/stories/${selectedStory?.id}/collaborators`, { collaboratorId: receiverId });
+
+  //   if (response.status !== 200) {
+  //     throw new Error("Failed to update story collaborators");
+  //   }
+  // } catch (err) {
+  //   console.error(err);
+  // }
+  }
+
   return (
+    <SocketContext.Provider value={socket}>
     <TTSToggleContext.Provider value={{ ttsOn, setTtsOn }}>
       <div style={{ display: 'flex' }}>
         {/* Column 2: FlipBook and PageEditor and NewStoryForm */}
-        <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '20px', height: '100%', width: '100%' }}>
-          {showNewStoryForm ? (
-            <NewStoryForm onCreateStory={ handleCreateStory } onCancel={ handleCancelCreateStory } />
-          ) : (
-            selectedStory &&
-            <FlipBook
-              story={ selectedStory || defaultStory }
-              selectedStoryPages={ pages }
-              onUpdatePage={ handleUpdatePage }
-              fetchPages={ fetchPages }
-              TooltipIcon={ TooltipIcon }
-              addNewPage={ addNewPage }
-              roomId={ roomId }
-            />
-          )}
-        </div>
-         {/* Column 1: Story List */}
-         <div
+        <div
+          style={{
+            display: 'grid',
+            placeItems: 'center',
+            alignContent: 'center',
+            height: '100%',
+            width: '100%',
+          }}
+        >
+        <div
           style={{
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
+            alignItems: 'right',
+            justifyContent: 'right',
             marginRight: '20px',
             boxShadow: '5px 5px 13px #343171, -5px -5px 13px #464195',
           }}>
           <div style={{ display: 'flex', marginBottom: '5px' }}>
             <TooltipIcon
-              icon={ FaBookMedical }
+              icon={ FaPenSquare }
               tooltipText="Create new story"
               handleClick={ handleShowNewStoryForm }
-              style={{ marginRight: '20px', marginTop: '30px'}}
+              style={{ marginRight: '20px', fontSize: '32px' }}
             />
             <TooltipIcon
               icon={ FaTty }
               tooltipText={ttsOn ? "Turn TTS Off" : "Turn TTS On"}
               handleClick={() => setTtsOn(!ttsOn)}
-              style={{ marginRight: '20px', marginTop: '30px' }}
+              style={{ marginRight: '20px' }}
             >
               {ttsOn ? "Turn TTS Off" : "Turn TTS On"}
             </TooltipIcon>
             <TooltipIcon
-              icon={ FaHeadphones }
+              icon={ muted ? FaMicrophoneSlash : FaMicrophone }
               tooltipText={muted ? "Unmute" : "Mute"}
               handleClick={ handleToggleMute }
-              style={{ marginTop: '30px' }}
+              style={{ fontSize: '32px' }}
+            />
+            <TooltipIcon
+              icon={ FaMagic }
+              tooltipText={ 'Edit Cover Page' }
+              handleClick={ handleColorPickerToggle }
+              style={{ fontSize: '32px', marginLeft: '20px' }}
+            />
+          <div>
+          <TooltipIcon
+              icon={ FaUserPlus }
+              tooltipText={ 'Invite Friends' }
+              handleClick={ openModal }
+              style={{ fontSize: '33px', marginLeft: '20px' }}
+            />
+
+            {isModalOpen && <ModalStory
+              isOpen={ isModalOpen }
+              onClose={ handleCloseModal }
+              roomId={ roomId! }
+              userId={ user?.sub! }
+              friendList={ friendList }
+              sendInvite={ sendInvite }
+            />}
+          </div>
+              <div>
+                {displayColorPicker ?
+                  <div style={{ position: 'absolute', zIndex: '2' }}>
+                    <SketchPicker color={ titleCol } onChange={ handleTitleColorChange } />
+                  </div>
+                  : null
+                }
+            </div>
+          </div>
+         </div>
+         {showNewStoryForm && (
+          <NewStoryForm onCreateStory={ handleCreateStory } onCancel={ handleCancelCreateStory } />
+        )}
+
+        {!showNewStoryForm && selectedStory &&
+          <div style={{ height: '100%', width: '100%' }}>
+            <FlipBook
+              story={ selectedStory || defaultStory }
+              selectedStoryPages={ pages }
+              onUpdatePage={ handleUpdatePage }
+              fetchPages={ fetchPages }
+              addNewPage={ addNewPage }
+              roomId={ roomId }
+              user={ user?.sub }
             />
           </div>
-          <div className="story-list" style={{
-              marginTop: '40px',
-            }}>
-            {stories.map((story, index) => (
-              <div
-                key={ index }
-                onClick={() => handleStoryClick(story)}
-                onMouseEnter={() => handleStoryHover(story)}
-                style={{
-                  marginBottom: '20px',
-                  color: '#3d3983',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  margin: '10px',
-                }}
-              >
-                <div style={{
-                  width: '80px',
-                  height: '100px',
-                  borderRadius: '5px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: story.coverImage ? 'transparent' : 'white',
-                }}>
-                  {story.coverImage ? (
-                    <img
-                      src={ story.coverImage }
-                      alt={ story.title }
-                      style={{
-                        width: '80px',
-                        height: '100px',
-                        objectFit: 'cover'
-                      }}
-                    />
-                  ) : (
-                    <div style={{ fontSize: '0.8em', color: 'black', textAlign: 'center' }}>
-                      No Image
-                    </div>
-                  )}
-                </div>
-                <div style={{ fontSize: '0.8em', color: 'white', textAlign: 'center' }}>
-                  {story.title}
-                </div>
-                {story.originalCreatorId === user?.sub && (
-                  <TooltipIcon
-                    icon={() => <FaTrash size={20} color="white" />}
-                    tooltipText="Delete story"
-                    handleClick={() => {
-                      if (window.confirm("Are you sure you want to delete this story?")) {
-                        deleteStory(story.id!, story.originalCreatorId!);
-                        console.log('story deleted');
-                      }
-                    }}
-                    style={{
-                      marginTop: '7px'
-                    }}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
+        }
         </div>
       </div>
+      {/* Carousel */}
+      <div
+        style={{
+          height: '250px',
+          width: '700px',
+          boxShadow:  '5px 5px 13px #343171, -5px -5px 13px #464195',
+          justifyContent: 'center',
+          alignItems: 'center',
+          margin: 'auto',
+        }}>
+        <StoryCarousel
+          items={ stories }
+          handleStoryClick={ handleStoryClick }
+          handleStoryHover={ handleStoryHover }
+          deleteStory={ deleteStory }
+          user={ user?.sub }
+        />
+      </div>
       {/* TTS */}
-      {speakText && <TTS text={speakText} />}
+      {speakText && <TTS text={ speakText } />}
     </TTSToggleContext.Provider>
+    </SocketContext.Provider>
   );
 };
 

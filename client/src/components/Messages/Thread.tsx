@@ -3,7 +3,6 @@ import axios from 'axios';
 import TTS from '../TTS';
 import STT from '../STT';
 import { formatDistanceToNow } from 'date-fns';
-import TooltipIcon from '../TooltipIcons';
 import { FaVolumeUp } from 'react-icons/fa';
 import { Socket } from 'socket.io-client';
 import { SocketContext } from './Inbox';
@@ -143,7 +142,7 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
               {msg.senderId === userId ? (
                 <TimestampSender>
                   <SenderBubble>
-                    {msg.message.includes('http://co-lab.group/') ?
+                    {msg.message.includes('http://') || msg.message.includes('https://') ?
                       <InviteLink href={msg.message}>Let's collab!</InviteLink>
                       : msg.message}
                   </SenderBubble>
@@ -152,19 +151,13 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
               ) : (
                 <TimestampRecipient>
                   <RecipientBubble>
-                    {msg.message.includes('http://co-lab.group/') ?
+                    {msg.message.includes('http://') || msg.message.includes('https://') ?
                       <InviteLink href={msg.message}>Let's collab!</InviteLink>
                       : msg.message}
                   </RecipientBubble>
                   {formatTimeDifference(msg.createdAt)}
                 </TimestampRecipient>
               )}
-              {/* <TooltipIcon
-                icon={FaVolumeUp}
-                tooltipText="TTY"
-                handleClick={() => { handleSpeakClick(msg.message) }}
-                style={{ top: '15px' }}
-              /> */}
             </BubbleContainer>
           </div>
         ))}
@@ -183,7 +176,7 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
                 <STT updateTranscript={updateContentWithTranscript} />
               </STTButton>
             </TextInputContainer>
-            <SendButton type="submit" onClick={sendMessage}>
+            <SendButton onClick={sendMessage}>
               <FontAwesomeIcon icon={faPaperPlane} size='lg' />
             </SendButton>
           </SendMessageContainer>

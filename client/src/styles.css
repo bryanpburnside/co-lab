@@ -65,9 +65,7 @@ html {
   justify-content: space-between;
   align-items: center;
   width: 80vw;
-  /* Adjust the width as desired */
   margin: 0 auto;
-  /* Center the container horizontally */
   height: 60vh;
 }
 
@@ -82,11 +80,9 @@ html {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 80vw;
-  /* Adjust the width as desired */
+  width: 75vw;
   margin: 0 auto;
-  /* Center the container horizontally */
-  height: 75vh;
+  height: 70vh;
   border-radius: 10px;
   box-shadow: 5px 5px 13px #343171,
     -5px -5px 13px #464195;
@@ -152,6 +148,22 @@ html {
   border-radius: 10px;
 }
 
+.sticky {
+  height: 55px;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  font-size: 36px;
+  background-color: #3d3983;
+  display: flex;
+  align-items: center;
+  width: 80vw;
+  margin: 0 auto 0 8.80vw;
+  padding-top: 20px;
+  border-radius: 10px;
+  z-index: 100;
+}
+
 .navbar-links {
   list-style: none;
   padding: 0;
@@ -215,7 +227,7 @@ html {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-top: 20px;
+  /* margin-top: 20px; */
   margin-bottom: 20px;
   width: 100%;
   background-color: #3d3983;
@@ -313,43 +325,6 @@ html {
   font-weight: 900;
 }
 
-.new-story-form {
-  background-color: #ffffff;
-  border: 1px solid #cccccc;
-  border-radius: 5px;
-  padding: 20px;
-  max-width: 500px;
-  margin: auto;
-}
-
-.new-story-form label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.new-story-form input {
-  width: 100%;
-  margin-bottom: 15px;
-  padding: 10px;
-  box-sizing: border-box;
-  border-radius: 5px;
-  border: 1px solid #cccccc;
-}
-
-.new-story-form button {
-  padding: 10px 20px;
-  border-radius: 5px;
-  border: none;
-  color: #ffffff;
-  background-color: #f06b80;
-  margin-right: 10px;
-  cursor: pointer;
-}
-
-.new-story-form button:hover {
-  background-color: #f06b80;
-}
-
 .tooltip-text {
   position: absolute;
   bottom: 100%;
@@ -372,18 +347,15 @@ div:hover>.tooltip-text {
   display: block;
 }
 
-.new-story-form button:hover {
-  background-color: #f06b80;
-}
-
 /* larger screens */
 .story-list {
-  box-shadow: 5px 5px 13px #343171, -5px -5px 13px #464195;
+  /* box-shadow: 5px 5px 13px #343171, -5px -5px 13px #464195; */
   padding: 10px;
   overflow: auto;
   height: 620px;
   width: 250px;
   margin: 20px;
+  border-top: 1px solid #fff;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
@@ -461,3 +433,23 @@ div:hover>.tooltip-text {
     border: 3px solid transparent;
   }
 }
+
+.color-picker {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20vh;
+}
+
+.color-wheel {
+  appearance: none;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  height: 100px;
+  width: 100px;
+  padding: 30px;
+  box-sizing: border-box;
+  background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
+}
+

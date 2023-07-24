@@ -30,12 +30,14 @@ const ProfilePicContainer = styled.div`
   margin-top: 10px;
   object-fit: cover;
   object-position: center;
+  display: flex;
+  justify-content: center;
 `;
 
 const PencilIcon = styled.div`
   position: absolute;
-  top: 95%;
-  left: 75%;
+  top: 80%;
+  left: 80%;
   transform: translate(-50%, -50%);
   display: flex;
   justify-content: center;
@@ -44,28 +46,37 @@ const PencilIcon = styled.div`
   font-size: 20px;
   cursor: pointer;
   z-index: 2;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   clip-path: circle();
   background-color: #F06b80;
+
+  &:hover {
+    border: 2px solid white;
+    border-radius: 50%;
+   }
 `;
 
 const FriendButton = styled.div`
   position: absolute;
-  top: 95%;
-  left: 75%;
+  top: 80%;
+  left: 80%;
   transform: translate(-50%, -50%);
   display: flex;
   justify-content: center;
   align-items: center;
   color: white;
-  font-size: 20px;
   cursor: pointer;
   z-index: 2;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   clip-path: circle();
   background-color: #F06b80;
+
+  &:hover {
+    border: 2px solid white;
+    border-radius: 50%;
+   }
 `;
 
 const Name = styled.div`
@@ -73,12 +84,11 @@ const Name = styled.div`
   font-size: 32px;
   margin-top: 20px;
   border-radius: 10px;
-`
+`;
 
 const ProfilePic = styled.img`
   display: block;
-  width: 100%;
-  height: 15vw;
+  height: 12.5vw;
   margin-top: 10px;
   object-fit: cover;
   object-position: center;
@@ -86,7 +96,7 @@ const ProfilePic = styled.img`
 `;
 
 const LeftContainer = styled.div`
-  width: 20%;
+  width: 17.5%;
   border-radius: 10px;
 `;
 
@@ -106,7 +116,7 @@ const UserInfoContainer = styled.div`
 `;
 
 const FriendContainer = styled.div`
-  width: 20%;
+  width: 22.5%;
   display: flex;
   flex-direction: column;
   border-radius: 10px;
@@ -130,11 +140,16 @@ const FriendLink = styled.a`
 `;
 
 const FriendImage = styled.img`
-  width: 100%;
-  height: 100%;
+  width: 95%;
+  height: 95%;
   object-fit: cover;
   object-position: center;
   clip-path: circle();
+
+  &:hover {
+    border: 2px solid white;
+    border-radius: 50%;
+   }
 `;
 
 const ArtworkContainer = styled.div`
@@ -145,6 +160,7 @@ const ArtworkContainer = styled.div`
   align-items: center;
   overflow: auto;
   max-height: ${({ containerHeight }) => `${containerHeight}px`};
+  width: 100%;
 
   &::-webkit-scrollbar {
     display: none;
@@ -233,12 +249,14 @@ const Profile: React.FC = () => {
     }
   };
 
-  const getFullSizeImage = async (artworkId: string) => {
+  const getPopupContent = async (artworkId: string) => {
     try {
-      const { data } = await axios.get(`/artwork/byId/originalImage/${artworkId}`);
-      setSelectedArtwork(data);
+      const { data } = await axios.get(`/artwork/byId/popupContent/${artworkId}`);
+      if (data) {
+        setSelectedArtwork(data);
+      }
     } catch (err) {
-      console.error('Failed to GET original image at client:', err);
+      console.error('Failed to GET popup content at client:', err);
     }
   }
 
@@ -287,7 +305,7 @@ const Profile: React.FC = () => {
     if (isTrashIconClicked) {
       deleteArtwork(artworkId);
     } else {
-      getFullSizeImage(artworkId);
+      getPopupContent(artworkId);
       setShowPopup(true);
     }
   };
@@ -412,7 +430,7 @@ const Profile: React.FC = () => {
       <LeftContainer>
         {profileUser ? (
           <UserInfoContainer>
-            <Name>{profileUser.name}</Name>
+            <Name>{profileUser.name?.split(' ')[0]}</Name>
             <ProfilePicContainer>
               <ProfilePic src={profilePic || profileUser.picture} alt={profileUser.name} />
               {isOwnProfile && <PencilIcon onClick={handlePicClick}>
@@ -434,22 +452,26 @@ const Profile: React.FC = () => {
           <Name>Artwork</Name>
           <ArtworkContainer ref={artworkContainerRef} containerHeight={artworkContainerHeight}>
             {artwork &&
-              artwork.map((art) => {
-                if (art.type) {
-                  return (
-                    <ArtItem
-                      key={art.id}
-                      id={art.id}
-                      type={art.type}
-                      content={art[art.type.replace(' ', '')]?.content || art[art.type]?.content || art[art.type]?.coverImage}
-                      isOwnProfile={isOwnProfile}
-                      onClick={handleArtworkClick}
-                      deleteArtwork={deleteArtwork}
-                    />
-                  );
-                }
-                return null;
-              })}
+              artwork
+                .sort(
+                  (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                ).map((art) => {
+                  if (art.type) {
+                    console.log(art)
+                    return (
+                      <ArtItem
+                        key={art.id}
+                        id={art.id}
+                        type={art.type}
+                        content={art[art.type.replace(' ', '')]?.content || art[art.type]?.content || art[art.type]?.albumCover || art[art.type]?.coverImage}
+                        isOwnProfile={isOwnProfile}
+                        onClick={handleArtworkClick}
+                        deleteArtwork={deleteArtwork}
+                      />
+                    );
+                  }
+                  return null;
+                })}
           </ArtworkContainer>
         </div>
       </RightContainer>
@@ -480,7 +502,12 @@ const Profile: React.FC = () => {
       </FriendContainer>
       {showPopup && (
         <Popup onClick={() => setShowPopup(false)}>
-          <PopupImage src={selectedArtwork} alt="Full-size artwork" />
+          {selectedArtwork?.includes('video') ?
+            <audio controls>
+              <source src={selectedArtwork} type="audio/mp3" />
+              Your browser does not support the audio tag.
+            </audio>
+            : <PopupImage src={selectedArtwork} alt="Full-size artwork" />}
         </Popup>
       )}
     </ProfileContainer >

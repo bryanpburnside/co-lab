@@ -17,8 +17,14 @@ const VisualArt: React.FC = () => {
   const { roomId } = useParams<string>();
   const [peerId, setPeerId] = useState('');
   const [backgroundColor, setBackgroundColor] = useState('#3d3983');
+  const [currentCollaborators, setCurrentCollaborators] = useState<Array<Object>>([]);
+  const [userImages, setUserImages] = useState<Array<Object>>([]);
   const [friendList, setFriendList] = useState<Object[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [showBgColorPicker, setShowBgColorPicker] = useState(false);
+  const [showPenColorPicker, setShowPenColorPicker] = useState(false);
+  const [showPenWidthSlider, setShowPenWidthSlider] = useState(false);
+  let currentUser: string;
 
   useEffect(() => {
     setPeerId(generatePeerId());
@@ -71,7 +77,7 @@ const VisualArt: React.FC = () => {
 
     peer.on('open', (userId) => {
       socket.emit('joinRoom', userId, roomId);
-    })
+    });
 
     socket.on('roomCreated', (userId, roomId) => {
       console.log(`${userId} created room: ${roomId}`);
@@ -81,18 +87,64 @@ const VisualArt: React.FC = () => {
       console.log(`User ${userId} joined the room`);
     });
 
-    socket.on('disconnectUser', userId => {
-      if (peers[userId]) {
-        peers[userId].close();
+    // socket.on('disconnectUser', userId => {
+    //   if (peers[userId]) {
+    //     peers[userId].close();
+    //   }
+    // })
+
+    // return () => {
+    //   socket.emit('disconnectUser', peerId, roomId);
+    //   socket.disconnect();
+    //   peer.disconnect();
+    // };
+  }, []);
+
+  useEffect(() => {
+    if (user?.sub) {
+      currentUser = user?.sub;
+    }
+    const getUserImageAndSendInfo = async () => {
+      if (user?.sub) {
+        try {
+          const { userId, picture } = await getUserImage(user?.sub);
+          setCurrentCollaborators(prevCollaborators => [...prevCollaborators, { userId, picture }])
+          socket.emit('sendUserInfo', { userId, picture, roomId });
+        } catch (err) {
+          console.error('Failed to GET user image at client:', err);
+        }
       }
-    })
+    };
+
+    getUserImageAndSendInfo();
+
+    socket.on('userInfoReceived', ({ userId, collaborators, roomId }) => {
+      setCurrentCollaborators(collaborators);
+    });
+
+    socket.on('collaboratorDisconnected', (userId, roomId) => {
+      setCurrentCollaborators((prevCollaborators) =>
+        prevCollaborators.filter((collaborator) => collaborator['userId'] !== userId)
+      );
+    });
 
     return () => {
-      socket.emit('disconnectUser', peerId, roomId);
-      socket.disconnect();
-      peer.disconnect();
+      socket.emit('collaboratorDisconnect', currentUser, roomId);
     };
-  }, []);
+  }, [user?.sub]);
+
+  const getUserImage = async (userId: string) => {
+    try {
+      const { data } = await axios.get(`/users/${userId}`);
+      const collaborator = {
+        userId,
+        picture: data.picture
+      }
+      return collaborator;
+    } catch (err) {
+      console.error('Failed to GET user images at client:', err);
+    }
+  }
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -103,9 +155,9 @@ const VisualArt: React.FC = () => {
   };
 
   const handleBackgroundColorChange = (e: any) => {
-    const { value } = e.target;
-    setBackgroundColor(value);
-    socket.emit('changeBackgroundColor', { color: value, roomId });
+    const { value: color } = e.target;
+    setBackgroundColor(color);
+    socket.emit('changeBackgroundColor', { color, roomId });
   };
 
   const openModal = async () => {
@@ -143,8 +195,27 @@ const VisualArt: React.FC = () => {
   return (
     <>
       <SocketContext.Provider value={socket}>
-        <Modal isOpen={isModalOpen} onClose={handleCloseModal} roomId={roomId} userId={user?.sub} friendList={friendList} sendInvite={sendInvite} />
-        <Draw backgroundColor={backgroundColor} setBackgroundColor={setBackgroundColor} handleBackgroundColorChange={handleBackgroundColorChange} openModal={openModal} roomId={roomId} />
+        <Modal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          roomId={roomId}
+          userId={user?.sub}
+          friendList={friendList}
+          sendInvite={sendInvite}
+        />
+        <Draw
+          backgroundColor={backgroundColor}
+          setBackgroundColor={setBackgroundColor}
+          showPenWidthSlider={showPenWidthSlider}
+          setShowBgColorPicker={setShowBgColorPicker}
+          setShowPenColorPicker={setShowPenColorPicker}
+          setShowPenWidthSlider={setShowPenWidthSlider}
+          handleBackgroundColorChange={handleBackgroundColorChange}
+          selectedColorPicker={showPenColorPicker ? 'pen' : showBgColorPicker ? 'bg' : undefined}
+          openModal={openModal}
+          currentCollaborators={currentCollaborators}
+          roomId={roomId}
+        />
       </SocketContext.Provider>
     </>
   )

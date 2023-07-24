@@ -25,7 +25,6 @@ const ModalContent = styled.div`
   background-color: #3d3983;
   width: 35%;
   height: 35%;
-  overflow-y: hidden;
   padding: 1rem;
   border-radius: 10px;
 `;
@@ -67,8 +66,7 @@ const FriendList = styled.ul`
   margin: 0;
   padding: 0;
   overflow-y: auto;
-  scrollbar-color: transparent transparent;
-  max-height: 75%;
+  max-height: 70%;
 `;
 
 const FriendListItem = styled.li`
@@ -82,38 +80,41 @@ const FriendListItem = styled.li`
   }
 `;
 
-const Invited = styled.p`
-  align: center;
-`;
+interface Friend {
+  id: string;
+  name: string;
+}
 
-const Modal = ({ isOpen, onClose, roomId, userId, friendList, sendInvite }) => {
+interface ModalStoryProps {
+  isOpen: boolean;
+  onClose: () => void;
+  roomId: string;
+  userId: string;
+  friendList: Friend[];
+  sendInvite: (userId: string, friendId: string, url: string) => void;
+}
+
+const ModalStory: React.FC<ModalStoryProps> = ({ isOpen, onClose, roomId, userId, friendList, sendInvite }) => {
   const [inputValue, setInputValue] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
-  const [invitedMessage, setInvitedMessage] = useState<string>('');
-  const currentUrl = window.location.href;
+  const [suggestions, setSuggestions] = useState<Friend[]>([]);
 
-  const handleInputChange = event => {
+
+  const handleInputChange = (event: any) => {
     const value = event.target.value;
     setInputValue(value);
 
-    const filteredSuggestions = friendList.filter(friend =>
-      friend.name.toLowerCase().includes(value.toLowerCase())
+    const filteredSuggestions = friendList.filter((friend: Friend) =>
+      typeof friend.name === 'string' && friend.name.toLowerCase().includes(value.toLowerCase())
     );
     setSuggestions(filteredSuggestions);
   };
 
-  const handleInvite = (friendId, friendName) => {
-    sendInvite(userId, friendId, `${currentUrl}`);
-    setInvitedMessage(`${friendName} was invited!`);
+
+  const handleInvite = (friendId: string) => {
+    sendInvite(userId, friendId, `http://co-lab.group/stories/${roomId}`);
     setInputValue('');
     setSuggestions([]);
   };
-
-  const clearInputs = () => {
-    setInvitedMessage('');
-    setInputValue('');
-    setSuggestions([]);
-  }
 
   if (!isOpen) {
     return null;
@@ -122,30 +123,25 @@ const Modal = ({ isOpen, onClose, roomId, userId, friendList, sendInvite }) => {
   return (
     <ModalContainer>
       <ModalContent>
-        <XIcon onClick={onClose}>
-          <FontAwesomeIcon
-            icon={faXmark}
-            onClick={clearInputs} />
+        <XIcon onClick={ onClose }>
+          <FontAwesomeIcon icon={ faXmark } />
         </XIcon>
         <h2>Invite Friends</h2>
         <FriendInputContainer>
           <FriendInput
             type="text"
-            value={inputValue}
-            onChange={handleInputChange}
+            value={ inputValue }
+            onChange={ handleInputChange }
             placeholder="Type a friend's name"
           />
-          {invitedMessage && !suggestions.length &&
-            <Invited>{invitedMessage}</Invited>
-          }
           {suggestions.length > 0 && (
             <FriendList>
-              {suggestions.map((friend) => (
+              {suggestions.map((friend: Friend) => (
                 <FriendListItem
-                  key={friend.id}
-                  onClick={() => handleInvite(friend.id, friend.name)}
+                  key={ friend.id }
+                  onClick={() => handleInvite(friend.id)}
                 >
-                  {friend.name}
+                  { friend.name }
                 </FriendListItem>
               ))}
             </FriendList>
@@ -156,4 +152,4 @@ const Modal = ({ isOpen, onClose, roomId, userId, friendList, sendInvite }) => {
   );
 };
 
-export default Modal;
+export default ModalStory;

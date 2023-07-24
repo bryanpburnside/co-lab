@@ -1,14 +1,8 @@
-import React, { useState, useContext, createContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import STT from './STT';
 import '../styles.css';
 import { FaSave, FaTimesCircle, FaVolumeUp, FaEraser } from 'react-icons/fa';
-import TooltipIcon from './TooltipIcons';
-import { TTSToggleContext } from './Stories';
 import { GrammarlyEditorPlugin } from "@grammarly/editor-sdk-react";
-import { io, Socket } from 'socket.io-client';
-
-export const socket = io('/');
-export const SocketContext = createContext<Socket | null>(null)
 
 interface Page {
   id?: number;
@@ -17,49 +11,35 @@ interface Page {
   story: string;
 }
 
-interface Story {
-  id?: number;
-  title: string;
-  coverImage: any | null;
-  numberOfPages: number | null;
-}
-
 interface PageEditorProps {
   page: Page;
-  onSave: (content: string) => void;
+  onSave: (content: string, autoSave: boolean) => void;
   onCancel: () => void;
-  TooltipIcon: typeof TooltipIcon;
   roomId: string | undefined;
 }
 
-const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, TooltipIcon, roomId }) => {
-  const [content, setContent] = useState(page.content);
+interface SaveButtonProps {
+  onClick: () => void;
+}
 
-  const { ttsOn } = useContext(TTSToggleContext);
-  // const { id: roomId } = useParams<{ id: string }>();
+interface ClearButtonProps {
+  onClick: () => void;
+}
+
+interface TTYButtonProps {
+  onSpeakClick: () => void;
+  updateTranscript: (transcript: string) => void;
+}
+
+const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, roomId }) => {
+  const [content, setContent] = useState(page.content);
 
   const handleContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContent(event.target.value);
-    if(socket) {
-      socket.emit('typing', {roomId, content: event.target.value});
-    }
   };
 
-  useEffect(() => {
-    if (socket) {
-      socket.on('typing', content => {
-        setContent(content);
-      });
-
-      return () => {
-        //cleanup from typing
-        socket.off('typing');
-      };
-    }
-  }, [content]);
-
   const handleSave = () => {
-    onSave(content);
+    onSave(content, false);
   };
 
   const handleCancel = () => {
@@ -86,6 +66,45 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
     setContent('');
   };
 
+  const SaveButton: React.FC<SaveButtonProps> = ({ onClick }) => (
+    <button
+      onClick={ onClick }
+      style={{ top: '14px', fontSize: '34px', background: 'transparent', border: 'none', cursor: 'pointer', color: 'white' }}
+    >
+      <FaSave />
+    </button>
+  );
+
+  const ClearButton: React.FC<ClearButtonProps> = ({ onClick }) => (
+    <button
+      onClick={onClick}
+      style={{ top: '14px', fontSize: '34px', background: 'transparent', border: 'none', cursor: 'pointer', color: 'white' }}
+    >
+      <FaEraser />
+    </button>
+  );
+
+  const TTYButton: React.FC<TTYButtonProps> = ({ onSpeakClick, updateTranscript }) => (
+    <div style={{ display: 'flex', gap: '10px' }}>
+      <button
+        onClick={onSpeakClick}
+        style={{ top: '14px', fontSize: '34px', background: 'transparent', border: 'none', cursor: 'pointer', color: 'white' }}
+      >
+        <FaVolumeUp />
+      </button>
+    </div>
+  );
+
+
+  //auto save functionality for collaborative editing
+  useEffect(() => {
+    const autoSave = setInterval(() => {
+      onSave(content, true);
+    }, 1000);
+    return () => {
+      clearInterval(autoSave);
+    };
+  }, [onSave]);
 
   return (
     <div>
@@ -94,20 +113,21 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
           <textarea
             value={ content }
             onChange={ handleContentChange }
-            maxLength={310}
+            maxLength={3000}
             rows={10}
             cols={50}
-            style={{ width: '100%', height: '500px' }}
+            style={{ width: '300px', height: '400px', padding: '15px' }}
           />
         </GrammarlyEditorPlugin>
         <FaTimesCircle
           style={{
             position: 'absolute',
-            top: '-30px',
-            right: 0,
+            top: '-25px',
+            right: '-25px',
             color: '#3d3983',
             backgroundColor: 'white',
-            borderRadius: '100%'
+            borderRadius: '100%',
+            padding: '3px'
           }}
           size={30}
           onClick={ handleCancel }
@@ -119,24 +139,9 @@ const PageEditor: React.FC<PageEditorProps> = ({ page, onSave, onCancel, Tooltip
         display: 'flex',
         gap: '10px',
       }}>
-        <TooltipIcon
-          icon={ FaSave }
-          tooltipText="Save"
-          handleClick={ handleSave }
-          style={{ top: '15px'}}
-        />
-          <TooltipIcon
-            icon={ FaEraser }
-            tooltipText="Clear"
-            handleClick={ handleClearContent }
-            style={{ top: '15px'}}
-          />
-        <TooltipIcon
-          icon={ FaVolumeUp }
-          tooltipText="TTY"
-          handleClick={ handleSpeakClick }
-          style={{ top: '15px'}}
-        />
+          <SaveButton onClick={handleSave} />
+          <ClearButton onClick={handleClearContent} />
+        <TTYButton onSpeakClick={handleSpeakClick} updateTranscript={updateContentWithTranscript} />
         <STT updateTranscript={ updateContentWithTranscript } />
       </div>
     </div>

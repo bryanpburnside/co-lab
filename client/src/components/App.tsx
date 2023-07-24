@@ -1,18 +1,6 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './Navbar';
-// import Home from './Home';
-// import LoginButton from './LoginButton';
-// import LogoutButton from './LogoutButton';
-// import Profile from './Profile';
-// import StoryBook from './Stories';
-// import Ear from './EarStuff/Instrument'
-// import Sculpture from './Sculpture'
-// import VisualArt from './Eye/VisualArt';
-// import Inbox from './Messages/Inbox';
-// import Feed from './Feed';
-// import Trimmer from './EarStuff/Trimmer'
-// import '../styles.css';
 
 const Home = lazy(() => import('./Home'));
 const LoginButton = lazy(() => import('./LoginButton'));
@@ -27,9 +15,12 @@ const Feed = lazy(() => import('./Feed'));
 const Trimmer = lazy(() => import('./EarStuff/Trimmer'));
 
 const App = () => {
+  const [activeComponent, setActiveComponent] = useState<string>('feed');
+
   return (
+    <div className={activeComponent === 'feed' ? 'feed-open' : ''}>
     <Router>
-      <Navbar />
+      <Navbar activeComponent={activeComponent} setActiveComponent={setActiveComponent} />
       <Suspense fallback={<h1>Loading...</h1>}>
         <Routes>
           <Route path='/' element={<Home />} />
@@ -47,6 +38,7 @@ const App = () => {
         </Routes>
       </Suspense>
     </Router>
+    </div>
   );
 }
 

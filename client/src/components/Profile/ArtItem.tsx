@@ -52,10 +52,15 @@ const TrashIcon = styled.div`
   font-size: 20px;
   cursor: pointer;
   z-index: 2;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   clip-path: circle();
   background-color: #F06b80;
+
+  &:hover {
+   border: 2px solid white;
+   border-radius: 50%;
+  }
 `;
 
 const ArtItem: React.FC<ArtItemProps> = ({
