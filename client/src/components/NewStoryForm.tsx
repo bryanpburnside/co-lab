@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import TTS from './TTS';
 import '../styles.css';
-import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import Dropzone from './DropZone';
 import {  StyledButtonStory, StyledFormStory, StyledInputStory,} from '../styled';

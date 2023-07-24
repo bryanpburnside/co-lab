@@ -129,7 +129,7 @@ const StoryCarousel: React.FC<CarouselProps> = ({ items, handleStoryClick, handl
                   ) : (
                     <div style={{ fontSize: '0.8em', color: 'black', textAlign: 'center' }}>
                       <img
-                        src={'https://res.cloudinary.com/dhin8tgv1/image/upload/v1689349895/cgdztp7ma8eqxivjsd5r.png'}
+                        src={'https://res.cloudinary.com/dtnq6yr17/image/upload/v1690048298/book_wr0o6r.png'}
                         alt={ story.title }
                         style={{
                           width: '80px',
