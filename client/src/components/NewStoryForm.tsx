@@ -1,16 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import TTS from './TTS';
 import '../styles.css';
-import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import Dropzone from './DropZone';
-
-interface Page {
-  id?: number;
-  page_number: number;
-  content: string;
-  story: string;
-}
+import {  StyledButtonStory, StyledFormStory, StyledInputStory,} from '../styled';
+import Switch  from 'react-switch';
 
 interface Story {
   id?: number;
@@ -18,6 +12,9 @@ interface Story {
   coverImage: string | null;
   numberOfPages: number | null;
   originalCreatorId?: string;
+  isPrivate: boolean | false;
+  titleColor: string;
+  collaborators: Array<string>
 }
 
 interface NewStoryFormProps {
@@ -27,39 +24,21 @@ interface NewStoryFormProps {
 
 const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) => {
   const [title, setTitle] = useState('');
-  // const [collaborators, setCollaborators] = useState('');
-  const [coverImage, setCoverImage] = useState<File | null>(null);
-  const defaultCover = 'https://res.cloudinary.com/dtnq6yr17/image/upload/v1690048298/book_wr0o6r.png';
-  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(defaultCover);
+  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
   const [numberOfPages, setNumberOfPages] = useState<number | null>(null);
   const [speakText, setSpeakText] = useState('');
+  const [privacy, setPrivacy] = useState(false);
   const { user } = useAuth0();
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
   };
 
-  // const handleCollaboratorsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setCollaborators(event.target.value);
-  // };
-
-
-  const handleCoverImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0];
-      const formData = new FormData();
-      formData.append('coverImage', file);
-      try {
-        const response = await axios.post('/api/stories/upload', formData);
-        setCoverImage(file);
-        setCoverImageUrl(response.data.imageUrl);
-      } catch (error) {
-        console.error('Error uploading image to server:', error);
-      }
-    }
+  //for privacy settings
+  const setPrivateStory = (checked: boolean) => {
+    //change boolean of story for isPrivate to true/false
+    setPrivacy(checked);
   };
-
-
 
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -75,7 +54,10 @@ const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) 
       title,
       coverImage: coverImageUrl,
       numberOfPages,
-      originalCreatorId: user?.sub
+      originalCreatorId: user?.sub,
+      isPrivate: privacy,
+      titleColor: '#000000',
+      collaborators: [],
     };
 
     try {
@@ -123,39 +105,51 @@ const NewStoryForm: React.FC<NewStoryFormProps> = ({ onCreateStory, onCancel }) 
   };
 
   return (
-    <form onSubmit={handleSubmit} className="new-story-form">
+    <StyledFormStory onSubmit={ handleSubmit }>
       <div>
         <label htmlFor="title">Title:</label>
-        <input
+        <StyledInputStory
           placeholder='Title'
           type="text"
           id="title"
           value={title}
           onChange={handleTitleChange}
           onMouseEnter={() => handleHover('Title')}
-          onMouseLeave={() => handleLeave()} />
+          onMouseLeave={() => handleLeave()}
+        />
       </div>
-      {/* <div>
-        <label htmlFor="collaborators">Collaborators:</label>
-        <input type="text" id="collaborators" value={ collaborators } onChange={ handleCollaboratorsChange } />
-      </div> */}
-      <Dropzone onImageUpload={setCoverImageUrl} />
-      <button
-        type="submit"
-        onMouseEnter={() => handleHover('Create Story')}
-        onMouseLeave={() => handleLeave()}>
-        Create Story
-      </button>
-      <button
+      <Dropzone onImageUpload={ setCoverImageUrl } />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div>
+        <StyledButtonStory
+          type="submit"
+          onMouseEnter={() => handleHover('Create Story')}
+          onMouseLeave={() => handleLeave()}
+        >
+          Create Story
+        </StyledButtonStory>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <label htmlFor="privacy-switch" style={{ margin: '10px', color: 'black', marginBottom: '2px' }}>Set as private:</label>
+        <Switch
+          id="privacy-switch"
+          onChange={ setPrivateStory }
+          checked={ privacy }
+        />
+      </div>
+    </div>
+      <StyledButtonStory
         style={{ marginTop: '20px' }}
         type="button"
         onClick={handleCancel}
         onMouseEnter={() => handleHover('Cancel')}
-        onMouseLeave={() => handleLeave()}>
+        onMouseLeave={() => handleLeave()}
+      >
         Cancel
-      </button>
-      {speakText && <TTS text={speakText} />}
-    </form>
+      </StyledButtonStory>
+      {speakText && <TTS text={ speakText } />}
+    </StyledFormStory>
   );
 };
 

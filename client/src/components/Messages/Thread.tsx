@@ -3,7 +3,6 @@ import axios from 'axios';
 import TTS from '../TTS';
 import STT from '../STT';
 import { formatDistanceToNow } from 'date-fns';
-import TooltipIcon from '../TooltipIcons';
 import { FaVolumeUp } from 'react-icons/fa';
 import { Socket } from 'socket.io-client';
 import { SocketContext } from './Inbox';
@@ -159,12 +158,6 @@ const Thread = ({ userId, receiverId, userList, setUserList }) => {
                   {formatTimeDifference(msg.createdAt)}
                 </TimestampRecipient>
               )}
-              {/* <TooltipIcon
-                icon={FaVolumeUp}
-                tooltipText="TTY"
-                handleClick={() => { handleSpeakClick(msg.message) }}
-                style={{ top: '15px' }}
-              /> */}
             </BubbleContainer>
           </div>
         ))}

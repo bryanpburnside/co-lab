@@ -2,18 +2,10 @@ import React, { useState, useRef } from "react";
 import HTMLFlipBook from "react-pageflip";
 import '../styles.css';
 import { FaPlusCircle, FaVolumeUp } from 'react-icons/fa';
-import TooltipIcon from './TooltipIcons';
 import styled from 'styled-components';
 import PageEditor from "./PageEditor";
 import TitlePage from './TitlePage';
-
-// const TitlePage: any = styled.div`
-//   data-density: hard;
-//   background-size: cover;
-//   background-position: center;
-//   height: 90%;
-//   width: 500px;
-// `;
+import TooltipIcon from "./TooltipIcons";
 
 const PageContainer = styled.div`
   width: 500px;
@@ -49,6 +41,10 @@ interface Story {
   title: string;
   coverImage: any | null;
   numberOfPages: number | null;
+  originalCreatorId?: string | null;
+  isPrivate: boolean;
+  titleColor: string;
+  collaborators: Array<string>
 }
 
 interface FlipBookProps {
@@ -57,28 +53,24 @@ interface FlipBookProps {
   onUpdatePage: (updatedPage: Page) => void;
   fetchPages: () => void;
   addNewPage: () => void;
-  TooltipIcon: typeof TooltipIcon;
   roomId: string | undefined;
+  user: string | undefined;
 }
 
-const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPages, addNewPage, TooltipIcon, roomId }) => {
+const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPages, addNewPage, roomId, user }) => {
   const [selectedPage, setSelectedPage] = useState<Page | null>(null);
-  // const [isAutoReading, setIsAutoReading] = useState(false);
-  const [titleColor, setTitleColor] = useState('#000000');
-
 
   const flipBookRef = useRef<any>(null);
 
   const handlePageClick = (page: Page) => {
-    setSelectedPage(page);
-  };
-
-    const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTitleColor(event.target.value);
+    //only allow the creator to edit
+    // if (user === story.originalCreatorId) {
+      setSelectedPage(page);
+    // }
   };
 
   //save page after editing it
-  const handleSavePage = async (content: string) => {
+  const handleSavePage = async (content: string, autoSave = false) => {
     if (selectedPage && story) {
       const existingPage = selectedStoryPages.find(page => page.page_number === selectedPage.page_number);
       let response;
@@ -113,7 +105,10 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
         return page;
       });
       fetchPages();
-      setSelectedPage(null);
+      //only deselect the page if it's not an auto-save
+      if (!autoSave) {
+        setSelectedPage(null);
+      }
     }
   };
 
@@ -158,14 +153,15 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
       startPage={1}
       showCover={true}
       useMouseEvents={true}
+      // onFlip={() => handleBookOpen()}
       style={{
         backgroundColor: '#3d3983',
         overflow: "visible",
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: '30px',
         marginLeft: '20px',
+        paddingLeft: '5px',
       }}
       >
         <div>
@@ -181,9 +177,6 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
             <TitlePage
               story={ story }
               addNewPage={ addNewPage }
-              handleColorChange={ handleColorChange }
-              titleColor={ titleColor }
-              TooltipIcon={ TooltipIcon }
             />
           </PageContainer>
         </div>
@@ -199,8 +192,8 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
             height: '90%',
             margin: 'auto',
             }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              { index === selectedStoryPages.length - 1 && (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              { index === selectedStoryPages.length - 2 && (
                 <TooltipIcon
                   icon={ FaPlusCircle }
                   tooltipText="Add New Page"
@@ -213,8 +206,11 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
                     color: '#3d3983',
                     backgroundColor: 'white',
                     borderRadius: '50%',
-                    marginTop: '10px',
-                    marginBottom: '15px'
+                    margin: '10px',
+                    padding: '4px',
+                    height: '30px',
+                    marginTop: '5px',
+                    width: '30px'
                   }}
                 />
               )}
@@ -227,17 +223,42 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
                     color: '#3d3983',
                     backgroundColor: 'white',
                     borderRadius: '50%',
-                    marginBottom: '10px',
-                    marginTop: '10px'
+                    margin: '10px',
+                    padding: '3px',
+                    height: '30px',
+                    width: '30px'
                   }}
                   size={30}
                 />
               </div>
             </div>
             <Pages data-density="hard">
-              { page.content }
+              {page.content}
+              {index === selectedStoryPages.length - 1 ? (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '50%', left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    fontSize: '30px',
+                    fontWeight: 'bold'
+                  }}>
+                  The End
+                </div>
+              ) : (
+                <span
+                  style={{
+                    position: 'absolute',
+                    bottom: '68px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    color: 'black'
+                  }}
+                >
+                  {page.page_number}
+                </span>
+              )}
             </Pages>
-            <span style={{ color: 'white' }}>{ page.page_number }</span>
           </PageContainer>
         </div>
       ))}
@@ -247,7 +268,6 @@ const FlipBook: React.FC<FlipBookProps> = ({ story, selectedStoryPages, fetchPag
           page={ selectedPage }
           onSave={ handleSavePage }
           onCancel={ handleCancelEdit }
-          TooltipIcon={ TooltipIcon }
           roomId={ roomId }
         />
       )}

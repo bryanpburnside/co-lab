@@ -12,7 +12,7 @@ dotenv.config({ path: path.resolve(dirname(fileURLToPath(import.meta.url)), '../
 const { PORT, CLOUD_NAME, CLOUD_API_KEY, CLOUD_SECRET, RapidAPI_KEY, RapidAPI_HOST } = process.env;
 import Users from './routes/users.js';
 import Messages from './routes/messages.js';
-import { Artwork, Message } from './database/index.js';
+import { Artwork, Message, User } from './database/index.js';
 import artworkRouter from './routes/artwork.js';
 import VisualArtwork from './routes/visualartwork.js';
 import sculptureRouter from './routes/sculpture.js';
@@ -120,6 +120,34 @@ app.post('/api/grammar', async (req, res) => {
   }
 });
 
+app.put('/api/stories/:id/collaborators', async (req, res) => {
+  try {
+    const storyId = req.params.id;
+    const newCollaboratorId = req.body.collaborator;
+    console.log(newCollaboratorId);
+    const story = await Story.findByPk(storyId);
+    if (!story) {
+      res.status(404).send('Story not found');
+      return;
+    }
+
+    if (story.collaborators.includes(newCollaboratorId)) {
+      res.status(400).send('User is already a collaborator');
+      return;
+    }
+
+    //add the new collaborator to the array and save
+    story.collaborators.push(newCollaboratorId);
+    await story.save();
+
+    res.status(200).json({ message: 'Collaborator added successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error: Could not add collaborator');
+  }
+});
+
+
 sequelize.authenticate()
   .then(() => console.info('Connected to the database'))
   .catch((err) => console.warn('Cannot connect to database:\n', err));
@@ -196,6 +224,22 @@ io.on('connection', socket => {
   //for the storybook page editor text area
   socket.on('typing', ({ roomId, content }) => {
     socket.to(roomId).emit('typing', content);
+  });
+
+  socket.on('storyCreated', ({ roomId }) => {
+    io.to(roomId).emit('storyCreated');
+  });
+
+  socket.on('newPageAdded', ({ page, roomId }) => {
+    io.to(roomId).emit('newPageAdded', page.id);
+  });
+
+  socket.on('storyDeleted', ({ storyId, roomId }) => {
+    io.to(roomId).emit('storyDeleted', storyId);
+  });
+
+  socket.on('titleColorChanged', ({ color, storyId, roomId }) => {
+    io.to(roomId).emit('titleColorChanged', { color, storyId });
   });
 
   // // Handle key press event

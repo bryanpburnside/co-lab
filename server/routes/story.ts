@@ -1,6 +1,6 @@
 import { Router } from 'express';
 const CreateStoryRouter = Router();
-import { Story, User } from '../database/index.js';
+import { Story } from '../database/index.js';
 import multer from 'multer';
 import fs from 'fs';
 const upload = multer({ dest: 'uploads/' });
@@ -24,7 +24,6 @@ CreateStoryRouter.post('/upload', upload.single('coverImage'), async (req, res) 
   }
 
   try {
-    //set quality to low
     const response = await cloudinary.uploader.upload(file.path);
     return res.json({ imageUrl: response.secure_url });
   } catch (err) {
@@ -51,7 +50,6 @@ CreateStoryRouter.get('/', async (req, res) => {
 CreateStoryRouter.delete('/:id', async (req, res) => {
   const { id } = req.params;
   const { userId } = req.query;
-  console.log(userId);
 
   try {
     const story = await Story.findOne({ where: { id } });
@@ -76,6 +74,48 @@ CreateStoryRouter.delete('/:id', async (req, res) => {
   }
 });
 
+CreateStoryRouter.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  const { titleColor } = req.body;
 
+  try {
+    const story = await Story.findOne({ where: { id } });
+
+    //check for story
+    if (!story) {
+      return res.status(404).json({ message: 'Story not found-router' });
+    }
+
+    //update story title color
+    await story.update({ titleColor });
+    await story.save();
+
+    res.status(200).json({ message: 'Story title color updated successfully-router', story });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to update story title color-router' });
+  }
+});
+
+CreateStoryRouter.put('/stories/:id/collaborators', async (req, res) => {
+  const { collaboratorId } = req.body;
+  console.log(collaboratorId);
+  const { id } = req.params;
+  try {
+    const story = await Story.findOne({ where: { id } });
+    if (!story) {
+      return res.status(404).json({ message: 'Story not found' });
+    }
+
+    if (!story.collaborators.includes(collaboratorId)) {
+      story.collaborators.push(collaboratorId);
+      await story.save();
+    }
+
+    res.status(200).json({ message: 'Collaborators updated successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 export default CreateStoryRouter;

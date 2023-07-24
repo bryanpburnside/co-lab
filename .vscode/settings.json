@@ -40,7 +40,8 @@
     "tpage",
     "turnjs",
     "usercollaborations",
-    "visualartwork"
+    "visualartwork",
+    "Xmark"
   ],
   "git.terminalAuthentication": false
 }
