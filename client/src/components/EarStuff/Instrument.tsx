@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
+import Modal from 'react-modal';
 import { useAuth0 } from '@auth0/auth0-react';
 import * as hand from 'handtrackjs';
 import { Model } from 'handtrackjs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleStop, faPlayCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCircleStop, faPlayCircle, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { motion } from 'framer-motion';
 
 import blueNote from '../../assets/images/bluee-note.png';
@@ -46,6 +47,7 @@ const Instrument = () => {
     pink: false,
   });
   const [albumCover, setAlbumCover] = useState(null);
+  const [showAlert, setShowAlert] = useState(false);
 
   let model: Model;
 
@@ -147,12 +149,18 @@ const Instrument = () => {
   }, []);
 
   const toggleRecording = () => {
-    if (recording) {
-      stopRecording();
+    if (!musicTitle || !albumCover) {
+      // Show an alert using the native alert() function
+      alert('Please enter a title and album cover before starting the recording.');
     } else {
-      startRecording();
+      if (recording) {
+        stopRecording();
+      } else {
+        startRecording();
+      }
     }
   };
+
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -328,9 +336,11 @@ const Instrument = () => {
   const AlbumCoverPreview = () => {
     return albumCover ? (
       <img
+        className="album-cover-preview"
         src={albumCover as string}
         alt="Album Cover Preview"
         style={{ maxWidth: '300px', maxHeight: '200px' }}
+        
       />
     ) : null;
   };
@@ -347,55 +357,41 @@ const Instrument = () => {
 
   return (
     <div className="instrument-container">
+    <div className="centered-container">
       <input
         value={musicTitle}
         onChange={(e) => setMusicTitle(e.target.value)}
         placeholder="Enter music title"
-        style={{
-          border: 'none',
-          background: 'none',
-          cursor: 'pointer',
-          color: 'white',
-          fontSize: '2.5rem',
-          textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-        }}
+        className="music-title-input"
       />
-      <button
-        onClick={toggleRecording}
-        className="start-recording"
-        style={{
-          border: 'none',
-          background: 'none',
-          cursor: 'pointer',
-          color: 'white',
-          fontSize: '2.5rem',
-          textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-        }}
-      >
-        {recording ? (
-          <>
-            Stop Recording <FontAwesomeIcon icon={faCircleStop} />
-          </>
-        ) : (
-          <>
-            Start Recording <FontAwesomeIcon icon={faPlayCircle} />
-          </>
-        )}
-      </button>
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleAlbumCoverChange}
-        style={{ display: 'none' }}
-        ref={fileInputRef}
-      />
-      <button onClick={() => fileInputRef.current?.click()} className="upload-album-cover">
+      <label className="upload-button">
+        <FontAwesomeIcon icon={faUpload} />{' '}
         Upload Album Cover
-      </button>
+        <input
+          className='image-upload'
+          type="file"
+          accept="image/*"
+          onChange={handleAlbumCoverChange}
+          style={{ display: 'none' }}
+          ref={fileInputRef}
+        />
+      </label>
       <AlbumCoverPreview />
+      <button onClick={toggleRecording} className="start-recording">
+          {recording ? (
+            <>
+              <FontAwesomeIcon icon={faCircleStop} /> Stop Recording
+            </>
+          ) : (
+            <>
+              <FontAwesomeIcon icon={faPlayCircle} /> Start Recording
+            </>
+          )}
+        </button>
+      </div>
       <div className="video-wrapper">
         <video id="video" ref={video} className="resized-video" />
-
+  
         <motion.div
           className="blue-overlay"
           animate={{ rotate: shouldJiggle.blue ? [-10, 10, -10, 10, -10, 10, -10, 0] : 0 }}
@@ -403,7 +399,7 @@ const Instrument = () => {
         >
           <img src={blueNote} alt="Blue Note" />
         </motion.div>
-
+  
         <motion.div
           className="green-overlay"
           animate={{ rotate: shouldJiggle.green ? [-10, 10, -10, 10, -10, 10, -10, 0] : 0 }}
@@ -411,7 +407,7 @@ const Instrument = () => {
         >
           <img src={greenNote} alt="Green Note" />
         </motion.div>
-
+  
         <motion.div
           className="gold-overlay"
           animate={{ rotate: shouldJiggle.gold ? [-10, 10, -10, 10, -10, 10, -10, 0] : 0 }}
@@ -419,7 +415,7 @@ const Instrument = () => {
         >
           <img src={goldNote} alt="Gold Note" />
         </motion.div>
-
+  
         <motion.div
           className="pink-overlay"
           animate={{ rotate: shouldJiggle.pink ? [-10, 10, -10, 10, -10, 10, -10, 0] : 0 }}

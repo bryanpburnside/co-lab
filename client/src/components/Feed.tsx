@@ -219,17 +219,24 @@ const Feed: React.FC = () => {
           <div className="music" key={index + 42}>
             <MusicHeader>{item.songTitle}</MusicHeader>
             <img
+              className='albumCover'
               src={item.albumCover}
               alt=""
-              style={{ maxWidth: '300px', maxHeight: '200px' }} // Adjust the values as needed
+              style={{ 
+                maxWidth: '500px', 
+                maxHeight: '400px', 
+                borderRadius: '15px', 
+                marginBottom: '10px', 
+              }}
+                 // Adjust the values as needed
             />
             <audio controls>
               <source src={item.url} type="audio/mp3" />
               Your browser does not support the audio tag.
             </audio>
-            <MusicHeader className="add-to-colab">
+            {/* <MusicHeader className="add-to-colab">
               <CollabButton onClick={() => { navigate('/trimmer') }}>Collaborate</CollabButton>
-            </MusicHeader>
+            </MusicHeader> */}
           </div>
         )}
       </PostContainer>

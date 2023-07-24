@@ -207,6 +207,10 @@ html {
 }
 
 
+.albumCover {
+  box-shadow: 5px 5px 13px #5a51b0, -5px -5px 13px #5a51b0;
+}
+
 .post {
   display: flex;
   flex-direction: column;
