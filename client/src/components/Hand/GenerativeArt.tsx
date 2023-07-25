@@ -12,7 +12,7 @@ const SaveButton = styled.div`
   position: absolute;
   left: -78px;
   bottom: 4px;
-  z-index: 1;
+  z-index: 0;
   cursor: pointer;
 
   &:hover {
