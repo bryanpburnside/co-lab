@@ -6,23 +6,98 @@
 
 video {
   display: flex;
-  border-radius: 5%;
+  border-radius: 20px; 
   padding: 1%;
   min-width: 100%;
   min-height: 100vh;
   object-fit: cover;
+  box-shadow: 5px 5px 13px #343171, -5px -5px 13px #464195;
+}
+
+
+
+.resized-video {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  max-height: 100vh;
+  border-radius: 20px;
+
+}
+
+
+
+.album-cover-preview {
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 5px 5px 13px #343171, -5px -5px 13px #464195;
+}
+
+
+.centered-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.music-title-input {
+  margin-bottom: 40px;
+}
+
+
+.start-recording {
+  margin-top: 40px;
+}
+
+.music-title-input {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: white;
+  font-size: 2.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  object-fit: cover;
   box-shadow: 5px 5px 13px #343171,
   -5px -5px 13px #464195;
+}
+
+.start-recording,
+.upload-button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: white;
+  font-size: 2.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  object-fit: cover;
+  box-shadow: 5px 5px 13px #343171, -5px -5px 13px #464195;
+  margin-bottom: 10px;
+}
+
+.start-recording svg,
+.upload-button svg {
+  margin-right: 35px;
 }
 
 
 
 
 
-
-
-
-
+#video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+  border-radius: 50px;
+}
 
 
 
@@ -31,24 +106,25 @@ video {
 .video-wrapper {
   display: flex;
   position: relative;
-  box-shadow: 5px 5px 13px #343171,
-  -5px -5px 13px #464195;
+  box-shadow: 5px 5px 13px #343171, -5px -5px 13px #464195;
+  border-radius: 20px;
+  overflow: hidden;
 }
 
 .blue-overlay {
   position: absolute;
-  top: 13%; /* Adjust this value as needed */
+  top: 13%;
   left: 80%;
   transform: translate(-50%, -50%);
-  width: 200px; /* Adjust the width as needed */
-  height: auto; /* Adjust the height as needed */
+  width: 200px;
+  height: auto;
   z-index: 1;
 }
 
-.overlay-eChord-text { 
+.overlay-eChord-text {
   position: absolute;
   top: 32%;
-  left: 84%; /* Adjust this value as needed */
+  left: 84%;
   transform: translate(-50%, -50%);
   font-size: 60px;
   color: white;
@@ -58,17 +134,17 @@ video {
 
 .gold-overlay {
   position: absolute;
-  top: 13%; /* Adjust this value as needed */
-  left: 10%; /* Adjust this value as needed */
-  width: 200px; /* Adjust this value as needed */
-  height: auto; /* Adjust this value as needed */
+  top: 13%;
+  left: 10%;
+  width: 200px;
+  height: auto;
   z-index: 1;
 }
 
 .overlay-bChord-text {
   position: absolute;
   top: 32%;
-  left: 16%; /* Adjust this value as needed */
+  left: 16%;
   transform: translate(-50%, -50%);
   font-size: 60px;
   color: white;
@@ -78,16 +154,16 @@ video {
 .green-overlay {
   position: absolute;
   top: 70%;
-  left: 10%; /* Adjust this value as needed */
-  width: 200px; /* Adjust this value as needed */
-  height: auto; /* Adjust this value as needed */
+  left: 10%;
+  width: 200px;
+  height: auto;
   z-index: 1;
 }
 
 .overlay-aChord-text {
   position: absolute;
   top: 85%;
-  left: 16%; /* Adjust this value as needed */
+  left: 16%;
   transform: translate(-50%, -50%);
   font-size: 60px;
   color: white;
@@ -97,18 +173,18 @@ video {
 
 .pink-overlay {
   position: absolute;
-  top: 70%; /* Adjust this value as needed */
+  top: 70%;
   left: 80%;
   transform: translate(-50%, -50%);
-  width: 200px; /* Adjust the width as needed */
-  height: auto; /* Adjust the height as needed */
+  width: 200px;
+  height: auto;
   z-index: 1;
 }
 
 .overlay-cChord-text {
   position: absolute;
   top: 85%;
-  left: 84%; /* Adjust this value as needed */
+  left: 84%;
   transform: translate(-50%, -50%);
   font-size: 60px;
   color: white;
