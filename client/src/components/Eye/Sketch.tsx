@@ -54,13 +54,13 @@ const ColorPickerWrapper = styled.div`
   flex-direction: column;
   position: absolute;
   top: -11rem;
-  left: 1.25rem;
+  left: 3.25rem;
 `;
 
 const PenWidthSliderWrapper = styled.div`
   position: absolute;
   top: -2.1rem;
-  left: 1.5rem;
+  left: 3.5rem;
   transform: rotate(-90deg);
   transform-origin: left center;
   display: flex;
@@ -94,6 +94,7 @@ const PenWidthSlider = styled.div`
 `;
 
 const ButtonContainer = styled.div`
+  margin-left: 2rem;
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
@@ -125,10 +126,10 @@ const Button = styled.button`
 `;
 
 const CollaboratorImage = styled.img`
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   margin-bottom: 15px;
-  margin-left: -10px;
+  margin-left: -5px;
   object-fit: cover;
   object-position: center;
   clip-path: circle();

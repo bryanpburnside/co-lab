@@ -10,7 +10,7 @@ import { FaSave, FaUserPlus } from 'react-icons/fa';
 
 const SaveButton = styled.div`
   position: absolute;
-  left: -78px;
+  left: -76px;
   bottom: 4px;
   z-index: 0;
   cursor: pointer;
@@ -25,7 +25,7 @@ const Button = styled.button`
   background: none;
   cursor: pointer;
   color: white;
-  font-size: 48px;
+  font-size: 40px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 
   &:hover {
@@ -34,7 +34,7 @@ const Button = styled.button`
 `;
 
 const ButtonContainerRight = styled.div`
-  margin-left: 1rem;
+  margin-left: -.5rem;
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
@@ -43,10 +43,10 @@ const ButtonContainerRight = styled.div`
 `;
 
 const CollaboratorImage = styled.img`
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   margin-bottom: 15px;
-  margin-left: -10px;
+  margin-left: -5px;
   object-fit: cover;
   object-position: center;
   clip-path: circle();
@@ -253,7 +253,7 @@ const GenerativeArt = ({ roomId, openModal, currentCollaborators }) => {
   };
 
   return (
-    <div style={{display: 'flex', width: '80vw', margin: '0 auto'}}>
+    <div style={{display: 'flex', width: '80vw', margin: '0 11.25rem'}}>
     <div className='canvas-container' style={{ position: 'relative' }}>
       <div ref={canvasRef} style={{ position: 'relative', alignSelf: 'center'}}>
           {collaboratorMouseX !== null && collaboratorMouseY !== null && (
@@ -266,7 +266,7 @@ const GenerativeArt = ({ roomId, openModal, currentCollaborators }) => {
           <SaveButton
             onClick={handleSave}
           >
-            <FaSave size={48} />
+            <FaSave size={40} />
           </SaveButton>
         }
       </div>
