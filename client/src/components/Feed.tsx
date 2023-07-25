@@ -206,7 +206,8 @@ const Feed: React.FC = () => {
         {isPageStory && (
           <div className="story" key={index}>
             <h1>
-              <img src={item.coverImage} width={'50%'} className="cloud-img" /><p>{item.title}</p>
+              <p>{item.title}</p>
+              <img src={item.coverImage} width={'50%'} className="cloud-img" />
             </h1>
             {pages.map((page: PageItem) => (
               <p className="story-content" key={page.id}>
